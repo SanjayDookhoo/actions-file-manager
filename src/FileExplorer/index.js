@@ -1,19 +1,20 @@
 import { useContext, useEffect, useState } from 'react';
 import { TestDataContext } from '../App';
+import Tabs from './Tabs';
 
 const FileExplorer = () => {
 	const { testData, setTestData } = useContext(TestDataContext);
 
-	useEffect(() => {
-		console.log(
-			'🚀 ~ file: index.js ~ line 11 ~ FileExplorer ~ testData',
-			testData
-		);
-	}, [testData]);
+	// useEffect(() => {
+	// 	console.log(
+	// 		'🚀 ~ file: index.js ~ line 11 ~ FileExplorer ~ testData',
+	// 		testData
+	// 	);
+	// }, [testData]);
 
-	useEffect(() => {
-		setTestData(5);
-	}, []);
+	// useEffect(() => {
+	// 	setTestData(5);
+	// }, []);
 
 	const [state, setState] = useState([
 		{
@@ -23,7 +24,11 @@ const FileExplorer = () => {
 			path: '/',
 		},
 	]);
-	return <div>FileExplorer</div>;
+	return (
+		<div>
+			<Tabs />
+		</div>
+	);
 };
 
 export default FileExplorer;
