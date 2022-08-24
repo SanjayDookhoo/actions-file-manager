@@ -16,12 +16,6 @@ const Tabs = () => {
 	useLayoutEffect(() => {
 		const element = scrollable_tabs_ref.current;
 
-		// set initial
-		setTimeout(() => {
-			setScrollWidth(element.scrollWidth);
-			setClientWidth(element.clientWidth);
-		}, 150);
-
 		const handleScroll = (e) => {
 			setScrollLeft(element.scrollLeft);
 		};
@@ -38,6 +32,13 @@ const Tabs = () => {
 			window.removeEventListener('resize', handleResize);
 		};
 	}, []);
+
+	useEffect(() => {
+		// set initial
+		const element = scrollable_tabs_ref.current;
+		setScrollWidth(element.scrollWidth);
+		setClientWidth(element.clientWidth);
+	}, [scrollable]);
 
 	const scrollTabs = (direction) => {
 		const element = scrollable_tabs_ref.current;
