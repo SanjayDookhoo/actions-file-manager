@@ -1,17 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { tab_min_width } from './constants';
+import { initial_tab_state, tab_min_width } from './constants';
 import Tab from './Tab';
 
-const amt_of_tabs = 3;
-
-const Tabs = () => {
+const Tabs = (props) => {
+	const { tabs_state, setTabsState } = props;
 	const tabs_container_ref = useRef(null);
 	const scrollable_tabs_ref = useRef(null);
 	const [tab_width, setTabWidth] = useState(null);
 	const [scrollable, setScrollable] = useState(false);
 	const [scrollLeft, setScrollLeft] = useState(0);
-	const [scrollWidth, setScrollWidth] = useState(0);
-	const [clientWidth, setClientWidth] = useState(0);
+	const [max_scrollLeft, setMaxScrollLeft] = useState(0);
+
+	const getMaxScrollLeft = (element) => {
+		return element.scrollWidth - element.clientWidth;
+	};
 
 	useLayoutEffect(() => {
 		const element = scrollable_tabs_ref.current;
@@ -20,8 +22,7 @@ const Tabs = () => {
 			setScrollLeft(element.scrollLeft);
 		};
 		const handleResize = (e) => {
-			setScrollWidth(element.scrollWidth);
-			setClientWidth(element.clientWidth);
+			setMaxScrollLeft(getMaxScrollLeft(element));
 		};
 
 		element.addEventListener('scroll', handleScroll);
@@ -33,11 +34,10 @@ const Tabs = () => {
 		};
 	}, []);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		// set initial
 		const element = scrollable_tabs_ref.current;
-		setScrollWidth(element.scrollWidth);
-		setClientWidth(element.clientWidth);
+		setMaxScrollLeft(getMaxScrollLeft(element));
 	}, [scrollable]);
 
 	const scrollTabs = (direction) => {
@@ -52,7 +52,7 @@ const Tabs = () => {
 			}
 		} else if (direction == 'forward') {
 			const possible_new_scrollLeft = scrollLeft + tab_width;
-			const max_scrollLeft = element.scrollWidth - element.clientWidth;
+			const max_scrollLeft = getMaxScrollLeft(element);
 			if (possible_new_scrollLeft > max_scrollLeft) {
 				element.scrollLeft = max_scrollLeft;
 			} else {
@@ -60,12 +60,17 @@ const Tabs = () => {
 			}
 		}
 	};
-	const addNewTab = () => {};
+	const addNewTab = () => {
+		setTabsState([
+			...tabs_state,
+			{ ...initial_tab_state, tab_number: tabs_state.length },
+		]);
+	};
 
 	const openVerticalTabFlyout = () => {};
 
 	const button_style =
-		'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 cursor-pointer ';
+		'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
 	const unclickable_button_style = 'text-gray-100 ';
 
 	useLayoutEffect(() => {
@@ -74,7 +79,7 @@ const Tabs = () => {
 			const width = tabs_container.offsetWidth;
 			const available_width = width - 40 * 2; // what is being subtracted is the size of add new tab button and vertical flyout button
 
-			const temp_tab_width = Math.floor(available_width / amt_of_tabs);
+			const temp_tab_width = Math.floor(available_width / tabs_state.length);
 			setTabWidth(temp_tab_width);
 			setScrollable(temp_tab_width && temp_tab_width < tab_min_width);
 		};
@@ -83,13 +88,16 @@ const Tabs = () => {
 
 	const tab_props = {
 		tab_width,
+		...props,
 	};
 
 	return (
 		<div ref={tabs_container_ref} className="flex justify-start">
 			{scrollable && (
 				<a
-					className={scrollLeft == 0 ? unclickable_button_style : ''}
+					className={
+						scrollLeft == 0 ? unclickable_button_style : 'cursor-pointer'
+					}
 					onClick={() => scrollTabs('backward')}
 					title="Scoll tab list backward"
 				>
@@ -100,16 +108,16 @@ const Tabs = () => {
 				ref={scrollable_tabs_ref}
 				className="flex overflow-x-auto scrollable-tabs"
 			>
-				<Tab {...tab_props} />
-				<Tab {...tab_props} />
-				<Tab {...tab_props} />
+				{tabs_state.map((tab_state, tab_index) => (
+					<Tab key={tab_index} {...tab_props} tab_index={tab_index} />
+				))}
 			</div>
 			{scrollable && (
 				<a
 					className={
-						scrollLeft == scrollWidth - clientWidth
+						scrollLeft == max_scrollLeft
 							? unclickable_button_style
-							: ''
+							: 'cursor-pointer'
 					}
 					onClick={() => scrollTabs('forward')}
 					title="Scoll tab list forward"
@@ -117,11 +125,15 @@ const Tabs = () => {
 					<span className={button_style}>chevron_right</span>
 				</a>
 			)}
-			<a className="" onClick={addNewTab} title="New tab (Ctrl+T)">
+			<a
+				className="cursor-pointer"
+				onClick={addNewTab}
+				title="New tab (Ctrl+T)"
+			>
 				<span className={button_style}>add</span>
 			</a>
 			<a
-				className=""
+				className="cursor-pointer"
 				onClick={openVerticalTabFlyout}
 				title="Vertical tab flyout"
 			>

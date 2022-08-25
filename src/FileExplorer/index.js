@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { TestDataContext } from '../App';
 import Tabs from './Tabs';
+import { initial_tab_state } from './Tabs/constants';
 
 const FileExplorer = () => {
-	const { testData, setTestData } = useContext(TestDataContext);
+	// const { testData, setTestData } = useContext(TestDataContext);
 
 	// useEffect(() => {
 	// 	console.log(
@@ -16,17 +17,16 @@ const FileExplorer = () => {
 	// 	setTestData(5);
 	// }, []);
 
-	const [state, setState] = useState([
-		{
-			tab_number: 0, // starts at 0
-			selected: null, // folder or file id
-			multi_select_active: false,
-			path: '/',
-		},
-	]);
+	const [tabs_state, setTabsState] = useState([initial_tab_state]);
+
+	const tabs_props = {
+		tabs_state,
+		setTabsState,
+	};
+
 	return (
 		<div>
-			<Tabs />
+			<Tabs {...tabs_props} />
 		</div>
 	);
 };

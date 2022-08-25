@@ -5,7 +5,7 @@ const icon = 'folder';
 const folder_name = 'folder name';
 
 const Tab = (props) => {
-	const { tab_width } = props;
+	const { tab_width, tabs_state, setTabsState, tab_index } = props;
 	const [width, setWidth] = useState(tab_max_width);
 
 	useEffect(() => {
@@ -17,6 +17,12 @@ const Tab = (props) => {
 			setWidth(tab_width);
 		}
 	}, [tab_width]);
+
+	const handleClose = () => {
+		const temp_tabs_state = [...tabs_state];
+		temp_tabs_state.splice(tab_index, 1);
+		setTabsState(temp_tabs_state);
+	};
 
 	const button_style = 'material-symbols-outlined p-1';
 
@@ -39,7 +45,11 @@ const Tab = (props) => {
 						{folder_name}
 					</p>
 				</div>
-				<span className={button_style}>close</span>
+				{tabs_state.length != 1 && (
+					<a className="cursor-pointer" onClick={handleClose}>
+						<span className={button_style}>close</span>
+					</a>
+				)}
 			</div>
 		</div>
 	);
