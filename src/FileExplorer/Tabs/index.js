@@ -1,8 +1,17 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useAction } from '../../ContextActions';
 import { initial_tab_state, tab_min_width } from './constants';
 import Tab from './Tab';
 
+const Test = () => {
+	return (
+		<div className="bg-red-800" style={{ width: '50px', height: '50px' }}></div>
+	);
+};
+
 const Tabs = (props) => {
+	const action = useAction();
+
 	const { tabs_state, setTabsState } = props;
 	const tabs_container_ref = useRef(null);
 	const scrollable_tabs_ref = useRef(null);
@@ -67,7 +76,27 @@ const Tabs = (props) => {
 		]);
 	};
 
-	const openVerticalTabFlyout = () => {};
+	const openVerticalTabFlyout = (event) => {
+		// action({
+		// 	event,
+		// 	Component: <Test />,
+		// 	relativeTo: 'mouse',
+		// 	yAxis: 'center',
+		// 	xAxis: 'center',
+		// });
+		action({
+			event,
+			Component: <Test />,
+			relativeTo: 'target',
+			location: 'bottom',
+			position: 'center',
+			padding: 5,
+		});
+	};
+
+	const handleTest = (e) => {
+		console.log('test');
+	};
 
 	const button_style =
 		'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
