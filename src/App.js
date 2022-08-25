@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react';
+import { ContextActionsProvider } from './ContextActions';
 import FileExplorer from './FileExplorer';
 
 const initialTestData = [
@@ -52,7 +53,9 @@ const App = () => {
 	return (
 		<div className="App">
 			<TestDataContext.Provider value={value}>
-				<FileExplorer />
+				<ContextActionsProvider>
+					<FileExplorer />
+				</ContextActionsProvider>
 			</TestDataContext.Provider>
 		</div>
 	);
