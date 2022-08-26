@@ -14,6 +14,7 @@ export const ContextActionsProvider = ({ children }) => {
 	const [componentPosition, setComponentPosition] = useState(null);
 	const [componentDetails, setComponentDetails] = useState(null);
 	const componentRef = useRef();
+	const containerRef = useRef();
 	/*
 	{
 		event
@@ -46,9 +47,9 @@ export const ContextActionsProvider = ({ children }) => {
 			const { event, relativeTo, xAxis, yAxis, location, position, padding } =
 				actionDetails;
 
+			// determining top and left to position the component as the user desires
 			let top = 0;
 			let left = 0;
-
 			if (relativeTo == 'mouse') {
 				if (yAxis == 'top') {
 					top = event.pageY;
@@ -106,6 +107,25 @@ export const ContextActionsProvider = ({ children }) => {
 				left = event.pageX;
 			}
 
+			// if the component overflows outside the container of ContextActions, try to reposition in a way that it is fully visible
+
+			const bottom = top + componentDetails.height;
+			const right = left + componentDetails.width;
+			const containerDetails = containerRef.current.getBoundingClientRect();
+			// only one each of this is to execute, in case there is no space no matter what is done
+			if (top < 0) {
+				top = 0;
+			} else if (bottom > containerDetails.height) {
+				top -= bottom - containerDetails.height;
+			}
+			// only one each of this is to execute, in case there is no space no matter what is done
+			if (left < 0) {
+				left = 0;
+			} else if (right > containerDetails.width) {
+				left -= right - containerDetails.width;
+			}
+
+			// set final position
 			setComponentPosition({
 				top,
 				left,
@@ -115,7 +135,7 @@ export const ContextActionsProvider = ({ children }) => {
 
 	return (
 		<ContextActionsContext.Provider value={value}>
-			<div onClick={handleOnClick} className="relative">
+			<div ref={containerRef} onClick={handleOnClick} className="relative">
 				{children}
 				<div
 					ref={componentRef}
@@ -123,7 +143,7 @@ export const ContextActionsProvider = ({ children }) => {
 					style={{
 						top: componentPosition?.top,
 						left: componentPosition?.left,
-						visibility: componentPosition?.top ? 'initial' : 'hidden',
+						visibility: componentPosition ? 'initial' : 'hidden',
 					}}
 				>
 					{actionDetails?.Component}

@@ -88,14 +88,10 @@ const Tabs = (props) => {
 			event,
 			Component: <Test />,
 			relativeTo: 'target',
-			location: 'bottom',
+			location: 'top',
 			position: 'center',
 			padding: 5,
 		});
-	};
-
-	const handleTest = (e) => {
-		console.log('test');
 	};
 
 	const button_style =
