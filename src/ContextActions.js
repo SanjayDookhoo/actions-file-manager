@@ -15,26 +15,31 @@ export const ContextActionsProvider = ({ children }) => {
 	const [componentDetails, setComponentDetails] = useState(null);
 	const componentRef = useRef();
 	const containerRef = useRef();
-	/*
-	{
-		event
-		Component,
-		relativeTo: mouse, target
-		if mouse
-			yAxis: top, bottom, center, relative
-			xAxis: left, right, center, relative
-		if target
-			location: left, right, top, bottom / relative
-			position: beginning, end, center
-			padding: <number> // numerical value of pixels that seperates the Component from the menu
-	}
-	*/
 
 	const value = { actionDetails, setActionDetails };
 
-	const handleOnClick = (e) => {
+	const removeContextMenu = () => {
 		setComponentPosition(null);
 	};
+
+	useEffect(() => {
+		// if page has lost focus in anyway, remove context menu
+		// https://stackoverflow.com/questions/1060008/is-there-a-way-to-detect-if-a-browser-window-is-not-currently-active
+		setInterval(() => {
+			if (!document.hasFocus()) {
+				setComponentPosition(null);
+			}
+		}, 500);
+
+		// TODO: find another way to removeContextMenu when this is implemented as a web component, where this can be called if stopPropagation is known to have been used when an onClick event was created
+		window.removeContextMenu = removeContextMenu;
+
+		// remove context menu if any type of click is detected, where stopPropagation isnt used
+		window.addEventListener('click', removeContextMenu);
+		return () => {
+			window.removeEventListener('click', removeContextMenu);
+		};
+	}, []);
 
 	useLayoutEffect(() => {
 		if (actionDetails) {
@@ -135,7 +140,7 @@ export const ContextActionsProvider = ({ children }) => {
 
 	return (
 		<ContextActionsContext.Provider value={value}>
-			<div ref={containerRef} onClick={handleOnClick} className="relative">
+			<div ref={containerRef} className="relative">
 				{children}
 				<div
 					ref={componentRef}
