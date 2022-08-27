@@ -161,19 +161,37 @@ export const ContextActionsProvider = ({ children }) => {
 export const useAction = () => {
 	const { actionDetails, setActionDetails } = useContext(ContextActionsContext);
 
-	return (params) => {
-		const { event, Component, relativeTo, xAxis, yAxis, location, position } =
-			params;
-		if (!event || !Component) return;
+	return {
+		newAction: (params) => {
+			let { event, Component, relativeTo, xAxis, yAxis, location, position } =
+				params;
+			if (!event || !Component) return;
 
-		if (relativeTo == 'mouse' && !(xAxis && yAxis)) {
-			return;
-		} else if (relativeTo == 'target' && !(location && position)) {
-			return;
-		}
+			if (relativeTo == 'mouse' && !(xAxis && yAxis)) {
+				return;
+			} else if (relativeTo == 'target' && !(location && position)) {
+				return;
+			}
 
-		event.stopPropagation();
+			// set default behavior
+			if (!relativeTo) {
+				relativeTo = 'mouse';
+				xAxis = 'right';
+				yAxis = 'bottom';
+			}
 
-		setActionDetails(params);
+			event.stopPropagation();
+
+			setActionDetails(params);
+		},
+		refreshAction: (params) => {
+			const { componentName } = params;
+
+			if (actionDetails?.componentName == componentName) {
+				setActionDetails({
+					...actionDetails,
+				});
+			}
+		},
 	};
 };

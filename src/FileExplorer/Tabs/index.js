@@ -76,20 +76,26 @@ const Tabs = (props) => {
 		]);
 	};
 
+	useLayoutEffect(() => {
+		action.refreshAction({ componentName: 'Test' });
+	}, [tabs_state]);
+
 	const openVerticalTabFlyout = (event) => {
-		// action({
+		// action.newAction({
 		// 	event,
+		// 	componentName: 'Test',
 		// 	Component: <Test />,
 		// 	relativeTo: 'mouse',
 		// 	yAxis: 'center',
 		// 	xAxis: 'center',
 		// });
-		action({
+		action.newAction({
 			event,
+			componentName: 'Test',
 			Component: <Test />,
 			relativeTo: 'target',
-			location: 'top',
-			position: 'center',
+			location: 'left',
+			position: 'end',
 			padding: 5,
 		});
 	};
