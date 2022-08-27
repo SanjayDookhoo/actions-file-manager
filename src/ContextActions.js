@@ -9,6 +9,13 @@ import React, {
 
 const ContextActionsContext = createContext();
 
+const all = {
+	xAxis: ['left', 'center', 'right'],
+	yAxis: ['top', 'center', 'bottom'],
+	location: ['left', 'right', 'top', 'bottom'],
+	position: ['end', 'center', 'beginning'],
+};
+
 export const ContextActionsProvider = ({ children }) => {
 	const [actionDetails, setActionDetails] = useState(null);
 	const [componentPosition, setComponentPosition] = useState(null);
@@ -35,10 +42,10 @@ export const ContextActionsProvider = ({ children }) => {
 		window.removeContextMenu = removeContextMenu;
 
 		// remove context menu if any type of click is detected, where stopPropagation isnt used
-		window.addEventListener('click', removeContextMenu);
-		return () => {
-			window.removeEventListener('click', removeContextMenu);
-		};
+		// window.addEventListener('click', removeContextMenu);
+		// return () => {
+		// 	window.removeEventListener('click', removeContextMenu);
+		// };
 	}, []);
 
 	useLayoutEffect(() => {
@@ -49,87 +56,157 @@ export const ContextActionsProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (actionDetails) {
-			const { event, relativeTo, xAxis, yAxis, location, position, padding } =
+			let { event, relativeTo, xAxis, yAxis, location, position, padding } =
 				actionDetails;
+			const containerDetails = containerRef.current.getBoundingClientRect();
 
 			// determining top and left to position the component as the user desires
 			let top = 0;
 			let left = 0;
 			if (relativeTo == 'mouse') {
-				if (yAxis == 'top') {
-					top = event.pageY;
-				} else if (yAxis == 'bottom') {
-					top = event.pageY - componentDetails.height;
-				} else if (yAxis == 'center') {
-					top = event.pageY - Math.floor(componentDetails.height / 2);
+				const yAxisCalc = () => {
+					if (yAxis == 'bottom') {
+						top = event.pageY;
+					} else if (yAxis == 'top') {
+						top = event.pageY - componentDetails.height;
+					} else if (yAxis == 'center') {
+						top = event.pageY - Math.floor(componentDetails.height / 2);
+					}
+				};
+				yAxisCalc();
+				while (top < 0) {
+					const index = all.yAxis.indexOf(yAxis) + 1;
+					if (index == all.yAxis.length) break;
+					yAxis = all.yAxis[index];
+					yAxisCalc();
 				}
 
-				if (xAxis == 'left') {
-					left = event.pageX;
-				} else if (xAxis == 'right') {
-					left = event.pageX - componentDetails.width;
-				} else if (xAxis == 'center') {
-					left = event.pageX - Math.floor(componentDetails.width / 2);
+				while (top + componentDetails.height > containerDetails.height) {
+					// top + componentDetails.height = bottom
+					const index = all.yAxis.indexOf(yAxis) - 1;
+					if (index == -1) break;
+					yAxis = all.yAxis[index];
+					yAxisCalc();
+				}
+
+				const xAxisCalc = () => {
+					if (xAxis == 'right') {
+						left = event.pageX;
+					} else if (xAxis == 'left') {
+						left = event.pageX - componentDetails.width;
+					} else if (xAxis == 'center') {
+						left = event.pageX - Math.floor(componentDetails.width / 2);
+					}
+				};
+				xAxisCalc();
+
+				while (left < 0) {
+					const index = all.xAxis.indexOf(xAxis) + 1;
+					if (index == all.xAxis.length) break;
+					xAxis = all.xAxis[index];
+					xAxisCalc();
+				}
+
+				while (left + componentDetails.width > containerDetails.width) {
+					// left + componentDetails.width = left
+					const index = all.xAxis.indexOf(xAxis) - 1;
+					if (index == -1) break;
+					xAxis = all.xAxis[index];
+					xAxisCalc();
 				}
 			} else if (relativeTo == 'target') {
-				const targetDetails = event.target.getBoundingClientRect();
+				const calcStuff = () => {
+					const targetDetails = event.target.getBoundingClientRect();
+					if (location == 'top' || location == 'bottom') {
+						if (position == 'beginning') {
+							left = targetDetails.left;
+						} else if (position == 'end') {
+							left = targetDetails.right - componentDetails.width;
+						} else if (position == 'center') {
+							left =
+								targetDetails.left +
+								Math.floor(targetDetails.width / 2) -
+								Math.floor(componentDetails.width / 2);
+						}
+					}
+
+					if (location == 'left' || location == 'right') {
+						if (position == 'beginning') {
+							top = targetDetails.top;
+						} else if (position == 'end') {
+							top = targetDetails.bottom - componentDetails.height;
+						} else if (position == 'center') {
+							top =
+								targetDetails.top +
+								Math.floor(targetDetails.height / 2) -
+								Math.floor(componentDetails.height / 2);
+						}
+					}
+					if (location == 'top') {
+						top = targetDetails.top - componentDetails.height - padding;
+					} else if (location == 'right') {
+						left = targetDetails.right + padding;
+					} else if (location == 'bottom') {
+						top = targetDetails.bottom + padding;
+					} else if (location == 'left') {
+						left = targetDetails.left - componentDetails.width - padding;
+					}
+				};
+				calcStuff();
+
+				// //////////////
+
 				if (location == 'top' || location == 'bottom') {
-					if (position == 'beginning') {
-						left = targetDetails.left;
-					} else if (position == 'end') {
-						left = targetDetails.right - componentDetails.width;
-					} else if (position == 'center') {
-						left =
-							targetDetails.left +
-							Math.floor(targetDetails.width / 2) -
-							Math.floor(componentDetails.width / 2);
+					while (left < 0) {
+						const index = all.position.indexOf(position) + 1;
+						if (index == all.position.length) break;
+						position = all.position[index];
+						calcStuff();
+					}
+
+					while (left + componentDetails.width > containerDetails.width) {
+						// left + componentDetails.width = left
+						const index = all.position.indexOf(position) - 1;
+						if (index == -1) break;
+						position = all.position[index];
+						calcStuff();
 					}
 				}
 
 				if (location == 'left' || location == 'right') {
-					if (position == 'beginning') {
-						top = targetDetails.top;
-					} else if (position == 'end') {
-						top = targetDetails.bottom - componentDetails.height;
-					} else if (position == 'center') {
-						top =
-							targetDetails.top +
-							Math.floor(targetDetails.height / 2) -
-							Math.floor(componentDetails.height / 2);
+					while (top < 0) {
+						const index = all.position.indexOf(position) + 1;
+						if (index == all.position.length) break;
+						position = all.position[index];
+						calcStuff();
+					}
+
+					while (top + componentDetails.height > containerDetails.height) {
+						// top + componentDetails.height = bottom
+						const index = all.position.indexOf(position) - 1;
+						if (index == -1) break;
+						position = all.position[index];
+						calcStuff();
 					}
 				}
-				if (location == 'top') {
-					top = targetDetails.top - componentDetails.height - padding;
-				} else if (location == 'right') {
-					left = targetDetails.right + padding;
-				} else if (location == 'bottom') {
-					top = targetDetails.bottom + padding;
-				} else if (location == 'left') {
-					left = targetDetails.left - componentDetails.width - padding;
+
+				if (location == 'top' || location == 'bottom') {
+					if (top < 0) {
+						location = 'bottom';
+					} else if (top + componentDetails.height > containerDetails.height) {
+						location = 'top';
+					}
 				}
-			} else {
-				top = event.pageY;
-				left = event.pageX;
-			}
 
-			// if the component overflows outside the container of ContextActions, try to reposition in a way that it is fully visible
-
-			const bottom = top + componentDetails.height;
-			const right = left + componentDetails.width;
-			const containerDetails = containerRef.current.getBoundingClientRect();
-			// only one each of this is to execute, in case there is no space no matter what is done
-			if (top < 0) {
-				top = 0;
-			} else if (bottom > containerDetails.height) {
-				top -= bottom - containerDetails.height;
+				if (location == 'right' || location == 'left') {
+					if (left + componentDetails.width > containerDetails.width) {
+						location = 'left';
+					} else if (left < 0) {
+						location = 'right';
+					}
+				}
+				calcStuff();
 			}
-			// only one each of this is to execute, in case there is no space no matter what is done
-			if (left < 0) {
-				left = 0;
-			} else if (right > containerDetails.width) {
-				left -= right - containerDetails.width;
-			}
-
 			// set final position
 			setComponentPosition({
 				top,
