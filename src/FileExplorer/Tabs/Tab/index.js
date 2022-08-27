@@ -5,20 +5,28 @@ const icon = 'folder';
 const folder_name = 'folder name';
 
 const Tab = (props) => {
-	const { tab_width, tabs_state, setTabsState, tab_index } = props;
+	const { tab_width, tabs_state, setTabsState, tab_index, inContextMenu } =
+		props;
 	const [width, setWidth] = useState(tab_max_width);
 
 	useEffect(() => {
-		if (tab_width > tab_max_width) {
-			setWidth(tab_max_width);
-		} else if (tab_width < tab_min_width) {
-			setWidth(tab_min_width);
+		if (tab_width) {
+			if (tab_width > tab_max_width) {
+				setWidth(tab_max_width);
+			} else if (tab_width < tab_min_width) {
+				setWidth(tab_min_width);
+			} else {
+				setWidth(tab_width);
+			}
 		} else {
-			setWidth(tab_width);
+			setWidth('100%');
 		}
 	}, [tab_width]);
 
-	const handleClose = () => {
+	const handleClose = (e) => {
+		if (inContextMenu) {
+			e.stopPropagation(); // used in context menu
+		}
 		const temp_tabs_state = [...tabs_state];
 		temp_tabs_state.splice(tab_index, 1);
 		setTabsState(temp_tabs_state);

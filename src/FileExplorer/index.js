@@ -25,7 +25,7 @@ const FileExplorer = () => {
 	};
 
 	return (
-		<div>
+		<div className="w-full h-screen">
 			<Tabs {...tabs_props} />
 		</div>
 	);

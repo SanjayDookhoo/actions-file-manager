@@ -42,10 +42,10 @@ export const ContextActionsProvider = ({ children }) => {
 		window.removeContextMenu = removeContextMenu;
 
 		// remove context menu if any type of click is detected, where stopPropagation isnt used
-		window.addEventListener('click', removeContextMenu);
-		return () => {
-			window.removeEventListener('click', removeContextMenu);
-		};
+		// window.addEventListener('click', removeContextMenu);
+		// return () => {
+		// 	window.removeEventListener('click', removeContextMenu);
+		// };
 	}, []);
 
 	useLayoutEffect(() => {

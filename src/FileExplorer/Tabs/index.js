@@ -1,13 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAction } from '../../ContextActions';
-import { initial_tab_state, tab_min_width } from './constants';
+import { initial_tab_state, tab_min_width, tab_max_width } from './constants';
 import Tab from './Tab';
 
-const Test = () => {
-	return (
-		<div className="bg-red-800" style={{ width: '50px', height: '50px' }}></div>
-	);
-};
+const button_style =
+	'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
 
 const Tabs = (props) => {
 	const action = useAction();
@@ -69,39 +66,37 @@ const Tabs = (props) => {
 			}
 		}
 	};
-	const addNewTab = () => {
+	const addNewTab = (e) => {
 		setTabsState([
 			...tabs_state,
 			{ ...initial_tab_state, tab_number: tabs_state.length },
 		]);
 	};
+	const verticalFlyoutMenuProps = {
+		tabs_state,
+		setTabsState,
+		addNewTab,
+	};
 
 	useLayoutEffect(() => {
-		action.refreshAction({ componentName: 'Test' });
+		action.refreshAction({
+			componentName: 'VerticalFlyoutMenu', // necessary to check if the context menu is open or not, this is where it differs from newAction
+			Component: <VerticalFlyoutMenu {...verticalFlyoutMenuProps} />, // include any of prop to the "action" that have changed, in this case Component has changed, because it has new props, could even be a change in preferred location
+		});
 	}, [tabs_state]);
 
 	const openVerticalTabFlyout = (event) => {
-		// action.newAction({
-		// 	event,
-		// 	componentName: 'Test',
-		// 	Component: <Test />,
-		// 	relativeTo: 'mouse',
-		// 	yAxis: 'center',
-		// 	xAxis: 'center',
-		// });
 		action.newAction({
 			event,
-			componentName: 'Test',
-			Component: <Test />,
+			componentName: 'VerticalFlyoutMenu',
+			Component: <VerticalFlyoutMenu {...verticalFlyoutMenuProps} />,
 			relativeTo: 'target',
-			location: 'left',
-			position: 'end',
+			location: 'bottom',
+			position: 'center',
 			padding: 5,
 		});
 	};
 
-	const button_style =
-		'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
 	const unclickable_button_style = 'text-gray-100 ';
 
 	useLayoutEffect(() => {
@@ -119,7 +114,8 @@ const Tabs = (props) => {
 
 	const tab_props = {
 		tab_width,
-		...props,
+		tabs_state,
+		setTabsState,
 	};
 
 	return (
@@ -175,3 +171,44 @@ const Tabs = (props) => {
 };
 
 export default Tabs;
+
+const VerticalFlyoutMenu = (props) => {
+	const { tabs_state, setTabsState, addNewTab } = props;
+
+	const tab_props = {
+		// tab_width: tab_max_width,
+		tabs_state,
+		setTabsState,
+	};
+
+	const handleAddNewTabFromContextMenu = (e) => {
+		e.stopPropagation(); // this button is used inside a context menu, stop propagation is needed to prevent context menu from closing
+		addNewTab();
+	};
+
+	return (
+		<div
+			className="p-1 bg-gray-100 rounded-lg"
+			style={{ width: tab_max_width }}
+		>
+			{tabs_state.map((tab_state, tab_index) => (
+				<Tab
+					key={tab_index}
+					{...tab_props}
+					tab_index={tab_index}
+					inContextMenu={true}
+				/>
+			))}
+			<div className="p-1">
+				<a
+					className="cursor-pointer w-full flex justify-center items-center bg-gray-300 rounded-lg"
+					onClick={handleAddNewTabFromContextMenu}
+					title="New tab (Ctrl+T)"
+				>
+					<span className={button_style}>add</span>
+					Add Tab
+				</a>
+			</div>
+		</div>
+	);
+};
