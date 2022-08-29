@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { TestDataContext } from '../App';
+import NavigationBar from './NavigationBar';
 import Tabs from './Tabs';
 import { initial_tab_state } from './Tabs/constants';
 
@@ -27,6 +28,7 @@ const FileExplorer = () => {
 	return (
 		<div className="w-full h-screen">
 			<Tabs {...tabs_props} />
+			<NavigationBar />
 		</div>
 	);
 };

@@ -15,3 +15,11 @@
 .scrollable-tabs::-webkit-scrollbar {
 	display: none; /* Safari and Chrome */
 }
+
+a {
+	@apply cursor-pointer;
+}
+
+input:focus {
+	outline: none;
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { button_style } from '../../utils/constants';
 import { tab_max_width, tab_min_width } from '../constants';
 
 const icon = 'folder';
@@ -32,8 +33,6 @@ const Tab = (props) => {
 		setTabsState(temp_tabs_state);
 	};
 
-	const button_style = 'material-symbols-outlined p-1';
-
 	return (
 		<div className={inContextMenu ? 'pb-1' : 'pr-1 pt-1'} style={{ width }}>
 			{/* a extra padding container used here instead of margin, because that margin is not tied to the width like padding is */}
@@ -58,7 +57,7 @@ const Tab = (props) => {
 					</p>
 				</div>
 				{tabs_state.length != 1 && (
-					<a className="cursor-pointer" onClick={handleClose}>
+					<a className="" onClick={handleClose}>
 						<span className={button_style}>close</span>
 					</a>
 				)}

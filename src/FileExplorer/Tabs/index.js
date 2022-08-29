@@ -1,10 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAction } from '../../ContextActions';
+import { button_style } from '../utils/constants';
 import { initial_tab_state, tab_min_width, tab_max_width } from './constants';
 import Tab from './Tab';
-
-const button_style =
-	'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
 
 const Tabs = (props) => {
 	const action = useAction();
@@ -97,7 +95,7 @@ const Tabs = (props) => {
 		});
 	};
 
-	const unclickable_button_style = 'text-gray-100 ';
+	const unclickable_button_style = 'text-gray-100 cursor-auto ';
 
 	useLayoutEffect(() => {
 		const tabs_container = tabs_container_ref.current;
@@ -122,9 +120,7 @@ const Tabs = (props) => {
 		<div ref={tabs_container_ref} className="flex justify-start">
 			{scrollable && (
 				<a
-					className={
-						scrollLeft == 0 ? unclickable_button_style : 'cursor-pointer'
-					}
+					className={scrollLeft == 0 ? unclickable_button_style : ''}
 					onClick={() => scrollTabs('backward')}
 					title="Scoll tab list backward"
 				>
@@ -142,9 +138,7 @@ const Tabs = (props) => {
 			{scrollable && (
 				<a
 					className={
-						scrollLeft == max_scrollLeft
-							? unclickable_button_style
-							: 'cursor-pointer'
+						scrollLeft == max_scrollLeft ? unclickable_button_style : ''
 					}
 					onClick={() => scrollTabs('forward')}
 					title="Scoll tab list forward"
@@ -152,15 +146,11 @@ const Tabs = (props) => {
 					<span className={button_style}>chevron_right</span>
 				</a>
 			)}
-			<a
-				className="cursor-pointer"
-				onClick={addNewTab}
-				title="New tab (Ctrl+T)"
-			>
+			<a className="" onClick={addNewTab} title="New tab (Ctrl+T)">
 				<span className={button_style}>add</span>
 			</a>
 			<a
-				className="cursor-pointer"
+				className=""
 				onClick={openVerticalTabFlyout}
 				title="Vertical tab flyout"
 			>
@@ -202,7 +192,7 @@ const VerticalFlyoutMenu = (props) => {
 			))}
 			<div className="">
 				<a
-					className="cursor-pointer w-full flex justify-center items-center bg-gray-300 rounded-lg"
+					className="w-full flex justify-center items-center bg-gray-300 rounded-lg"
 					onClick={handleAddNewTabFromContextMenu}
 					title="New tab (Ctrl+T)"
 				>
