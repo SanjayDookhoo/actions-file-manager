@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { button_style } from '../utils/constants';
+import { buttonStyle } from '../utils/constants';
 import FolderPath from './FolderPath';
 import Search from './Search';
 
@@ -7,21 +7,21 @@ const NavigationBar = () => {
 	return (
 		<div className="flex items-center justify-start">
 			<a>
-				<span className={button_style}>west</span>
+				<span className={buttonStyle}>west</span>
 			</a>
 			<a>
-				<span className={button_style}>east</span>
+				<span className={buttonStyle}>east</span>
 			</a>
 			<a>
-				<span className={button_style}>north</span>
+				<span className={buttonStyle}>north</span>
 			</a>
 			<a>
-				<span className={button_style}>refresh</span>
+				<span className={buttonStyle}>refresh</span>
 			</a>
 			<FolderPath />
 			<Search />
 			<a>
-				<span className={button_style}>settings</span>
+				<span className={buttonStyle}>settings</span>
 			</a>
 		</div>
 	);

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { TestDataContext } from '../App';
 import NavigationBar from './NavigationBar';
 import Tabs from './Tabs';
-import { initial_tab_state } from './Tabs/constants';
+import { initialTabState } from './Tabs/constants';
 
 const FileExplorer = () => {
 	// const { testData, setTestData } = useContext(TestDataContext);
@@ -18,16 +18,16 @@ const FileExplorer = () => {
 	// 	setTestData(5);
 	// }, []);
 
-	const [tabs_state, setTabsState] = useState([initial_tab_state]);
+	const [tabsState, setTabsState] = useState([initialTabState]);
 
-	const tabs_props = {
-		tabs_state,
+	const tabsProps = {
+		tabsState,
 		setTabsState,
 	};
 
 	return (
 		<div className="w-full h-screen">
-			<Tabs {...tabs_props} />
+			<Tabs {...tabsProps} />
 			<NavigationBar />
 		</div>
 	);

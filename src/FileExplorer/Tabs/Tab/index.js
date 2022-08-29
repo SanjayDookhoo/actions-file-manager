@@ -1,36 +1,35 @@
 import { useEffect, useState } from 'react';
-import { button_style } from '../../utils/constants';
-import { tab_max_width, tab_min_width } from '../constants';
+import { buttonStyle } from '../../utils/constants';
+import { tabMaxWidth, tabMinWidth } from '../constants';
 
 const icon = 'folder';
-const folder_name = 'folder name';
+const folderName = 'folder name';
 
 const Tab = (props) => {
-	const { tab_width, tabs_state, setTabsState, tab_index, inContextMenu } =
-		props;
-	const [width, setWidth] = useState(tab_max_width);
+	const { tabWidth, tabsState, setTabsState, tabIndex, inContextMenu } = props;
+	const [width, setWidth] = useState(tabMaxWidth);
 
 	useEffect(() => {
-		if (tab_width) {
-			if (tab_width > tab_max_width) {
-				setWidth(tab_max_width);
-			} else if (tab_width < tab_min_width) {
-				setWidth(tab_min_width);
+		if (tabWidth) {
+			if (tabWidth > tabMaxWidth) {
+				setWidth(tabMaxWidth);
+			} else if (tabWidth < tabMinWidth) {
+				setWidth(tabMinWidth);
 			} else {
-				setWidth(tab_width);
+				setWidth(tabWidth);
 			}
 		} else {
 			setWidth('100%');
 		}
-	}, [tab_width]);
+	}, [tabWidth]);
 
 	const handleClose = (e) => {
 		if (inContextMenu) {
 			e.stopPropagation(); // used in context menu
 		}
-		const temp_tabs_state = [...tabs_state];
-		temp_tabs_state.splice(tab_index, 1);
-		setTabsState(temp_tabs_state);
+		const tempTabsState = [...tabsState];
+		tempTabsState.splice(tabIndex, 1);
+		setTabsState(tempTabsState);
 	};
 
 	return (
@@ -48,17 +47,17 @@ const Tab = (props) => {
 				>
 					{' '}
 					{/* the width calc minuses the size of the close button */}
-					<span className={button_style}>{icon}</span>
+					<span className={buttonStyle}>{icon}</span>
 					<p
 						className="inline text-ellipsis overflow-hidden"
 						style={{ height: '25px' }} // manually set so the folder name doesnt break up into multi line words. also spaced well with icons
 					>
-						{folder_name}
+						{folderName}
 					</p>
 				</div>
-				{tabs_state.length != 1 && (
+				{tabsState.length != 1 && (
 					<a className="" onClick={handleClose}>
-						<span className={button_style}>close</span>
+						<span className={buttonStyle}>close</span>
 					</a>
 				)}
 			</div>

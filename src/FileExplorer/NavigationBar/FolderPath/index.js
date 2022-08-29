@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { button_style } from '../../utils/constants';
 
 const FolderPath = () => {
 	const [currentPath, setCurrentPath] = useState('root/documents/test');
@@ -29,7 +28,7 @@ const FolderPath = () => {
 
 	return (
 		<div
-			className="flex align-center"
+			className="flex grow align-center"
 			onClick={(e) => handleFolderPathOnClick(e, currentPath)}
 		>
 			{dirSplit.map(({ currDir, path }) => (

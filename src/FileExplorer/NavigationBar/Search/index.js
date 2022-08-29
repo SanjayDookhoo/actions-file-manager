@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAction } from '../../../ContextActions';
-import { button_style } from '../../utils/constants';
+import { buttonStyle } from '../../utils/constants';
 
 const Search = () => {
 	const action = useAction();
@@ -92,11 +92,11 @@ const Search = () => {
 			<div className="flex align-center">
 				{search && (
 					<a onClick={clearText}>
-						<span className={button_style}>close</span>
+						<span className={buttonStyle}>close</span>
 					</a>
 				)}
 				<a onClick={openSearchInWindow}>
-					<span className={button_style}>search</span>
+					<span className={buttonStyle}>search</span>
 				</a>
 			</div>
 		</div>

@@ -1,2 +1,2 @@
-export const button_style =
+export const buttonStyle =
 	'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
