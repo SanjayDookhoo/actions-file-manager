@@ -35,10 +35,14 @@ const Tab = (props) => {
 	const button_style = 'material-symbols-outlined p-1';
 
 	return (
-		<div className="p-1" style={{ width }}>
-			{' '}
+		<div className={inContextMenu ? 'pb-1' : 'pr-1 pt-1'} style={{ width }}>
 			{/* a extra padding container used here instead of margin, because that margin is not tied to the width like padding is */}
-			<div className="p-1 h-8 flex justify-between items-center rounded-tl-lg rounded-tr-lg bg-gray-300">
+			<div
+				className={
+					'p-1 h-8 flex justify-between items-center bg-gray-300 ' +
+					(inContextMenu ? 'rounded-lg' : 'rounded-tl-lg rounded-tr-lg')
+				}
+			>
 				<div
 					className="flex items-center"
 					style={{ width: 'calc(100% - 32px)' }}

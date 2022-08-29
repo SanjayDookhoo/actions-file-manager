@@ -188,9 +188,10 @@ const VerticalFlyoutMenu = (props) => {
 
 	return (
 		<div
-			className="p-1 bg-gray-100 rounded-lg"
+			className="px-2 bg-gray-100 rounded-lg"
 			style={{ width: tab_max_width }}
 		>
+			<div className="pt-4">Open tabs</div>
 			{tabs_state.map((tab_state, tab_index) => (
 				<Tab
 					key={tab_index}
@@ -199,14 +200,14 @@ const VerticalFlyoutMenu = (props) => {
 					inContextMenu={true}
 				/>
 			))}
-			<div className="p-1">
+			<div className="">
 				<a
 					className="cursor-pointer w-full flex justify-center items-center bg-gray-300 rounded-lg"
 					onClick={handleAddNewTabFromContextMenu}
 					title="New tab (Ctrl+T)"
 				>
-					<span className={button_style}>add</span>
-					Add Tab
+					<span className={button_style + 'm-0'}>add</span>
+					New Tab
 				</a>
 			</div>
 		</div>

@@ -37,6 +37,11 @@ export const ContextActionsProvider = ({ children }) => {
 		// 		setComponentPosition(null);
 		// 	}
 		// }, 500);
+		// setInterval(() => {
+		// 	if (!document.hasFocus()) {
+		// 		alert('fuck');
+		// 	}
+		// }, 500);
 
 		// TODO: find another way to removeContextMenu when this is implemented as a web component, where this can be called if stopPropagation is known to have been used when an onClick event was created
 		window.removeContextMenu = removeContextMenu;
