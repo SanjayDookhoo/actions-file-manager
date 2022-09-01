@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { buttonStyle } from '../utils/constants';
-import FolderPath from './FolderPath';
-import Search from './Search';
+import FolderPath from './FolderPath/FolderPath';
+import Search from './Search/Search';
 
 const NavigationBar = () => {
 	return (

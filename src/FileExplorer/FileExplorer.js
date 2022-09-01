@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import NavigationBar from './NavigationBar';
-import Tabs from './Tabs';
+import NavigationBar from './NavigationBar/NavigationBar';
+import Tabs from './Tabs/Tabs';
 import { initialTabState } from './Tabs/constants';
 import { v4 as uuidv4 } from 'uuid';
 

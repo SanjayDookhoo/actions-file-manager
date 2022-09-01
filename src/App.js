@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 import { ContextActionsProvider } from './ContextActions';
-import FileExplorer from './FileExplorer';
+import FileExplorer from './FileExplorer/FileExplorer';
 
 const App = () => {
 	return (

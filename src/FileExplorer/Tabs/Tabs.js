@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAction } from '../../ContextActions';
 import { buttonStyle } from '../utils/constants';
 import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
-import Tab from './Tab';
+import Tab from './Tab/Tab';
 import { v4 as uuidv4 } from 'uuid';
 
 const Tabs = (props) => {
