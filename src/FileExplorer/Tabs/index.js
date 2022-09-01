@@ -3,11 +3,12 @@ import { useAction } from '../../ContextActions';
 import { buttonStyle } from '../utils/constants';
 import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
 import Tab from './Tab';
+import { v4 as uuidv4 } from 'uuid';
 
 const Tabs = (props) => {
 	const action = useAction();
 
-	const { tabsState, setTabsState } = props;
+	const { tabsState, setTabsState, setActiveTabId } = props;
 	const tabsContainerRef = useRef(null);
 	const scrollableTabsRef = useRef(null);
 	const [tabWidth, setTabWidth] = useState(null);
@@ -65,14 +66,12 @@ const Tabs = (props) => {
 		}
 	};
 	const addNewTab = (e) => {
-		setTabsState([
-			...tabsState,
-			{ ...initialTabState, tabNumber: tabsState.length },
-		]);
+		const tabId = uuidv4();
+		setTabsState([...tabsState, { ...initialTabState, tabId }]);
+		setActiveTabId(tabId);
 	};
 	const verticalFlyoutMenuProps = {
-		tabsState,
-		setTabsState,
+		...props,
 		addNewTab,
 	};
 
@@ -112,8 +111,7 @@ const Tabs = (props) => {
 
 	const tabProps = {
 		tabWidth,
-		tabsState,
-		setTabsState,
+		...props,
 	};
 
 	return (
@@ -131,8 +129,8 @@ const Tabs = (props) => {
 				ref={scrollableTabsRef}
 				className="flex overflow-x-auto scrollable-tabs"
 			>
-				{tabsState.map((tabState, tabIndex) => (
-					<Tab key={tabIndex} {...tabProps} tabIndex={tabIndex} />
+				{tabsState.map((tabState) => (
+					<Tab key={tabState.tabId} {...tabProps} tabId={tabState.tabId} />
 				))}
 			</div>
 			{scrollable && (
@@ -161,12 +159,11 @@ const Tabs = (props) => {
 export default Tabs;
 
 const VerticalFlyoutMenu = (props) => {
-	const { tabsState, setTabsState, addNewTab } = props;
+	const { tabsState, addNewTab } = props;
 
-	const tabProps = {
-		// tabWidth: tabMaxWidth,
-		tabsState,
-		setTabsState,
+	const tabProps = () => {
+		const { addNewTab, ...other } = props;
+		return other;
 	};
 
 	const handleAddNewTabFromContextMenu = (e) => {
@@ -177,11 +174,11 @@ const VerticalFlyoutMenu = (props) => {
 	return (
 		<div className="px-2 bg-gray-100 rounded-lg" style={{ width: tabMaxWidth }}>
 			<div className="pt-4">Open tabs</div>
-			{tabsState.map((tabState, tabIndex) => (
+			{tabsState.map((tabState) => (
 				<Tab
-					key={tabIndex}
-					{...tabProps}
-					tabIndex={tabIndex}
+					key={tabState.tabId}
+					{...tabProps()}
+					tabId={tabState.tabId}
 					inContextMenu={true}
 				/>
 			))}

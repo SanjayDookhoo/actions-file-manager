@@ -6,7 +6,15 @@ const icon = 'folder';
 const folderName = 'folder name';
 
 const Tab = (props) => {
-	const { tabWidth, tabsState, setTabsState, tabIndex, inContextMenu } = props;
+	const {
+		tabWidth,
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		tabId,
+		inContextMenu,
+	} = props;
 	const [width, setWidth] = useState(tabMaxWidth);
 
 	useEffect(() => {
@@ -27,9 +35,13 @@ const Tab = (props) => {
 		if (inContextMenu) {
 			e.stopPropagation(); // used in context menu
 		}
-		const tempTabsState = [...tabsState];
-		tempTabsState.splice(tabIndex, 1);
+		let tempTabsState = [...tabsState];
+		const index = tempTabsState.findIndex((tab) => tab.tabId == tabId);
+		tempTabsState = tempTabsState.filter((tab) => tab.tabId != tabId);
 		setTabsState(tempTabsState);
+		if (activeTabId == tabId) {
+			setActiveTabId(tempTabsState[index - 1].tabId);
+		}
 	};
 
 	return (
@@ -37,8 +49,9 @@ const Tab = (props) => {
 			{/* a extra padding container used here instead of margin, because that margin is not tied to the width like padding is */}
 			<div
 				className={
-					'p-1 h-8 flex justify-between items-center bg-gray-300 ' +
-					(inContextMenu ? 'rounded-lg' : 'rounded-tl-lg rounded-tr-lg')
+					'p-1 h-8 flex justify-between items-center ' +
+					(inContextMenu ? 'rounded-lg ' : 'rounded-tl-lg rounded-tr-lg ') +
+					(activeTabId == tabId ? 'bg-gray-400 ' : 'bg-gray-300 ')
 				}
 			>
 				<div
