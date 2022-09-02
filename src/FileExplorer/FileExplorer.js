@@ -3,6 +3,8 @@ import NavigationBar from './NavigationBar/NavigationBar';
 import Tabs from './Tabs/Tabs';
 import { initialTabState } from './Tabs/constants';
 import { v4 as uuidv4 } from 'uuid';
+import LeftPane from './LeftPane/LeftPane';
+import DirectoryView from './DirectoryView/DirectoryView';
 
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
@@ -26,9 +28,17 @@ const FileExplorer = () => {
 	};
 
 	return (
-		<div className="w-full h-screen">
+		<div className="w-full h-screen flex flex-col bg-zinc-700">
 			<Tabs {...tabsProps} />
-			{activeTabId && <NavigationBar {...tabsProps} />}
+			{activeTabId && (
+				<>
+					<NavigationBar {...tabsProps} />
+					<div className="w-full flex flex-grow">
+						<LeftPane />
+						<DirectoryView />
+					</div>
+				</>
+			)}
 		</div>
 	);
 };

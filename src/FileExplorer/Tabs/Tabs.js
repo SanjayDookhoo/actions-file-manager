@@ -172,7 +172,10 @@ const VerticalFlyoutMenu = (props) => {
 	};
 
 	return (
-		<div className="px-2 bg-gray-100 rounded-lg" style={{ width: tabMaxWidth }}>
+		<div
+			className="px-2 bg-zinc-700 border border-zinc-500 rounded-lg"
+			style={{ width: tabMaxWidth }}
+		>
 			<div className="pt-4">Open tabs</div>
 			{tabsState.map((tabState) => (
 				<Tab

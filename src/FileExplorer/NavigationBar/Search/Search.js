@@ -106,5 +106,9 @@ const Search = () => {
 export default Search;
 
 const SearchDropdown = () => {
-	return <div className="h-64 w-64 bg-gray-200 rounded-lg">x</div>;
+	return (
+		<div className="h-64 w-64 bg-zinc-700 border border-zinc-500 rounded-lg">
+			x
+		</div>
+	);
 };

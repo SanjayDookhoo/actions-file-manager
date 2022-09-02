@@ -5,7 +5,7 @@ import Search from './Search/Search';
 
 const NavigationBar = () => {
 	return (
-		<div className="flex items-center justify-start">
+		<div className="flex items-center justify-start bg-zinc-800">
 			<a>
 				<span className={buttonStyle}>west</span>
 			</a>

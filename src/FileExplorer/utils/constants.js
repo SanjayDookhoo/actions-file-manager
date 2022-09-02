@@ -1,2 +1,2 @@
 export const buttonStyle =
-	'material-symbols-outlined p-1 m-1 rounded-lg bg-gray-300 ';
+	'material-symbols-outlined w-9 h-9 flex justify-center items-center rounded-lg ';
