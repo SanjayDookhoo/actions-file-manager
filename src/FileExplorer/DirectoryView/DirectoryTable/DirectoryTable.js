@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 const DirectoryTable = () => {
 	return (
 		<div>
-			<table>
+			{/* <table>
 				<tr>
 					<th>Name</th>
 					<th>Date Modified</th>
@@ -16,7 +16,7 @@ const DirectoryTable = () => {
 					<td>b</td>
 					<td>c</td>
 				</tr>
-			</table>
+			</table> */}
 		</div>
 	);
 };

@@ -5,6 +5,7 @@ import { initialTabState } from './Tabs/constants';
 import { v4 as uuidv4 } from 'uuid';
 import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
+import './CustomReactMenu/custom-css.css';
 
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
@@ -28,7 +29,7 @@ const FileExplorer = () => {
 	};
 
 	return (
-		<div className="w-full h-screen flex flex-col bg-zinc-700">
+		<div className="fileExplorer w-full h-screen flex flex-col bg-zinc-700">
 			<Tabs {...tabsProps} />
 			{activeTabId && (
 				<>

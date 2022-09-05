@@ -50,7 +50,7 @@ const Tab = (props) => {
 
 	return (
 		<div
-			className={inContextMenu ? 'pb-1' : 'pr-1 pt-1'}
+			className={inContextMenu ? 'tab pb-1' : 'tab pr-1 pt-1'}
 			style={{ width }}
 			onClick={handleOnClick}
 		>

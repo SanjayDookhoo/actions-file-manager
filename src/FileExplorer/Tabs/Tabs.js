@@ -1,13 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useAction } from '../../ContextActions';
 import { buttonStyle } from '../utils/constants';
 import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
 import Tab from './Tab/Tab';
 import { v4 as uuidv4 } from 'uuid';
+import VerticalFlyoutMenu from './VerticalFlyoutMenu';
+import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
+import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 
 const Tabs = (props) => {
-	const action = useAction();
-
 	const { tabsState, setTabsState, setActiveTabId } = props;
 	const tabsContainerRef = useRef(null);
 	const scrollableTabsRef = useRef(null);
@@ -15,6 +15,10 @@ const Tabs = (props) => {
 	const [scrollable, setScrollable] = useState(false);
 	const [scrollLeft, setScrollLeft] = useState(0);
 	const [maxScrollLeft, setMaxScrollLeft] = useState(0);
+
+	const [menuProps, toggleMenu] = useMenuState();
+	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+	const [isTabContextMenu, setIsTabContextMenu] = useState(false);
 
 	const getMaxScrollLeft = (element) => {
 		return element.scrollWidth - element.clientWidth;
@@ -75,25 +79,6 @@ const Tabs = (props) => {
 		addNewTab,
 	};
 
-	useLayoutEffect(() => {
-		action.refreshAction({
-			componentName: 'VerticalFlyoutMenu', // necessary to check if the context menu is open or not, this is where it differs from newAction
-			Component: <VerticalFlyoutMenu {...verticalFlyoutMenuProps} />, // include any of prop to the "action" that have changed, in this case Component has changed, because it has new props, could even be a change in preferred location
-		});
-	}, [tabsState]);
-
-	const openVerticalTabFlyout = (event) => {
-		action.newAction({
-			event,
-			componentName: 'VerticalFlyoutMenu',
-			Component: <VerticalFlyoutMenu {...verticalFlyoutMenuProps} />,
-			relativeTo: 'target',
-			location: 'bottom',
-			position: 'center',
-			padding: 5,
-		});
-	};
-
 	const unclickableButtonStyle = 'text-gray-100 cursor-auto ';
 
 	useLayoutEffect(() => {
@@ -109,13 +94,32 @@ const Tabs = (props) => {
 		new ResizeObserver(handleResizeObserver).observe(tabsContainer);
 	}, []);
 
+	const handleOnContextMenu = (e) => {
+		let target = e.target;
+		while (
+			!target.classList.contains('fileExplorer') &&
+			!target.classList.contains('tab')
+		) {
+			target = target.parentElement;
+		}
+		setIsTabContextMenu(target.classList.contains('tab'));
+
+		e.preventDefault();
+		setAnchorPoint({ x: e.clientX, y: e.clientY });
+		toggleMenu(true);
+	};
+
 	const tabProps = {
 		tabWidth,
 		...props,
 	};
 
 	return (
-		<div ref={tabsContainerRef} className="flex justify-start">
+		<div
+			ref={tabsContainerRef}
+			className="flex justify-start"
+			onContextMenu={handleOnContextMenu}
+		>
 			{scrollable && (
 				<a
 					className={scrollLeft == 0 ? unclickableButtonStyle : ''}
@@ -145,56 +149,26 @@ const Tabs = (props) => {
 			<a className="" onClick={addNewTab} title="New tab (Ctrl+T)">
 				<span className={buttonStyle}>add</span>
 			</a>
-			<a
-				className=""
-				onClick={openVerticalTabFlyout}
-				title="Vertical tab flyout"
+			<VerticalFlyoutMenu {...verticalFlyoutMenuProps} />
+
+			<ControlledMenu
+				{...menuProps}
+				anchorPoint={anchorPoint}
+				onClose={() => toggleMenu(false)}
 			>
-				<span className={buttonStyle}>expand_more</span>
-			</a>
+				<FileMenuItem logo="folder" description="New Item" />
+				{isTabContextMenu && (
+					<>
+						<FileMenuItem logo="folder" description="Duplicate Tab" />
+						<FileMenuItem logo={false} description="Close tabs to the left" />
+						<FileMenuItem logo={false} description="Close tabs to the right" />
+						<FileMenuItem logo={false} description="Close other tabs" />
+					</>
+				)}
+				<FileMenuItem logo={false} description="Reopen closed tab" />
+			</ControlledMenu>
 		</div>
 	);
 };
 
 export default Tabs;
-
-const VerticalFlyoutMenu = (props) => {
-	const { tabsState, addNewTab } = props;
-
-	const tabProps = () => {
-		const { addNewTab, ...other } = props;
-		return other;
-	};
-
-	const handleAddNewTabFromContextMenu = (e) => {
-		e.stopPropagation(); // this button is used inside a context menu, stop propagation is needed to prevent context menu from closing
-		addNewTab();
-	};
-
-	return (
-		<div
-			className="px-2 bg-zinc-700 border border-zinc-500 rounded-lg"
-			style={{ width: tabMaxWidth }}
-		>
-			<div className="pt-4">Open tabs</div>
-			{tabsState.map((tabState) => (
-				<Tab
-					key={tabState.tabId}
-					{...tabProps()}
-					tabId={tabState.tabId}
-					inContextMenu={true}
-				/>
-			))}
-			<div className="">
-				<a
-					className="w-full flex justify-center items-center bg-gray-300 rounded-lg"
-					onClick={handleAddNewTabFromContextMenu}
-					title="New tab (Ctrl+T)"
-				>
-					<span className={buttonStyle + 'm-0'}>add</span>
-					New Tab
-				</a>
-			</div>
-		</div>
-	);
-};

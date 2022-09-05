@@ -1,9 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useAction } from '../../../ContextActions';
 import { buttonStyle } from '../../utils/constants';
 
 const Search = () => {
-	const action = useAction();
 	const [search, setSearch] = useState('');
 	const inputRef = useRef();
 	const searchContainerRef = useRef();
@@ -15,19 +13,7 @@ const Search = () => {
 	const handleSearchOnClick = (event) => {
 		inputRef.current.focus();
 		if (search) {
-			action.newAction({
-				event: {
-					...event,
-					target: searchContainerRef.current,
-					stopPropagation: () => {},
-				},
-				componentName: 'SearchDropdown',
-				Component: <SearchDropdown {...searchDropdownProps} />,
-				relativeTo: 'target',
-				location: 'bottom',
-				position: 'center',
-				padding: 5,
-			});
+			// TODO: add context action
 		}
 	};
 
@@ -37,13 +23,11 @@ const Search = () => {
 
 	const clearText = (e) => {
 		e.stopPropagation();
-		window.removeContextMenu();
 		setSearch('');
 	};
 
 	const openSearchInWindow = (e) => {
 		e.stopPropagation();
-		window.removeContextMenu();
 		// TODO openSearchInWindow
 	};
 
@@ -54,24 +38,10 @@ const Search = () => {
 				target: searchContainerRef.current,
 				stopPropagation: () => {},
 			};
-			action.newAction({
-				event,
-				componentName: 'SearchDropdown',
-				Component: <SearchDropdown {...searchDropdownProps} />,
-				relativeTo: 'target',
-				location: 'bottom',
-				position: 'center',
-				padding: 5,
-			});
+			// TODO: add context menu
 		} else if (search.length > 1) {
-			action.refreshAction({
-				componentName: 'SearchDropdown',
-				Component: <SearchDropdown {...searchDropdownProps} />,
-			});
+			// TODO: add context menu
 		} else {
-			try {
-				window.removeContextMenu();
-			} catch (err) {}
 		}
 	}, [search]);
 

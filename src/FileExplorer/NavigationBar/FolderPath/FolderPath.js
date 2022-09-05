@@ -22,7 +22,6 @@ const FolderPath = () => {
 
 	const handleFolderPathOnClick = (e, path) => {
 		e.stopPropagation(); // TODO still should propagate it somehow, this is only because of the nested thing
-		window.removeContextMenu();
 		console.log('handleFolderPathEmptyOnClick', path);
 	};
 

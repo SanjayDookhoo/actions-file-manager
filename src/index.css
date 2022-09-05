@@ -23,3 +23,25 @@ a {
 input:focus {
 	outline: none;
 }
+
+/* manually placed these values, the css file from the package applies too much undesired changes to my code with respect to the menu */
+/* .szh-menu__item--type-radio.szh-menu__item--checked:before {
+	content: '●';
+}
+.szh-menu__item--type-radio:before {
+	@apply w-10 inline-block pl-3;
+	content: '○';
+	font-size: 0.8rem;
+	bottom: 2px;
+	position: relative;
+}
+.szh-menu__item--type-checkbox.szh-menu__item--checked:before {
+	@apply w-10 inline-block px-3;
+	content: '✓';
+}
+.szh-menu__item--type-checkbox.szh-menu__item--checked {
+	@apply pl-0;
+}
+.szh-menu__item--type-checkbox {
+	@apply pl-10;
+} */

@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../utils/constants';
+import {
+	Menu,
+	MenuItem,
+	FocusableItem,
+	SubMenu,
+	MenuRadioGroup,
+	MenuDivider,
+} from '@szhsin/react-menu';
+import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
+import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
+import SortDropdown from './SortDropdown';
+import SelectionDropdown from './SelectionDropdown';
+import LayoutDropdown from './LayoutDropdown';
 
 const DirectoryViewOptions = () => {
 	return (
@@ -13,18 +26,9 @@ const DirectoryViewOptions = () => {
 				<FilesOptions />
 			</div>
 			<div className="flex">
-				<a title="selection">
-					<span className={buttonStyle}>check_box</span>
-				</a>
-				<a title="sort">
-					<span className={buttonStyle}>swap_vert</span>
-				</a>
-				<a title="layout">
-					<span className={buttonStyle}>grid_view</span>
-				</a>
-				<a title="preview pane">
-					<span className={buttonStyle}>preview</span>
-				</a>
+				<SelectionDropdown />
+				<SortDropdown />
+				<LayoutDropdown />
 			</div>
 		</div>
 	);
