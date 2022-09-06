@@ -14,15 +14,13 @@ import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import SortDropdown from './SortDropdown';
 import SelectionDropdown from './SelectionDropdown';
 import LayoutDropdown from './LayoutDropdown';
+import NewDropdown from './NewDropdown';
 
 const DirectoryViewOptions = () => {
 	return (
 		<div className="w-full flex justify-between">
 			<div className="flex">
-				<a className="flex items-center" title="cut">
-					<span className={buttonStyle}>add</span>
-					New
-				</a>
+				<NewDropdown />
 				<FilesOptions />
 			</div>
 			<div className="flex">

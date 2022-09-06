@@ -29,7 +29,10 @@ const FileExplorer = () => {
 	};
 
 	return (
-		<div className="fileExplorer w-full h-screen flex flex-col bg-zinc-700">
+		<div
+			className="fileExplorer w-full h-screen flex flex-col bg-zinc-700"
+			onContextMenu={(e) => e.preventDefault()}
+		>
 			<Tabs {...tabsProps} />
 			{activeTabId && (
 				<>

@@ -1,19 +1,26 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../../utils/constants';
+import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
+import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 
 const Search = () => {
 	const [search, setSearch] = useState('');
 	const inputRef = useRef();
 	const searchContainerRef = useRef();
 
-	const searchDropdownProps = {
-		search,
+	const [menuProps, toggleMenu] = useMenuState();
+	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+
+	const handleRenderSearchMenu = () => {
+		const input = inputRef.current.getBoundingClientRect();
+		setAnchorPoint({ x: input.left, y: input.bottom });
+		toggleMenu(true);
 	};
 
 	const handleSearchOnClick = (event) => {
 		inputRef.current.focus();
 		if (search) {
-			// TODO: add context action
+			handleRenderSearchMenu();
 		}
 	};
 
@@ -33,17 +40,23 @@ const Search = () => {
 
 	useLayoutEffect(() => {
 		if (search.length == 1) {
-			//
-			const event = {
-				target: searchContainerRef.current,
-				stopPropagation: () => {},
-			};
-			// TODO: add context menu
+			handleRenderSearchMenu();
 		} else if (search.length > 1) {
-			// TODO: add context menu
+			// TODO: add items to context menu from search
 		} else {
+			toggleMenu(false);
 		}
 	}, [search]);
+
+	const tooltipProps = {
+		captureFocus: false, // does not switch focus to contextMenu while typing in input
+	};
+
+	// returns focus to input to receive key input while leaving the menu still open
+	const handleOnKeyDown = (e) => {
+		inputRef.current.focus();
+		toggleMenu(true);
+	};
 
 	return (
 		<div
@@ -53,7 +66,7 @@ const Search = () => {
 		>
 			<input
 				ref={inputRef}
-				className=""
+				className="bg-zinc-500"
 				type="test"
 				placeholder="Seach"
 				value={search}
@@ -69,16 +82,23 @@ const Search = () => {
 					<span className={buttonStyle}>search</span>
 				</a>
 			</div>
+
+			<ControlledMenu
+				{...menuProps}
+				{...tooltipProps}
+				anchorPoint={anchorPoint}
+				onClose={() => toggleMenu(false)}
+			>
+				<div className="w-64">
+					<FileMenuItem
+						logo="folder"
+						description="Test"
+						onKeyDown={handleOnKeyDown}
+					/>
+				</div>
+			</ControlledMenu>
 		</div>
 	);
 };
 
 export default Search;
-
-const SearchDropdown = () => {
-	return (
-		<div className="h-64 w-64 bg-zinc-700 border border-zinc-500 rounded-lg">
-			x
-		</div>
-	);
-};

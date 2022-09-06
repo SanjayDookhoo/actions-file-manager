@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import DirectoryTable from './DirectoryTable/DirectoryTable';
+import DirectoryLayout from './DirectoryLayout/DirectoryLayout';
 import DirectoryViewOptions from './DirectoryViewOptions/DirectoryViewOptions';
 import Footer from './Footer/Footer';
 import PreviewPane from './PreviewPane/PreviewPane';
@@ -9,7 +9,7 @@ const DirectoryView = () => {
 		<div className="flex-grow h-full flex flex-col">
 			<DirectoryViewOptions />
 			<div className="w-full flex justify-between flex-grow">
-				<DirectoryTable />
+				<DirectoryLayout />
 				<PreviewPane />
 			</div>
 			<Footer />

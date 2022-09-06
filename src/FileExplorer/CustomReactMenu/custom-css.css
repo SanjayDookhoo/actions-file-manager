@@ -49,6 +49,7 @@
 	cursor: default;
 	background-color: inherit;
 	display: inline !important;
+	padding: 0 !important;
 }
 .szh-menu__item--disabled {
 	cursor: default;
