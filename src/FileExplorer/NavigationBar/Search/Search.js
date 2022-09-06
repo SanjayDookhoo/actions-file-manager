@@ -10,6 +10,7 @@ const Search = () => {
 
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+	const [captureFocus, setCaptureFocus] = useState(false);
 
 	const handleRenderSearchMenu = () => {
 		const input = inputRef.current.getBoundingClientRect();
@@ -39,23 +40,29 @@ const Search = () => {
 	};
 
 	useLayoutEffect(() => {
-		if (search.length == 1) {
+		if (search.length >= 1) {
 			handleRenderSearchMenu();
-		} else if (search.length > 1) {
-			// TODO: add items to context menu from search
 		} else {
 			toggleMenu(false);
 		}
 	}, [search]);
 
 	const tooltipProps = {
-		captureFocus: false, // does not switch focus to contextMenu while typing in input
+		captureFocus, // does not switch focus to contextMenu while typing in input
 	};
 
 	// returns focus to input to receive key input while leaving the menu still open
-	const handleOnKeyDown = (e) => {
+	const handleOnKeyDownSearchItem = (e) => {
 		inputRef.current.focus();
 		toggleMenu(true);
+		setCaptureFocus(false);
+	};
+
+	const handleOnKeyDownInput = (e) => {
+		if (e.key == 'ArrowUp' || e.key == 'ArrowDown') {
+			e.preventDefault();
+			setCaptureFocus(true);
+		}
 	};
 
 	return (
@@ -71,6 +78,7 @@ const Search = () => {
 				placeholder="Seach"
 				value={search}
 				onChange={handleSearchOnChange}
+				onKeyDown={handleOnKeyDownInput}
 			/>
 			<div className="flex align-center">
 				{search && (
@@ -89,11 +97,16 @@ const Search = () => {
 				anchorPoint={anchorPoint}
 				onClose={() => toggleMenu(false)}
 			>
-				<div className="w-64">
+				<div className="searchItems w-64">
 					<FileMenuItem
 						logo="folder"
 						description="Test"
-						onKeyDown={handleOnKeyDown}
+						onKeyDown={handleOnKeyDownSearchItem}
+					/>
+					<FileMenuItem
+						logo="folder"
+						description="Test"
+						onKeyDown={handleOnKeyDownSearchItem}
 					/>
 				</div>
 			</ControlledMenu>
