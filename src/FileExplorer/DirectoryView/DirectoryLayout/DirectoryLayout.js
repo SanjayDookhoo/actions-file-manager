@@ -9,6 +9,7 @@ import {
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
+import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 
 const initialVisibleColumns = {
 	name: true,
@@ -52,88 +53,92 @@ const DirectoryLayout = () => {
 
 	return (
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
-			<table>
-				<tr className="directoryLayoutDetailsHeader">
-					<th>Name</th>
-					<th>Date Modified</th>
-					<th>Type</th>
-					<th>Size</th>
-				</tr>
-				<tr className="directoryLayoutFolder">
-					<td>folder</td>
-					<td>a</td>
-					<td>b</td>
-					<td>c</td>
-				</tr>
-				<tr className="directoryLayoutFile">
-					<td>file</td>
-					<td>a</td>
-					<td>b</td>
-					<td>c</td>
-				</tr>
-			</table>
+			<FileUploadDiv>
+				<table>
+					<tr className="directoryLayoutDetailsHeader">
+						<th>Name</th>
+						<th>Date Modified</th>
+						<th>Type</th>
+						<th>Size</th>
+					</tr>
+					<FileUploadDiv>
+						<tr className="directoryLayoutFolder">
+							<td>folder</td>
+							<td>a</td>
+							<td>b</td>
+							<td>c</td>
+						</tr>
+					</FileUploadDiv>
+					<tr className="directoryLayoutFile">
+						<td>file</td>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+				</table>
 
-			<ControlledMenu
-				{...menuProps}
-				anchorPoint={anchorPoint}
-				onClose={() => toggleMenu(false)}
-			>
-				<div className="w-64">
-					{contextMenuOf == 'directoryLayoutDetailsHeader' && (
-						<>
-							<FileMenuItem
-								controlledStatePadding={true}
-								description="Size all columns to fit"
-							/>
-							<MenuDivider />
-							{Object.entries(visibleColumns).map(([column, value]) => (
+				<ControlledMenu
+					{...menuProps}
+					anchorPoint={anchorPoint}
+					onClose={() => toggleMenu(false)}
+				>
+					<div className="w-64">
+						{contextMenuOf == 'directoryLayoutDetailsHeader' && (
+							<>
 								<FileMenuItem
-									type="checkbox"
-									checked={value}
-									onClick={(e) =>
-										setVisibleColumns({
-											...visibleColumns,
-											[column]: e.checked,
-										})
-									}
-									description={column}
+									controlledStatePadding={true}
+									description="Size all columns to fit"
 								/>
-							))}
-						</>
-					)}
-					{contextMenuOf == 'directoryLayoutFolder' && (
-						<>
-							<FileFocusableItem title="cut" icon="cut" />
-							<FileFocusableItem title="copy" icon="content_copy" />
-							<FileFocusableItem title="paste" icon="content_paste" />
-							<FileFocusableItem
-								title="share"
-								icon="drive_file_rename_outline"
-							/>
-							<FileFocusableItem title="delete" icon="delete" />
-							<MenuDivider />
-							<FileMenuItem description="Open in new tab" />
-							<FileMenuItem description="Add to favorites" />
-						</>
-					)}
-					{contextMenuOf == 'directoryLayoutFile' && (
-						<>
-							<FileFocusableItem title="cut" icon="cut" />
-							<FileFocusableItem title="copy" icon="content_copy" />
-							<FileFocusableItem title="paste" icon="content_paste" />
-							<FileFocusableItem
-								title="share"
-								icon="drive_file_rename_outline"
-							/>
-							<FileFocusableItem title="delete" icon="delete" />
-							<MenuDivider />
-							<FileMenuItem description="Create folder with selection" />
-						</>
-					)}
+								<MenuDivider />
+								{Object.entries(visibleColumns).map(([column, value]) => (
+									<FileMenuItem
+										type="checkbox"
+										checked={value}
+										onClick={(e) =>
+											setVisibleColumns({
+												...visibleColumns,
+												[column]: e.checked,
+											})
+										}
+										description={column}
+									/>
+								))}
+							</>
+						)}
+						{contextMenuOf == 'directoryLayoutFolder' && (
+							<>
+								<FileFocusableItem title="cut" icon="cut" />
+								<FileFocusableItem title="copy" icon="content_copy" />
+								<FileFocusableItem title="paste" icon="content_paste" />
+								<FileFocusableItem
+									title="share"
+									icon="drive_file_rename_outline"
+								/>
+								<FileFocusableItem title="delete" icon="delete" />
+								<MenuDivider />
+								<FileMenuItem description="Open in new tab" />
+								<FileMenuItem description="Add to favorites" />
+							</>
+						)}
+						{contextMenuOf == 'directoryLayoutFile' && (
+							<>
+								<FileFocusableItem title="cut" icon="cut" />
+								<FileFocusableItem title="copy" icon="content_copy" />
+								<FileFocusableItem title="paste" icon="content_paste" />
+								<FileFocusableItem
+									title="share"
+									icon="drive_file_rename_outline"
+								/>
+								<FileFocusableItem title="delete" icon="delete" />
+								<MenuDivider />
+								<FileMenuItem description="Create folder with selection" />
+							</>
+						)}
 
-					{contextMenuOf == 'directoryLayoutEmptySpace' && <></>}
-				</div>
-			</ControlledMenu>
+						{contextMenuOf == 'directoryLayoutEmptySpace' && <></>}
+					</div>
+				</ControlledMenu>
+			</FileUploadDiv>
 		</div>
 	);
 };
