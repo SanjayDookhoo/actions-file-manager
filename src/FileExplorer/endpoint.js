@@ -16,7 +16,7 @@ const graphQLClient = new GraphQLClient(graphql_endpoint, {
 });
 
 // https://stackoverflow.com/questions/51794553/how-do-i-create-configuration-for-axios-for-default-request-headers-in-every-htt
-const axiosClient = axios.create({
+const axiosClientFiles = axios.create({
 	baseURL: file_endpoint,
 	headers: {
 		'Content-Type': 'multipart/form-data; charset=utf-8',
@@ -24,4 +24,12 @@ const axiosClient = axios.create({
 	},
 });
 
-export { graphQLClient, axiosClient };
+const axiosClientJSON = axios.create({
+	baseURL: file_endpoint,
+	headers: {
+		'Content-Type': 'application/json',
+		authorization: `Bearer ${token}`,
+	},
+});
+
+export { graphQLClient, axiosClientFiles, axiosClientJSON };

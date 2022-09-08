@@ -11,10 +11,8 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import FilesPlaceholder from '../../utils/FilesPlaceholder';
 import { gql } from 'graphql-request';
-import { inputPreprocessHasura } from '../../utils/utils';
-import { axiosClient } from '../../endpoint';
+import { axiosClientFiles, axiosClientJSON } from '../../endpoint';
 
 const NewDropdown = () => {
 	const fileUploadRef = useRef();
@@ -36,12 +34,17 @@ const NewDropdown = () => {
 		if (files.length > 0) {
 			// TODO: upload files to backend
 			let formData = new FormData();
+			const filesPath = [];
 			// the files are not stored in a normal array
 			for (let i = 0; i < files.length; i++) {
+				const { webkitRelativePath, name } = files[i];
 				formData.append('file', files[i]);
+				const filePath = webkitRelativePath.replace(`/${name}`, '');
+				filesPath.push(filePath);
 			}
+			formData.append('filesPath', JSON.stringify(filesPath));
 
-			const res = axiosClient({
+			const res = axiosClientFiles({
 				url: '/upload',
 				method: 'POST',
 				data: formData,
@@ -52,6 +55,17 @@ const NewDropdown = () => {
 
 	const handleUpload = (e) => {
 		setFiles(e.target.files);
+	};
+
+	const handleNewFolderOnClick = (e) => {
+		const res = axiosClientJSON({
+			url: '/createNewFolder',
+			method: 'POST',
+			data: {
+				folderName: prompt('Enter folder name', ''),
+			},
+		});
+		console.log(res);
 	};
 
 	return (
@@ -90,7 +104,11 @@ const NewDropdown = () => {
 					description="Upload folder"
 				/>
 				<MenuDivider />
-				<FileMenuItem logo="folder" description="New folder" />
+				<FileMenuItem
+					onClick={handleNewFolderOnClick}
+					logo="folder"
+					description="New folder"
+				/>
 			</Menu>
 		</>
 	);

@@ -54,28 +54,28 @@ const DirectoryLayout = () => {
 	return (
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
 			<FileUploadDiv>
-				<table>
-					<tr className="directoryLayoutDetailsHeader">
-						<th>Name</th>
-						<th>Date Modified</th>
-						<th>Type</th>
-						<th>Size</th>
-					</tr>
+				<div>
+					<div className="directoryLayoutDetailsHeader flex">
+						<div style={{ width: '25%' }}>Name</div>
+						<div style={{ width: '25%' }}>Date Modified</div>
+						<div style={{ width: '25%' }}>Type</div>
+						<div style={{ width: '25%' }}>Size</div>
+					</div>
 					<FileUploadDiv>
-						<tr className="directoryLayoutFolder">
-							<td>folder</td>
-							<td>a</td>
-							<td>b</td>
-							<td>c</td>
-						</tr>
+						<div className="directoryLayoutFolder flex">
+							<div style={{ width: '25%' }}>folder</div>
+							<div style={{ width: '25%' }}>a</div>
+							<div style={{ width: '25%' }}>b</div>
+							<div style={{ width: '25%' }}>c</div>
+						</div>
 					</FileUploadDiv>
-					<tr className="directoryLayoutFile">
-						<td>file</td>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-					</tr>
-				</table>
+					<div className="directoryLayoutFile flex">
+						<div style={{ width: '25%' }}>file</div>
+						<div style={{ width: '25%' }}>a</div>
+						<div style={{ width: '25%' }}>b</div>
+						<div style={{ width: '25%' }}>c</div>
+					</div>
+				</div>
 
 				<ControlledMenu
 					{...menuProps}
