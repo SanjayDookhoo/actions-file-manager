@@ -10,7 +10,7 @@ export const uploadFiles = (files) => {
 			const { filepath, webkitRelativePath, name } = files[i];
 			formData.append('file', files[i] );
 			let filePath = filepath ? filepath : webkitRelativePath // filepath is what the drag and drop package uses, webkitRelativePath is what the files input for folders uses
-			filePath = filePath.replace(`/${name}`, '');
+			filePath = filePath.slice(0, -(name.length + 1)); // removes the end of the filePath that is the / + name + fileExtension, ie /fileName.txt
 			filesPath.push(filePath);
 		}
 		formData.append('filesPath', JSON.stringify(filesPath));
@@ -20,6 +20,6 @@ export const uploadFiles = (files) => {
 			method: 'POST',
 			data: formData,
 		});
-		console.log(res);
+		// console.log(res);
 	}
 }
