@@ -10,6 +10,8 @@ import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
+import { gql, useQuery, useSubscription } from '@apollo/client';
+import { objectToGraphqlArgs } from '@SanjayDookhoo/hasura-args';
 
 const initialVisibleColumns = {
 	name: true,
@@ -19,12 +21,41 @@ const initialVisibleColumns = {
 	size: true,
 };
 
+const folderArguments = { where: { parentFolderId: { _isNull: true } } };
+const fileArguments = { where: { folderId: { _isNull: true } } };
+
+const folderSubscriptionGraphql = gql`
+	subscription {
+		folder(${objectToGraphqlArgs(folderArguments)}) {
+			id
+			folderName
+		}
+	}
+`;
+
+const fileSubscriptionGraphql = gql`
+	subscription {
+		file(${objectToGraphqlArgs(fileArguments)}) {
+			id
+			fileName
+		}
+	}
+`;
+
 const DirectoryLayout = () => {
+	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
+	const { data: folders } = useSubscription(folderSubscriptionGraphql);
+	const { data: files } = useSubscription(fileSubscriptionGraphql);
+
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const [contextMenuOf, setContextMenuOf] = useState(null);
 
 	const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
+
+	useEffect(() => {
+		console.log(folders, files);
+	}, [folders, files]);
 
 	const handleOnContextMenu = (e) => {
 		let target = e.target;
@@ -53,28 +84,28 @@ const DirectoryLayout = () => {
 
 	return (
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
-			<FileUploadDiv>
+			<FileUploadDiv parentFolderId={null}>
 				<div>
-					<div className="directoryLayoutDetailsHeader flex">
-						<div style={{ width: '25%' }}>Name</div>
-						<div style={{ width: '25%' }}>Date Modified</div>
-						<div style={{ width: '25%' }}>Type</div>
-						<div style={{ width: '25%' }}>Size</div>
-					</div>
-					<FileUploadDiv>
-						<div className="directoryLayoutFolder flex">
-							<div style={{ width: '25%' }}>folder</div>
-							<div style={{ width: '25%' }}>a</div>
-							<div style={{ width: '25%' }}>b</div>
-							<div style={{ width: '25%' }}>c</div>
-						</div>
-					</FileUploadDiv>
-					<div className="directoryLayoutFile flex">
-						<div style={{ width: '25%' }}>file</div>
-						<div style={{ width: '25%' }}>a</div>
-						<div style={{ width: '25%' }}>b</div>
-						<div style={{ width: '25%' }}>c</div>
-					</div>
+					{folders &&
+						folders.folder.map((folder) => (
+							<FileUploadDiv key={folder.id} parentFolderId={folder.id}>
+								<div className="directoryLayoutFolder flex">
+									<div style={{ width: '25%' }}>{folder.folderName}</div>
+									<div style={{ width: '25%' }}>a</div>
+									<div style={{ width: '25%' }}>b</div>
+									<div style={{ width: '25%' }}>c</div>
+								</div>
+							</FileUploadDiv>
+						))}
+					{files &&
+						files.file.map((file) => (
+							<div className="directoryLayoutFolder flex">
+								<div style={{ width: '25%' }}>{file.fileName}</div>
+								<div style={{ width: '25%' }}>a</div>
+								<div style={{ width: '25%' }}>b</div>
+								<div style={{ width: '25%' }}>c</div>
+							</div>
+						))}
 				</div>
 
 				<ControlledMenu
