@@ -18,6 +18,7 @@ const wsLink = new GraphQLWsLink(
 		connectionParams: {
 			headers: {
 				// Authorization: `Bearer ${authToken}`
+				'x-hasura-admin-secret': 'myadminsecretkey',
 			},
 		},
 	})

@@ -7,7 +7,7 @@ import PreviewPane from './PreviewPane/PreviewPane';
 const DirectoryView = (props) => {
 	return (
 		<div className="flex-grow h-full flex flex-col">
-			<DirectoryViewOptions />
+			<DirectoryViewOptions {...props} />
 			<div className="w-full flex justify-between flex-grow">
 				<DirectoryLayout {...props} />
 				<PreviewPane />

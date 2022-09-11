@@ -4,7 +4,7 @@ import { uploadFiles } from '../utils/utils';
 
 // https://stackoverflow.com/questions/3590058/does-html5-allow-drag-drop-upload-of-folders-or-a-folder-tree/53058574#53058574
 const FileUploadDiv = (props) => {
-	const { children, parentFolderId } = props;
+	const { children, folderId } = props;
 	const [draggedOver, setDraggedOver] = useState(false);
 
 	const handleOnDragOver = (e) => {
@@ -23,7 +23,7 @@ const FileUploadDiv = (props) => {
 		e.stopPropagation(); // prevents triggering another dragover border highlight, if this FileUploadDiv is nested in another FileuploadDiv
 		setDraggedOver(false);
 		let files = await getFilesFromDataTransferItems(e.dataTransfer.items);
-		uploadFiles(files, parentFolderId);
+		uploadFiles(files, folderId);
 	};
 
 	return (

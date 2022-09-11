@@ -1,7 +1,7 @@
 import { axiosClientFiles } from '../endpoint';
 import _update from 'immutability-helper';
 
-export const uploadFiles = (files, parentFolderId) => {
+export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
 		// TODO: upload files to backend
 		let formData = new FormData();
@@ -15,7 +15,7 @@ export const uploadFiles = (files, parentFolderId) => {
 			filesPath.push(filePath);
 		}
 		formData.append('filesPath', JSON.stringify(filesPath));
-		formData.append('parentFolderId', parentFolderId);
+		formData.append('folderId', folderId);
 
 		const res = axiosClientFiles({
 			url: '/upload',
@@ -27,3 +27,10 @@ export const uploadFiles = (files, parentFolderId) => {
 };
 
 export const update = _update; // does not allow vs code importing because it is not a named export, this makes it easier
+
+export const getFolderId = ({ tabsState, activeTabId }) => {
+	const path = tabsState[activeTabId].path;
+	let folderId = path[path.length - 1];
+	folderId = Number.isInteger(folderId) ? folderId : null;
+	return folderId;
+};

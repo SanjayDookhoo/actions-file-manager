@@ -13,9 +13,10 @@ import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { gql } from 'graphql-request';
 import { axiosClientJSON } from '../../endpoint';
-import { uploadFiles } from '../../utils/utils';
+import { getFolderId, uploadFiles } from '../../utils/utils';
 
-const NewDropdown = () => {
+const NewDropdown = (props) => {
+	const { tabsState, setTabsState, activeTabId, setActiveTabId } = props;
 	const fileUploadRef = useRef();
 	const folderUploadRef = useRef();
 	const [files, setFiles] = useState([]);
@@ -31,7 +32,8 @@ const NewDropdown = () => {
 	};
 
 	useEffect(() => {
-		uploadFiles(files);
+		const folderId = getFolderId({ tabsState, activeTabId });
+		uploadFiles(files, folderId);
 	}, [files]);
 
 	const handleUpload = (e) => {
@@ -39,6 +41,7 @@ const NewDropdown = () => {
 	};
 
 	const handleNewFolderOnClick = (e) => {
+		const folderId = getFolderId({ tabsState, activeTabId });
 		const folderName = prompt('Enter folder name', '');
 		if (folderName) {
 			const res = axiosClientJSON({
@@ -46,6 +49,7 @@ const NewDropdown = () => {
 				method: 'POST',
 				data: {
 					folderName,
+					parentFolderId: folderId,
 				},
 			});
 			console.log(res);

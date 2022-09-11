@@ -77,9 +77,7 @@ const Tab = (props) => {
 						style={{ height: '25px' }} // manually set so the folder name doesnt break up into multi line words. also spaced well with icons
 					>
 						{/* Because .reverse modifies the originally array, apply it to a copy of the array */}
-						<FolderName
-							folderId={[...tabsState[activeTabId].path].reverse()[0]}
-						/>
+						<FolderName folderId={[...tabsState[tabId].path].reverse()[0]} />
 					</div>
 				</div>
 				{Object.keys(tabsState).length != 1 && (

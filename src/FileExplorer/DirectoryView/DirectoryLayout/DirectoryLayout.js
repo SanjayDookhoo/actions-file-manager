@@ -12,7 +12,7 @@ import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
-import { update } from '../../utils/utils';
+import { getFolderId, update } from '../../utils/utils';
 
 const initialVisibleColumns = {
 	name: true,
@@ -112,11 +112,11 @@ const DirectoryLayout = (props) => {
 
 	return (
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
-			<FileUploadDiv parentFolderId={null}>
+			<FileUploadDiv folderId={getFolderId({ tabsState, activeTabId })}>
 				<div>
 					{folders &&
 						folders.folder.map((folder) => (
-							<FileUploadDiv key={folder.id} parentFolderId={folder.id}>
+							<FileUploadDiv key={folder.id} folderId={folder.id}>
 								<div
 									className="directoryLayoutFolder flex"
 									onDoubleClick={() => updateCurrentFolderId(folder.id)}
