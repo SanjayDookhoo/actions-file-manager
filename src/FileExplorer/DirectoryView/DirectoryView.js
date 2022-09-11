@@ -4,12 +4,12 @@ import DirectoryViewOptions from './DirectoryViewOptions/DirectoryViewOptions';
 import Footer from './Footer/Footer';
 import PreviewPane from './PreviewPane/PreviewPane';
 
-const DirectoryView = () => {
+const DirectoryView = (props) => {
 	return (
 		<div className="flex-grow h-full flex flex-col">
 			<DirectoryViewOptions />
 			<div className="w-full flex justify-between flex-grow">
-				<DirectoryLayout />
+				<DirectoryLayout {...props} />
 				<PreviewPane />
 			</div>
 			<Footer />

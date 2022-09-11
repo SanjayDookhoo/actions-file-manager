@@ -9,23 +9,20 @@ import './CustomReactMenu/custom-css.css';
 
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
-	const [tabsState, setTabsState] = useState([
-		{ ...initialTabState, tabId: initialTabId },
-	]);
+	const [tabsState, setTabsState] = useState({
+		[initialTabId]: initialTabState,
+	});
 	const [activeTabId, setActiveTabId] = useState(initialTabId);
-	const [activeTab, setActiveTab] = useState(null);
 
 	useEffect(() => {
-		const tempActiveTab = tabsState.find((tab) => tab.tabId == activeTabId);
-		setActiveTab(tempActiveTab);
-	}, [tabsState, activeTabId]);
+		console.log(tabsState);
+	}, [tabsState]);
 
 	const tabsProps = {
 		tabsState,
 		setTabsState,
 		activeTabId,
 		setActiveTabId,
-		activeTab,
 	};
 
 	return (
@@ -39,7 +36,7 @@ const FileExplorer = () => {
 					<NavigationBar {...tabsProps} />
 					<div className="w-full flex flex-grow">
 						<LeftPane />
-						<DirectoryView />
+						<DirectoryView {...tabsProps} />
 					</div>
 				</>
 			)}

@@ -1,4 +1,5 @@
 import { axiosClientFiles } from '../endpoint';
+import _update from 'immutability-helper';
 
 export const uploadFiles = (files, parentFolderId) => {
 	if (files.length > 0) {
@@ -24,3 +25,5 @@ export const uploadFiles = (files, parentFolderId) => {
 		// console.log(res);
 	}
 };
+
+export const update = _update; // does not allow vs code importing because it is not a named export, this makes it easier

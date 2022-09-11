@@ -71,7 +71,7 @@ const Tabs = (props) => {
 	};
 	const addNewTab = (e) => {
 		const tabId = uuidv4();
-		setTabsState([...tabsState, { ...initialTabState, tabId }]);
+		setTabsState({ ...tabsState, [tabId]: initialTabState });
 		setActiveTabId(tabId);
 	};
 	const verticalFlyoutMenuProps = {
@@ -87,7 +87,9 @@ const Tabs = (props) => {
 			const width = tabsContainer.offsetWidth;
 			const availableWidth = width - 40 * 2; // what is being subtracted is the size of add new tab button and vertical flyout button
 
-			const tempTabWidth = Math.floor(availableWidth / tabsState.length);
+			const tempTabWidth = Math.floor(
+				availableWidth / Object.keys(tabsState).length
+			);
 			setTabWidth(tempTabWidth);
 			setScrollable(tempTabWidth && tempTabWidth < tabMinWidth);
 		};
@@ -133,8 +135,8 @@ const Tabs = (props) => {
 				ref={scrollableTabsRef}
 				className="flex overflow-x-auto scrollable-tabs"
 			>
-				{tabsState.map((tabState) => (
-					<Tab key={tabState.tabId} {...tabProps} tabId={tabState.tabId} />
+				{Object.keys(tabsState).map((tabId) => (
+					<Tab key={tabId} {...tabProps} tabId={tabId} />
 				))}
 			</div>
 			{scrollable && (

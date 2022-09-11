@@ -12,6 +12,7 @@ import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
+import { update } from '../../utils/utils';
 
 const initialVisibleColumns = {
 	name: true,
@@ -21,41 +22,48 @@ const initialVisibleColumns = {
 	size: true,
 };
 
-const folderArguments = { where: { parentFolderId: { _isNull: true } } };
-const fileArguments = { where: { folderId: { _isNull: true } } };
-
-const folderSubscriptionGraphql = gql`
-	subscription {
-		folder(${objectToGraphqlArgs(folderArguments)}) {
-			id
-			folderName
-		}
-	}
-`;
-
-const fileSubscriptionGraphql = gql`
-	subscription {
-		file(${objectToGraphqlArgs(fileArguments)}) {
-			id
-			fileName
-		}
-	}
-`;
-
-const DirectoryLayout = () => {
-	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
-	const { data: folders } = useSubscription(folderSubscriptionGraphql);
-	const { data: files } = useSubscription(fileSubscriptionGraphql);
-
+const DirectoryLayout = (props) => {
+	const { tabsState, setTabsState, activeTabId, setActiveTabId } = props;
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const [contextMenuOf, setContextMenuOf] = useState(null);
 
 	const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
 
-	useEffect(() => {
-		console.log(folders, files);
-	}, [folders, files]);
+	const initialFolderArguments = {
+		where: { parentFolderId: { _isNull: true } },
+	};
+	const initialFileArguments = { where: { folderId: { _isNull: true } } };
+	const [folderArguments, setFolderArguments] = useState(
+		initialFolderArguments
+	);
+	const [fileArguments, setFileArguments] = useState(initialFileArguments);
+
+	const folderSubscriptionGraphql = gql`
+		subscription {
+			folder(${objectToGraphqlArgs(folderArguments)}) {
+				id
+				folderName
+			}
+		}
+	`;
+
+	const fileSubscriptionGraphql = gql`
+		subscription {
+			file(${objectToGraphqlArgs(fileArguments)}) {
+				id
+				fileName
+			}
+		}
+	`;
+
+	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
+	const { data: folders } = useSubscription(folderSubscriptionGraphql);
+	const { data: files } = useSubscription(fileSubscriptionGraphql);
+
+	// useEffect(() => {
+	// 	console.log(folders, files);
+	// }, [folders, files]);
 
 	const handleOnContextMenu = (e) => {
 		let target = e.target;
@@ -82,6 +90,26 @@ const DirectoryLayout = () => {
 		toggleMenu(true);
 	};
 
+	const updateCurrentFolderId = (folderId) => {
+		setTabsState({
+			...update(tabsState, { [activeTabId]: { path: { $push: [folderId] } } }),
+		});
+	};
+
+	useEffect(() => {
+		const currentFolder =
+			tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
+		const folderId = Number.isInteger(currentFolder) ? currentFolder : null;
+
+		if (folderId) {
+			setFolderArguments({ where: { parentFolderId: { _eq: folderId } } });
+			setFileArguments({ where: { folderId: { _eq: folderId } } });
+		} else {
+			setFolderArguments({ where: { parentFolderId: { _isNull: true } } });
+			setFileArguments({ where: { folderId: { _isNull: true } } });
+		}
+	}, [tabsState, activeTabId]);
+
 	return (
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
 			<FileUploadDiv parentFolderId={null}>
@@ -89,7 +117,10 @@ const DirectoryLayout = () => {
 					{folders &&
 						folders.folder.map((folder) => (
 							<FileUploadDiv key={folder.id} parentFolderId={folder.id}>
-								<div className="directoryLayoutFolder flex">
+								<div
+									className="directoryLayoutFolder flex"
+									onDoubleClick={() => updateCurrentFolderId(folder.id)}
+								>
 									<div style={{ width: '25%' }}>{folder.folderName}</div>
 									<div style={{ width: '25%' }}>a</div>
 									<div style={{ width: '25%' }}>b</div>
@@ -99,7 +130,7 @@ const DirectoryLayout = () => {
 						))}
 					{files &&
 						files.file.map((file) => (
-							<div className="directoryLayoutFolder flex">
+							<div key={file.id} className="directoryLayoutFolder flex">
 								<div style={{ width: '25%' }}>{file.fileName}</div>
 								<div style={{ width: '25%' }}>a</div>
 								<div style={{ width: '25%' }}>b</div>

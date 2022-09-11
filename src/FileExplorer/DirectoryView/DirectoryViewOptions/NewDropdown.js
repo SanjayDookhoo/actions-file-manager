@@ -12,7 +12,7 @@ import {
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { gql } from 'graphql-request';
-import {  axiosClientJSON } from '../../endpoint';
+import { axiosClientJSON } from '../../endpoint';
 import { uploadFiles } from '../../utils/utils';
 
 const NewDropdown = () => {
@@ -31,7 +31,7 @@ const NewDropdown = () => {
 	};
 
 	useEffect(() => {
-		uploadFiles(files)
+		uploadFiles(files);
 	}, [files]);
 
 	const handleUpload = (e) => {
@@ -39,13 +39,13 @@ const NewDropdown = () => {
 	};
 
 	const handleNewFolderOnClick = (e) => {
-		const folderName =prompt('Enter folder name', '')
-		if(folderName){
+		const folderName = prompt('Enter folder name', '');
+		if (folderName) {
 			const res = axiosClientJSON({
 				url: '/createNewFolder',
 				method: 'POST',
 				data: {
-					folderName: prompt('Enter folder name', ''),
+					folderName,
 				},
 			});
 			console.log(res);

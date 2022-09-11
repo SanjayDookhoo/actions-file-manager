@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
+import FolderName from '../../FolderName';
 import { buttonStyle } from '../../utils/constants';
 import { tabMaxWidth, tabMinWidth } from '../constants';
 
 const icon = 'folder';
-const folderName = 'folder name';
 
 const Tab = (props) => {
 	const {
@@ -32,15 +32,19 @@ const Tab = (props) => {
 	}, [tabWidth]);
 
 	const handleClose = (e) => {
-		// if (inContextMenu) {
 		e.stopPropagation(); // used in context menu
-		// }
-		let tempTabsState = [...tabsState];
-		const index = tempTabsState.findIndex((tab) => tab.tabId == tabId);
-		tempTabsState = tempTabsState.filter((tab) => tab.tabId != tabId);
+		let tempTabsState = { ...tabsState };
+		const tempTabsStateKeys = Object.keys(tempTabsState);
+		const index = tempTabsStateKeys.findIndex((el) => el == tabId);
+		delete tempTabsState[tabId];
 		setTabsState(tempTabsState);
 		if (activeTabId == tabId) {
-			setActiveTabId(tempTabsState[index - 1].tabId);
+			// if the current active tab is the one being closed AND is the last tab
+			if (tempTabsStateKeys[tempTabsStateKeys.length - 1] == tabId) {
+				setActiveTabId(tempTabsStateKeys[index - 1]);
+			} else {
+				setActiveTabId(tempTabsStateKeys[index + 1]);
+			}
 		}
 	};
 
@@ -68,14 +72,17 @@ const Tab = (props) => {
 				>
 					{/* the width calc minuses the size of the close button */}
 					<span className={buttonStyle}>{icon}</span>
-					<p
+					<div
 						className="inline text-ellipsis overflow-hidden select-none"
 						style={{ height: '25px' }} // manually set so the folder name doesnt break up into multi line words. also spaced well with icons
 					>
-						{folderName}
-					</p>
+						{/* Because .reverse modifies the originally array, apply it to a copy of the array */}
+						<FolderName
+							folderId={[...tabsState[activeTabId].path].reverse()[0]}
+						/>
+					</div>
 				</div>
-				{tabsState.length != 1 && (
+				{Object.keys(tabsState).length != 1 && (
 					<a className="" onClick={handleClose}>
 						<span className={buttonStyle}>close</span>
 					</a>

@@ -3,7 +3,7 @@ import { buttonStyle } from '../utils/constants';
 import FolderPath from './FolderPath/FolderPath';
 import Search from './Search/Search';
 
-const NavigationBar = () => {
+const NavigationBar = (props) => {
 	return (
 		<div className="flex items-center justify-start bg-zinc-800">
 			<a>
@@ -18,7 +18,7 @@ const NavigationBar = () => {
 			<a>
 				<span className={buttonStyle}>refresh</span>
 			</a>
-			<FolderPath />
+			<FolderPath {...props} />
 			<Search />
 			<a>
 				<span className={buttonStyle}>settings</span>

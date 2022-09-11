@@ -27,13 +27,8 @@ const VerticalFlyoutMenu = (props) => {
 		>
 			<div className="" style={{ width: tabMaxWidth }}>
 				<div className="pt-4">Open tabs</div>
-				{tabsState.map((tabState) => (
-					<Tab
-						key={tabState.tabId}
-						{...tabProps()}
-						tabId={tabState.tabId}
-						inContextMenu={true}
-					/>
+				{Object.keys(tabsState).map((tabId) => (
+					<Tab key={tabId} {...tabProps()} tabId={tabId} inContextMenu={true} />
 				))}
 				<div className="">
 					<a
