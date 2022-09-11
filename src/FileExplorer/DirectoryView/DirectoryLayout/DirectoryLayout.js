@@ -11,7 +11,7 @@ import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import { gql, useQuery, useSubscription } from '@apollo/client';
-import { objectToGraphqlArgs } from '@SanjayDookhoo/hasura-args';
+import { objectToGraphqlArgs } from 'hasura-args';
 
 const initialVisibleColumns = {
 	name: true,
