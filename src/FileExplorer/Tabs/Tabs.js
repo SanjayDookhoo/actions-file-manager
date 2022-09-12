@@ -15,8 +15,15 @@ import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import { FileExplorerContext } from '../FileExplorer';
 
 const Tabs = () => {
-	const { tabsState, setTabsState, setActiveTabId } =
-		useContext(FileExplorerContext);
+	const {
+		tabsState,
+		setTabsState,
+		setActiveTabId,
+		newTabOrder,
+		setNewtabOrder,
+		closedTabs,
+		setClosedTabs,
+	} = useContext(FileExplorerContext);
 	const tabsContainerRef = useRef(null);
 	const scrollableTabsRef = useRef(null);
 	const [tabWidth, setTabWidth] = useState(null);
@@ -78,9 +85,28 @@ const Tabs = () => {
 	};
 	const addNewTab = (e) => {
 		const tabId = uuidv4();
-		setTabsState({ ...tabsState, [tabId]: initialTabState });
+		setTabsState({
+			...tabsState,
+			[tabId]: { ...initialTabState, order: newTabOrder },
+		});
+		setNewtabOrder(newTabOrder + 1);
 		setActiveTabId(tabId);
 	};
+
+	const reopenClosedTab = () => {
+		const [tabId, value] = Object.entries(closedTabs)[0];
+		setTabsState({
+			...tabsState,
+			[tabId]: { ...value, order: newTabOrder },
+		});
+		setNewtabOrder(newTabOrder + 1);
+		setActiveTabId(tabId);
+
+		const tempClosedTabs = { ...closedTabs };
+		delete tempClosedTabs[tabId];
+		setClosedTabs(tempClosedTabs);
+	};
+
 	const verticalFlyoutMenuProps = {
 		addNewTab,
 	};
@@ -111,6 +137,7 @@ const Tabs = () => {
 	const tabProps = {
 		tabWidth,
 		addNewTab,
+		reopenClosedTab,
 	};
 
 	return (
@@ -132,9 +159,11 @@ const Tabs = () => {
 				ref={scrollableTabsRef}
 				className="flex overflow-x-auto scrollable-tabs"
 			>
-				{Object.keys(tabsState).map((tabId) => (
-					<Tab key={tabId} {...tabProps} tabId={tabId} />
-				))}
+				{Object.keys(tabsState)
+					.sort((a, b) => tabsState[a].order - tabsState[b].order)
+					.map((tabId) => (
+						<Tab key={tabId} {...tabProps} tabId={tabId} />
+					))}
 			</div>
 			{scrollable && (
 				<a
@@ -156,7 +185,11 @@ const Tabs = () => {
 				onClose={() => toggleMenu(false)}
 			>
 				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
-				<FileMenuItem logo={false} description="Reopen closed tab" />
+				<FileMenuItem
+					logo={false}
+					description="Reopen closed tab"
+					onClick={reopenClosedTab}
+				/>
 			</ControlledMenu>
 		</div>
 	);

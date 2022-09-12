@@ -19,9 +19,11 @@ export const FileExplorerContext = createContext();
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
-		[initialTabId]: initialTabState,
+		[initialTabId]: { ...initialTabState, order: 0 },
 	});
 	const [activeTabId, setActiveTabId] = useState(initialTabId);
+	const [newTabOrder, setNewtabOrder] = useState(1);
+	const [closedTabs, setClosedTabs] = useState([]);
 	const fileExplorerRef = useRef();
 
 	const value = {
@@ -30,7 +32,15 @@ const FileExplorer = () => {
 		activeTabId,
 		setActiveTabId,
 		fileExplorerRef,
+		newTabOrder,
+		setNewtabOrder,
+		closedTabs,
+		setClosedTabs,
 	};
+
+	useEffect(() => {
+		console.log(tabsState, activeTabId);
+	}, [tabsState, activeTabId]);
 
 	return (
 		<FileExplorerContext.Provider value={value}>

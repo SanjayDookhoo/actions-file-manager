@@ -1,5 +1,6 @@
 import { ControlledMenu, useMenuState } from '@szhsin/react-menu';
 import { useContext, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
@@ -9,13 +10,15 @@ import { tabMaxWidth, tabMinWidth } from '../constants';
 const icon = 'folder';
 
 const Tab = (props) => {
-	const { tabWidth, tabId, inContextMenu, addNewTab } = props;
+	const { tabWidth, tabId, inContextMenu, addNewTab, reopenClosedTab } = props;
 	const {
 		tabsState,
 		setTabsState,
 		activeTabId,
 		setActiveTabId,
 		fileExplorerRef,
+		closedTabs,
+		setClosedTabs,
 	} = useContext(FileExplorerContext);
 	const [width, setWidth] = useState(tabMaxWidth);
 	const [menuProps, toggleMenu] = useMenuState();
@@ -56,15 +59,106 @@ const Tab = (props) => {
 		setActiveTabId(tabId);
 	};
 
+	const duplicateTab = (e) => {
+		const currTab = tabsState[tabId];
+		const { order } = currTab;
+
+		let newTabsState = Object.fromEntries(
+			Object.entries(tabsState).map(([key, value]) => {
+				return [
+					key,
+					{
+						...value,
+						order: value.order > order ? value.order + 1 : value.order,
+					},
+				];
+			})
+		);
+
+		const uuid = uuidv4();
+		newTabsState[uuid] = {
+			...currTab,
+			order: currTab.order + 1,
+		};
+		setActiveTabId(uuid); // TODO: not sure why the active tab isnt changing
+		setTabsState(newTabsState);
+	};
+
+	const closeTabsLeft = () => {
+		const tempTabsState = { ...tabsState };
+		const currTab = tempTabsState[tabId];
+		const { order } = currTab;
+		const extraClosedTabs = {};
+
+		const toDelete = Object.keys(tempTabsState)
+			.filter((key) => tempTabsState[key].order < order)
+			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+
+		toDelete.forEach((key) => {
+			extraClosedTabs[key] = tempTabsState[key];
+			delete tempTabsState[key];
+		});
+
+		setClosedTabs({ ...extraClosedTabs, ...closedTabs });
+		setTabsState(tempTabsState);
+	};
+
+	const closeTabsRight = () => {
+		const tempTabsState = { ...tabsState };
+		const currTab = tempTabsState[tabId];
+		const { order } = currTab;
+		const extraClosedTabs = {};
+
+		const toDelete = Object.keys(tempTabsState)
+			.filter((key) => tempTabsState[key].order > order)
+			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+
+		toDelete.forEach((key) => {
+			extraClosedTabs[key] = tempTabsState[key];
+			delete tempTabsState[key];
+		});
+
+		setClosedTabs({ ...extraClosedTabs, ...closedTabs });
+		setTabsState(tempTabsState);
+	};
+
+	const closeTabsOther = () => {
+		const tempTabsState = { ...tabsState };
+		const currTab = tempTabsState[tabId];
+		const { order } = currTab;
+		const extraClosedTabs = {};
+
+		let toDelete;
+		// left
+		toDelete = Object.keys(tempTabsState)
+			.filter((key) => tempTabsState[key].order < order)
+			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+
+		toDelete.forEach((key) => {
+			extraClosedTabs[key] = tempTabsState[key];
+			delete tempTabsState[key];
+		});
+
+		// right
+		toDelete = Object.keys(tempTabsState)
+			.filter((key) => tempTabsState[key].order > order)
+			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+
+		toDelete.forEach((key) => {
+			extraClosedTabs[key] = tempTabsState[key];
+			delete tempTabsState[key];
+		});
+
+		setClosedTabs({ ...extraClosedTabs, ...closedTabs });
+		setTabsState(tempTabsState);
+	};
+
 	const handleOnContextMenu = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 		setAnchorPoint({ x: e.clientX, y: e.clientY });
 		toggleMenu(true);
 	};
-
-	const duplicateTab = (e) => {};
-
 	const controlledMenuPortal = {
 		target: fileExplorerRef.current,
 		stablePosition: true,
@@ -120,10 +214,26 @@ const Tab = (props) => {
 					description="Duplicate Tab"
 					onClick={duplicateTab}
 				/>
-				<FileMenuItem logo={false} description="Close tabs to the left" />
-				<FileMenuItem logo={false} description="Close tabs to the right" />
-				<FileMenuItem logo={false} description="Close other tabs" />
-				<FileMenuItem logo={false} description="Reopen closed tab" />
+				<FileMenuItem
+					logo={false}
+					description="Close tabs to the left"
+					onClick={closeTabsLeft}
+				/>
+				<FileMenuItem
+					logo={false}
+					description="Close tabs to the right"
+					onClick={closeTabsRight}
+				/>
+				<FileMenuItem
+					logo={false}
+					description="Close other tabs"
+					onClick={closeTabsOther}
+				/>
+				<FileMenuItem
+					logo={false}
+					description="Reopen closed tab"
+					onClick={reopenClosedTab}
+				/>
 			</ControlledMenu>
 		</div>
 	);
