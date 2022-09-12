@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
 	ControlledMenu,
 	FocusableItem,
@@ -13,6 +13,7 @@ import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
 import { getFolderId, update } from '../../utils/utils';
+import { FileExplorerContext } from '../../FileExplorer';
 
 const initialVisibleColumns = {
 	name: true,
@@ -22,8 +23,9 @@ const initialVisibleColumns = {
 	size: true,
 };
 
-const DirectoryLayout = (props) => {
-	const { tabsState, setTabsState, activeTabId, setActiveTabId } = props;
+const DirectoryLayout = () => {
+	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
+		useContext(FileExplorerContext);
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const [contextMenuOf, setContextMenuOf] = useState(null);

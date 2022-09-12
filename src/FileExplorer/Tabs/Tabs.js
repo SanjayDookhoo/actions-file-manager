@@ -1,4 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import { buttonStyle } from '../utils/constants';
 import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
 import Tab from './Tab/Tab';
@@ -6,9 +12,11 @@ import { v4 as uuidv4 } from 'uuid';
 import VerticalFlyoutMenu from './VerticalFlyoutMenu';
 import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
+import { FileExplorerContext } from '../FileExplorer';
 
-const Tabs = (props) => {
-	const { tabsState, setTabsState, setActiveTabId } = props;
+const Tabs = () => {
+	const { tabsState, setTabsState, setActiveTabId } =
+		useContext(FileExplorerContext);
 	const tabsContainerRef = useRef(null);
 	const scrollableTabsRef = useRef(null);
 	const [tabWidth, setTabWidth] = useState(null);
@@ -18,7 +26,6 @@ const Tabs = (props) => {
 
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
-	const [isTabContextMenu, setIsTabContextMenu] = useState(false);
 
 	const getMaxScrollLeft = (element) => {
 		return element.scrollWidth - element.clientWidth;
@@ -75,7 +82,6 @@ const Tabs = (props) => {
 		setActiveTabId(tabId);
 	};
 	const verticalFlyoutMenuProps = {
-		...props,
 		addNewTab,
 	};
 
@@ -97,15 +103,6 @@ const Tabs = (props) => {
 	}, []);
 
 	const handleOnContextMenu = (e) => {
-		let target = e.target;
-		while (
-			!target.classList.contains('fileExplorer') &&
-			!target.classList.contains('tab')
-		) {
-			target = target.parentElement;
-		}
-		setIsTabContextMenu(target.classList.contains('tab'));
-
 		e.preventDefault();
 		setAnchorPoint({ x: e.clientX, y: e.clientY });
 		toggleMenu(true);
@@ -113,7 +110,7 @@ const Tabs = (props) => {
 
 	const tabProps = {
 		tabWidth,
-		...props,
+		addNewTab,
 	};
 
 	return (
@@ -158,15 +155,7 @@ const Tabs = (props) => {
 				anchorPoint={anchorPoint}
 				onClose={() => toggleMenu(false)}
 			>
-				<FileMenuItem logo="folder" description="New Item" />
-				{isTabContextMenu && (
-					<>
-						<FileMenuItem logo="folder" description="Duplicate Tab" />
-						<FileMenuItem logo={false} description="Close tabs to the left" />
-						<FileMenuItem logo={false} description="Close tabs to the right" />
-						<FileMenuItem logo={false} description="Close other tabs" />
-					</>
-				)}
+				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
 				<FileMenuItem logo={false} description="Reopen closed tab" />
 			</ControlledMenu>
 		</div>

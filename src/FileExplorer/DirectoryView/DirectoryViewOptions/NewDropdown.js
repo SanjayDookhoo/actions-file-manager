@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useContext, useEffect, useReducer, useRef, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../utils/constants';
 import {
@@ -14,9 +14,11 @@ import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { gql } from 'graphql-request';
 import { axiosClientJSON } from '../../endpoint';
 import { getFolderId, uploadFiles } from '../../utils/utils';
+import { FileExplorerContext } from '../../FileExplorer';
 
-const NewDropdown = (props) => {
-	const { tabsState, setTabsState, activeTabId, setActiveTabId } = props;
+const NewDropdown = () => {
+	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
+		useContext(FileExplorerContext);
 	const fileUploadRef = useRef();
 	const folderUploadRef = useRef();
 	const [files, setFiles] = useState([]);

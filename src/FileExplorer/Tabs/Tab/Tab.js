@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import { ControlledMenu, useMenuState } from '@szhsin/react-menu';
+import { useContext, useEffect, useState } from 'react';
+import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
+import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
 import { buttonStyle } from '../../utils/constants';
 import { tabMaxWidth, tabMinWidth } from '../constants';
@@ -6,16 +9,17 @@ import { tabMaxWidth, tabMinWidth } from '../constants';
 const icon = 'folder';
 
 const Tab = (props) => {
+	const { tabWidth, tabId, inContextMenu, addNewTab } = props;
 	const {
-		tabWidth,
 		tabsState,
 		setTabsState,
 		activeTabId,
 		setActiveTabId,
-		tabId,
-		inContextMenu,
-	} = props;
+		fileExplorerRef,
+	} = useContext(FileExplorerContext);
 	const [width, setWidth] = useState(tabMaxWidth);
+	const [menuProps, toggleMenu] = useMenuState();
+	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 
 	useEffect(() => {
 		if (tabWidth) {
@@ -52,11 +56,28 @@ const Tab = (props) => {
 		setActiveTabId(tabId);
 	};
 
+	const handleOnContextMenu = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setAnchorPoint({ x: e.clientX, y: e.clientY });
+		toggleMenu(true);
+	};
+
+	const duplicateTab = (e) => {};
+
+	const controlledMenuPortal = {
+		target: fileExplorerRef.current,
+		stablePosition: true,
+		// https://szhsin.github.io/react-menu/docs
+		// search "portal"
+	};
+
 	return (
 		<div
 			className={inContextMenu ? 'tab pb-1' : 'tab pr-1 pt-1'}
 			style={{ width }}
 			onClick={handleOnClick}
+			onContextMenu={handleOnContextMenu}
 		>
 			{/* a extra padding container used here instead of margin, because that margin is not tied to the width like padding is */}
 			<div
@@ -86,6 +107,24 @@ const Tab = (props) => {
 					</a>
 				)}
 			</div>
+
+			<ControlledMenu
+				{...menuProps}
+				anchorPoint={anchorPoint}
+				portal={controlledMenuPortal}
+				onClose={() => toggleMenu(false)}
+			>
+				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
+				<FileMenuItem
+					logo="folder"
+					description="Duplicate Tab"
+					onClick={duplicateTab}
+				/>
+				<FileMenuItem logo={false} description="Close tabs to the left" />
+				<FileMenuItem logo={false} description="Close tabs to the right" />
+				<FileMenuItem logo={false} description="Close other tabs" />
+				<FileMenuItem logo={false} description="Reopen closed tab" />
+			</ControlledMenu>
 		</div>
 	);
 };

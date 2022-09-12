@@ -16,11 +16,11 @@ import SelectionDropdown from './SelectionDropdown';
 import LayoutDropdown from './LayoutDropdown';
 import NewDropdown from './NewDropdown';
 
-const DirectoryViewOptions = (props) => {
+const DirectoryViewOptions = () => {
 	return (
 		<div className="w-full flex justify-between">
 			<div className="flex">
-				<NewDropdown {...props} />
+				<NewDropdown />
 				<FilesOptions />
 			</div>
 			<div className="flex">

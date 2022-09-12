@@ -1,8 +1,11 @@
+import { useContext } from 'react';
+import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
 import { update } from '../../utils/utils';
 
-const FolderPath = (props) => {
-	const { tabsState, setTabsState, activeTabId } = props;
+const FolderPath = () => {
+	const { tabsState, setTabsState, activeTabId } =
+		useContext(FileExplorerContext);
 
 	const handleFolderPathOnClick = (e, folderId) => {
 		const index = tabsState[activeTabId].path.findIndex((el) => el == folderId);

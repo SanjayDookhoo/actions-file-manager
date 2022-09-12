@@ -1,4 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import {
+	createContext,
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import NavigationBar from './NavigationBar/NavigationBar';
 import Tabs from './Tabs/Tabs';
 import { initialTabState } from './Tabs/constants';
@@ -7,40 +14,43 @@ import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
 
+export const FileExplorerContext = createContext();
+
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
 		[initialTabId]: initialTabState,
 	});
 	const [activeTabId, setActiveTabId] = useState(initialTabId);
+	const fileExplorerRef = useRef();
 
-	useEffect(() => {
-		console.log(tabsState);
-	}, [tabsState]);
-
-	const tabsProps = {
+	const value = {
 		tabsState,
 		setTabsState,
 		activeTabId,
 		setActiveTabId,
+		fileExplorerRef,
 	};
 
 	return (
-		<div
-			className="fileExplorer w-full h-screen flex flex-col bg-zinc-700"
-			onContextMenu={(e) => e.preventDefault()}
-		>
-			<Tabs {...tabsProps} />
-			{activeTabId && (
-				<>
-					<NavigationBar {...tabsProps} />
-					<div className="w-full flex flex-grow">
-						<LeftPane />
-						<DirectoryView {...tabsProps} />
-					</div>
-				</>
-			)}
-		</div>
+		<FileExplorerContext.Provider value={value}>
+			<div
+				className="fileExplorer w-full h-screen flex flex-col bg-zinc-700"
+				ref={fileExplorerRef}
+				onContextMenu={(e) => e.preventDefault()}
+			>
+				<Tabs />
+				{activeTabId && (
+					<>
+						<NavigationBar />
+						<div className="w-full flex flex-grow">
+							<LeftPane />
+							<DirectoryView />
+						</div>
+					</>
+				)}
+			</div>
+		</FileExplorerContext.Provider>
 	);
 };
 

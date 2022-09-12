@@ -1,16 +1,19 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import { buttonStyle } from '../utils/constants';
 import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
 import Tab from './Tab/Tab';
 import { Menu, MenuItem, FocusableItem } from '@szhsin/react-menu';
+import { FileExplorerContext } from '../FileExplorer';
 
 const VerticalFlyoutMenu = (props) => {
-	const { tabsState, addNewTab } = props;
-
-	const tabProps = () => {
-		const { addNewTab, ...other } = props;
-		return other;
-	};
+	const { addNewTab } = props;
+	const { tabsState } = useContext(FileExplorerContext);
 
 	const handleAddNewTabFromContextMenu = (e) => {
 		e.stopPropagation(); // this button is used inside a context menu, stop propagation is needed to prevent context menu from closing
@@ -28,7 +31,7 @@ const VerticalFlyoutMenu = (props) => {
 			<div className="" style={{ width: tabMaxWidth }}>
 				<div className="pt-4">Open tabs</div>
 				{Object.keys(tabsState).map((tabId) => (
-					<Tab key={tabId} {...tabProps()} tabId={tabId} inContextMenu={true} />
+					<Tab key={tabId} tabId={tabId} inContextMenu={true} />
 				))}
 				<div className="">
 					<a
