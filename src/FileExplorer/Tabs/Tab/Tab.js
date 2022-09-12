@@ -60,6 +60,7 @@ const Tab = (props) => {
 	};
 
 	const duplicateTab = (e) => {
+		// e.syntheticEvent.stopPropagation();
 		const currTab = tabsState[tabId];
 		const { order } = currTab;
 
@@ -207,6 +208,7 @@ const Tab = (props) => {
 				anchorPoint={anchorPoint}
 				portal={controlledMenuPortal}
 				onClose={() => toggleMenu(false)}
+				onClick={(e) => e.stopPropagation()}
 			>
 				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
 				<FileMenuItem
