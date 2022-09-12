@@ -86,70 +86,38 @@ const Tab = (props) => {
 		setTabsState(newTabsState);
 	};
 
-	const closeTabsLeft = () => {
-		const tempTabsState = { ...tabsState };
-		const currTab = tempTabsState[tabId];
-		const { order } = currTab;
-		const extraClosedTabs = {};
+	const closeTabsLeft = ({ data }) => {
+		const { tempTabsState, order } = data;
 
-		const toDelete = Object.keys(tempTabsState)
+		const extraToDelete = Object.keys(tempTabsState)
 			.filter((key) => tempTabsState[key].order < order)
 			.sort((a, b) => tempTabsState[a].order + tempTabsState[b].order);
 
-		toDelete.forEach((key) => {
-			if (key == activeTabId) setActiveTabId(tabId);
-			extraClosedTabs[key] = tempTabsState[key];
-			delete tempTabsState[key];
-		});
-
-		setClosedTabs({ ...extraClosedTabs, ...closedTabs });
-		setTabsState(tempTabsState);
+		data.toDelete = [...data.toDelete, ...extraToDelete];
 	};
 
-	const closeTabsRight = () => {
+	const closeTabsRight = ({ data }) => {
+		const { tempTabsState, order } = data;
+
+		const extraToDelete = Object.keys(tempTabsState)
+			.filter((key) => tempTabsState[key].order > order)
+			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+
+		data.toDelete = [...data.toDelete, ...extraToDelete];
+	};
+
+	const closeTabs = (type) => {
 		const tempTabsState = { ...tabsState };
 		const currTab = tempTabsState[tabId];
 		const { order } = currTab;
 		const extraClosedTabs = {};
 
-		const toDelete = Object.keys(tempTabsState)
-			.filter((key) => tempTabsState[key].order > order)
-			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+		const data = { tempTabsState, order, toDelete: [] };
 
-		toDelete.forEach((key) => {
-			if (key == activeTabId) setActiveTabId(tabId);
-			extraClosedTabs[key] = tempTabsState[key];
-			delete tempTabsState[key];
-		});
+		if (type == 'left' || type == 'other') closeTabsLeft({ data });
+		if (type == 'right' || type == 'other') closeTabsRight({ data });
 
-		setClosedTabs({ ...extraClosedTabs, ...closedTabs });
-		setTabsState(tempTabsState);
-	};
-
-	const closeTabsOther = () => {
-		const tempTabsState = { ...tabsState };
-		const currTab = tempTabsState[tabId];
-		const { order } = currTab;
-		const extraClosedTabs = {};
-
-		let toDelete;
-		// left
-		toDelete = Object.keys(tempTabsState)
-			.filter((key) => tempTabsState[key].order < order)
-			.sort((a, b) => tempTabsState[a].order + tempTabsState[b].order);
-
-		toDelete.forEach((key) => {
-			if (key == activeTabId) setActiveTabId(tabId);
-			extraClosedTabs[key] = tempTabsState[key];
-			delete tempTabsState[key];
-		});
-
-		// right
-		toDelete = Object.keys(tempTabsState)
-			.filter((key) => tempTabsState[key].order > order)
-			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
-
-		toDelete.forEach((key) => {
+		data.toDelete.forEach((key) => {
 			if (key == activeTabId) setActiveTabId(tabId);
 			extraClosedTabs[key] = tempTabsState[key];
 			delete tempTabsState[key];
@@ -224,17 +192,17 @@ const Tab = (props) => {
 				<FileMenuItem
 					logo={false}
 					description="Close tabs to the left"
-					onClick={closeTabsLeft}
+					onClick={() => closeTabs('left')}
 				/>
 				<FileMenuItem
 					logo={false}
 					description="Close tabs to the right"
-					onClick={closeTabsRight}
+					onClick={() => closeTabs('right')}
 				/>
 				<FileMenuItem
 					logo={false}
 					description="Close other tabs"
-					onClick={closeTabsOther}
+					onClick={() => closeTabs('other')}
 				/>
 				<FileMenuItem
 					logo={false}
