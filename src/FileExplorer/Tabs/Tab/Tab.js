@@ -40,6 +40,7 @@ const Tab = (props) => {
 
 	const handleClose = (e) => {
 		e.stopPropagation(); // used in context menu
+		setClosedTabs({ [tabId]: tabsState[tabId], ...closedTabs });
 		let tempTabsState = { ...tabsState };
 		const tempTabsStateKeys = Object.keys(tempTabsState);
 		const index = tempTabsStateKeys.findIndex((el) => el == tabId);
@@ -93,9 +94,10 @@ const Tab = (props) => {
 
 		const toDelete = Object.keys(tempTabsState)
 			.filter((key) => tempTabsState[key].order < order)
-			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+			.sort((a, b) => tempTabsState[a].order + tempTabsState[b].order);
 
 		toDelete.forEach((key) => {
+			if (key == activeTabId) setActiveTabId(tabId);
 			extraClosedTabs[key] = tempTabsState[key];
 			delete tempTabsState[key];
 		});
@@ -115,6 +117,7 @@ const Tab = (props) => {
 			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
 
 		toDelete.forEach((key) => {
+			if (key == activeTabId) setActiveTabId(tabId);
 			extraClosedTabs[key] = tempTabsState[key];
 			delete tempTabsState[key];
 		});
@@ -133,9 +136,10 @@ const Tab = (props) => {
 		// left
 		toDelete = Object.keys(tempTabsState)
 			.filter((key) => tempTabsState[key].order < order)
-			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
+			.sort((a, b) => tempTabsState[a].order + tempTabsState[b].order);
 
 		toDelete.forEach((key) => {
+			if (key == activeTabId) setActiveTabId(tabId);
 			extraClosedTabs[key] = tempTabsState[key];
 			delete tempTabsState[key];
 		});
@@ -146,6 +150,7 @@ const Tab = (props) => {
 			.sort((a, b) => tempTabsState[a].order - tempTabsState[b].order);
 
 		toDelete.forEach((key) => {
+			if (key == activeTabId) setActiveTabId(tabId);
 			extraClosedTabs[key] = tempTabsState[key];
 			delete tempTabsState[key];
 		});
@@ -208,7 +213,7 @@ const Tab = (props) => {
 				anchorPoint={anchorPoint}
 				portal={controlledMenuPortal}
 				onClose={() => toggleMenu(false)}
-				onClick={(e) => e.stopPropagation()}
+				onClick={(e) => e.stopPropagation()} // prevents propagation of clicks, because the div it is nested in is also using an onClick
 			>
 				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
 				<FileMenuItem
