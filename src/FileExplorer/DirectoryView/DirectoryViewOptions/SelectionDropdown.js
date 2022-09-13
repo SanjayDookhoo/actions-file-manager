@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../utils/constants';
 import {
@@ -11,9 +11,10 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
+import { FileExplorerContext } from '../../FileExplorer';
 
 const SelectionDropdown = () => {
-	const [multiselect, setMultiselect] = useState(false);
+	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);
 
 	return (
 		<Menu
@@ -26,8 +27,10 @@ const SelectionDropdown = () => {
 			<FileMenuItem
 				description="Multiselect"
 				type="checkbox"
-				checked={multiselect}
-				onClick={(e) => setMultiselect(e.checked)}
+				checked={localStorage.multiselect}
+				onClick={(e) =>
+					setLocalStorage({ ...localStorage, multiselect: e.checked })
+				}
 			/>
 			<MenuDivider />
 			<FileMenuItem

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../utils/constants';
 import {
@@ -11,8 +11,10 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
+import { FileExplorerContext } from '../../FileExplorer';
 
 const LayoutDropdown = () => {
+	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);
 	const [layout, setLayout] = useState('details');
 	const [showHiddenItems, setShowHiddenItems] = useState(false);
 	const [showFileExtensions, setShowFileExtensions] = useState(false);
@@ -51,20 +53,26 @@ const LayoutDropdown = () => {
 			<FileMenuItem
 				description="Show hidden items"
 				type="checkbox"
-				checked={showHiddenItems}
-				onClick={(e) => setShowHiddenItems(e.checked)}
+				checked={localStorage.showHiddenItems}
+				onClick={(e) =>
+					setLocalStorage({ ...localStorage, showHiddenItems: e.checked })
+				}
 			/>
 			<FileMenuItem
 				description="Show file extensions"
 				type="checkbox"
-				checked={showFileExtensions}
-				onClick={(e) => setShowFileExtensions(e.checked)}
+				checked={localStorage.showFileExtensions}
+				onClick={(e) =>
+					setLocalStorage({ ...localStorage, showFileExtensions: e.checked })
+				}
 			/>
 			<FileMenuItem
 				description="Show details pane"
 				type="checkbox"
-				checked={showDetailsPane}
-				onClick={(e) => setShowDetailsPane(e.checked)}
+				checked={localStorage.showDetailsPane}
+				onClick={(e) =>
+					setLocalStorage({ ...localStorage, showDetailsPane: e.checked })
+				}
 			/>
 		</Menu>
 	);

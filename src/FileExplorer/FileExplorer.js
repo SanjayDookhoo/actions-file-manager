@@ -16,6 +16,13 @@ import './CustomReactMenu/custom-css.css';
 
 export const FileExplorerContext = createContext();
 
+const initialLocalStorageState = {
+	multiselect: false,
+	showHiddenItems: true,
+	showFileExtensions: false,
+	showDetailsPane: true,
+};
+
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
@@ -25,6 +32,22 @@ const FileExplorer = () => {
 	const [newTabOrder, setNewtabOrder] = useState(1);
 	const [closedTabs, setClosedTabs] = useState([]);
 	const fileExplorerRef = useRef();
+	const [localStorage, _setLocalStorage] = useState(() => {
+		const data = window.localStorage.getItem('fileExplorer');
+		if (data) return JSON.parse(data);
+		else {
+			window.localStorage.setItem(
+				'fileExplorer',
+				JSON.stringify(initialLocalStorageState)
+			);
+			return initialLocalStorageState;
+		}
+	});
+
+	const setLocalStorage = (data) => {
+		_setLocalStorage(data);
+		window.localStorage.setItem('fileExplorer', JSON.stringify(data));
+	};
 
 	const value = {
 		tabsState,
@@ -36,6 +59,8 @@ const FileExplorer = () => {
 		setNewtabOrder,
 		closedTabs,
 		setClosedTabs,
+		localStorage,
+		setLocalStorage,
 	};
 
 	useEffect(() => {

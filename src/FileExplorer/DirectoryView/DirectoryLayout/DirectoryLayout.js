@@ -24,8 +24,14 @@ const initialVisibleColumns = {
 };
 
 const DirectoryLayout = () => {
-	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
-		useContext(FileExplorerContext);
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+	} = useContext(FileExplorerContext);
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const [contextMenuOf, setContextMenuOf] = useState(null);
@@ -40,6 +46,8 @@ const DirectoryLayout = () => {
 		initialFolderArguments
 	);
 	const [fileArguments, setFileArguments] = useState(initialFileArguments);
+	const [selectedFolders, setSelectedFolders] = useState([]);
+	const [selectedFiles, setSelectedFiles] = useState([]);
 
 	const folderSubscriptionGraphql = gql`
 		subscription {
@@ -112,33 +120,111 @@ const DirectoryLayout = () => {
 		}
 	}, [tabsState, activeTabId]);
 
+	const renderFilename = (filename) => {
+		const filenameSplit = filename.split('.');
+		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the filename should not be considered a extension
+		if (
+			localStorage.showFileExtensions ||
+			(!localStorage.showFileExtensions &&
+				localStorage.showHiddenItems &&
+				!filenameSplit[0])
+		) {
+			return filename;
+		} else {
+			return filenameSplit.slice(0, filenameSplit.length - 1).join('.');
+		}
+	};
+
+	const fileFolderFilter = (record, type) => {
+		if (localStorage.showHiddenItems) {
+			return true;
+		} else {
+			const name = record[`${type}Name`]; // fileName || folderName
+			const nameSplit = name.split('.');
+			return nameSplit[0];
+		}
+	};
+
+	const handleSelectFileFolderOnClick = (record, type) => {
+		if (type == 'folder') {
+			let tempSelectedFolders;
+			if (selectedFolders.includes(record.id)) {
+				tempSelectedFolders = [...selectedFolders];
+				const index = tempSelectedFolders.findIndex((el) => el == record.id);
+				tempSelectedFolders.splice(index, 1);
+			} else {
+				if (localStorage.multiselect) {
+					tempSelectedFolders = [...selectedFolders, record.id];
+				} else {
+					tempSelectedFolders = [record.id];
+					setSelectedFiles([]);
+				}
+			}
+			setSelectedFolders(tempSelectedFolders);
+		} else if (type == 'file') {
+			let tempSelectedFiles;
+			if (selectedFiles.includes(record.id)) {
+				tempSelectedFiles = [...selectedFiles];
+				const index = tempSelectedFiles.findIndex((el) => el == record.id);
+				tempSelectedFiles.splice(index, 1);
+			} else {
+				if (localStorage.multiselect) {
+					tempSelectedFiles = [...selectedFiles, record.id];
+				} else {
+					tempSelectedFiles = [record.id];
+					setSelectedFolders([]);
+				}
+			}
+			setSelectedFiles(tempSelectedFiles);
+		}
+	};
+
 	return (
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
 			<FileUploadDiv folderId={getFolderId({ tabsState, activeTabId })}>
 				<div>
 					{folders &&
-						folders.folder.map((folder) => (
-							<FileUploadDiv key={folder.id} folderId={folder.id}>
+						folders.folder
+							.filter((record) => fileFolderFilter(record, 'folder'))
+							.map((folder) => (
+								<FileUploadDiv key={folder.id} folderId={folder.id}>
+									<div
+										className={
+											'directoryLayoutFolder flex ' +
+											(selectedFolders.includes(folder.id) ? 'bg-zinc-500' : '')
+										}
+										onClick={() =>
+											handleSelectFileFolderOnClick(folder, 'folder')
+										}
+										onDoubleClick={() => updateCurrentFolderId(folder.id)}
+									>
+										<div style={{ width: '25%' }}>{folder.folderName}</div>
+										<div style={{ width: '25%' }}>a</div>
+										<div style={{ width: '25%' }}>b</div>
+										<div style={{ width: '25%' }}>c</div>
+									</div>
+								</FileUploadDiv>
+							))}
+					{files &&
+						files.file
+							.filter((record) => fileFolderFilter(record, 'file'))
+							.map((file) => (
 								<div
-									className="directoryLayoutFolder flex"
-									onDoubleClick={() => updateCurrentFolderId(folder.id)}
+									key={file.id}
+									className={
+										'directoryLayoutFolder flex ' +
+										(selectedFiles.includes(file.id) ? 'bg-zinc-500' : '')
+									}
+									onClick={() => handleSelectFileFolderOnClick(file, 'file')}
 								>
-									<div style={{ width: '25%' }}>{folder.folderName}</div>
+									<div style={{ width: '25%' }}>
+										{renderFilename(file.fileName)}
+									</div>
 									<div style={{ width: '25%' }}>a</div>
 									<div style={{ width: '25%' }}>b</div>
 									<div style={{ width: '25%' }}>c</div>
 								</div>
-							</FileUploadDiv>
-						))}
-					{files &&
-						files.file.map((file) => (
-							<div key={file.id} className="directoryLayoutFolder flex">
-								<div style={{ width: '25%' }}>{file.fileName}</div>
-								<div style={{ width: '25%' }}>a</div>
-								<div style={{ width: '25%' }}>b</div>
-								<div style={{ width: '25%' }}>c</div>
-							</div>
-						))}
+							))}
 				</div>
 
 				<ControlledMenu
