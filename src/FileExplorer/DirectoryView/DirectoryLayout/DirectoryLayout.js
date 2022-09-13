@@ -46,8 +46,6 @@ const DirectoryLayout = () => {
 		initialFolderArguments
 	);
 	const [fileArguments, setFileArguments] = useState(initialFileArguments);
-	const [selectedFolders, setSelectedFolders] = useState([]);
-	const [selectedFiles, setSelectedFiles] = useState([]);
 
 	const folderSubscriptionGraphql = gql`
 		subscription {
@@ -102,7 +100,13 @@ const DirectoryLayout = () => {
 
 	const updateCurrentFolderId = (folderId) => {
 		setTabsState({
-			...update(tabsState, { [activeTabId]: { path: { $push: [folderId] } } }),
+			...update(tabsState, {
+				[activeTabId]: {
+					path: { $push: [folderId] },
+					selectedFiles: { $set: [] }, // clears selected files
+					selectedFolders: { $set: [] }, // clears selected folders
+				},
+			}),
 		});
 	};
 
@@ -146,8 +150,12 @@ const DirectoryLayout = () => {
 	};
 
 	const handleSelectFileFolderOnClick = (record, type) => {
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		let tempSelectedFolders;
+		let tempSelectedFiles;
+
 		if (type == 'folder') {
-			let tempSelectedFolders;
+			tempSelectedFiles = selectedFiles;
 			if (selectedFolders.includes(record.id)) {
 				tempSelectedFolders = [...selectedFolders];
 				const index = tempSelectedFolders.findIndex((el) => el == record.id);
@@ -157,12 +165,11 @@ const DirectoryLayout = () => {
 					tempSelectedFolders = [...selectedFolders, record.id];
 				} else {
 					tempSelectedFolders = [record.id];
-					setSelectedFiles([]);
+					tempSelectedFiles = [];
 				}
 			}
-			setSelectedFolders(tempSelectedFolders);
 		} else if (type == 'file') {
-			let tempSelectedFiles;
+			tempSelectedFolders = selectedFolders;
 			if (selectedFiles.includes(record.id)) {
 				tempSelectedFiles = [...selectedFiles];
 				const index = tempSelectedFiles.findIndex((el) => el == record.id);
@@ -172,11 +179,19 @@ const DirectoryLayout = () => {
 					tempSelectedFiles = [...selectedFiles, record.id];
 				} else {
 					tempSelectedFiles = [record.id];
-					setSelectedFolders([]);
+					tempSelectedFolders = [];
 				}
 			}
-			setSelectedFiles(tempSelectedFiles);
 		}
+
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: tempSelectedFiles },
+					selectedFolders: { $set: tempSelectedFolders },
+				},
+			})
+		);
 	};
 
 	return (
@@ -191,7 +206,11 @@ const DirectoryLayout = () => {
 									<div
 										className={
 											'directoryLayoutFolder flex ' +
-											(selectedFolders.includes(folder.id) ? 'bg-zinc-500' : '')
+											(tabsState[activeTabId].selectedFolders.includes(
+												folder.id
+											)
+												? 'bg-zinc-500'
+												: '')
 										}
 										onClick={() =>
 											handleSelectFileFolderOnClick(folder, 'folder')
@@ -213,7 +232,9 @@ const DirectoryLayout = () => {
 									key={file.id}
 									className={
 										'directoryLayoutFolder flex ' +
-										(selectedFiles.includes(file.id) ? 'bg-zinc-500' : '')
+										(tabsState[activeTabId].selectedFiles.includes(file.id)
+											? 'bg-zinc-500'
+											: '')
 									}
 									onClick={() => handleSelectFileFolderOnClick(file, 'file')}
 								>
