@@ -16,7 +16,7 @@ import SelectionDropdown from './SelectionDropdown';
 import LayoutDropdown from './LayoutDropdown';
 import NewDropdown from './NewDropdown';
 
-const DirectoryViewOptions = () => {
+const DirectoryViewOptions = (props) => {
 	return (
 		<div className="w-full flex justify-between">
 			<div className="flex">
@@ -24,7 +24,7 @@ const DirectoryViewOptions = () => {
 				<FilesOptions />
 			</div>
 			<div className="flex">
-				<SelectionDropdown />
+				<SelectionDropdown {...props} />
 				<SortDropdown />
 				<LayoutDropdown />
 			</div>

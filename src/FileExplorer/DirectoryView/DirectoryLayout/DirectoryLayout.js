@@ -10,8 +10,6 @@ import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
-import { gql, useQuery, useSubscription } from '@apollo/client';
-import { objectToGraphqlArgs } from 'hasura-args';
 import { getFolderId, update } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
 
@@ -23,7 +21,12 @@ const initialVisibleColumns = {
 	size: true,
 };
 
-const DirectoryLayout = () => {
+const DirectoryLayout = ({
+	files,
+	folders,
+	setFolderArguments,
+	setFileArguments,
+}) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -37,41 +40,6 @@ const DirectoryLayout = () => {
 	const [contextMenuOf, setContextMenuOf] = useState(null);
 
 	const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
-
-	const initialFolderArguments = {
-		where: { parentFolderId: { _isNull: true } },
-	};
-	const initialFileArguments = { where: { folderId: { _isNull: true } } };
-	const [folderArguments, setFolderArguments] = useState(
-		initialFolderArguments
-	);
-	const [fileArguments, setFileArguments] = useState(initialFileArguments);
-
-	const folderSubscriptionGraphql = gql`
-		subscription {
-			folder(${objectToGraphqlArgs(folderArguments)}) {
-				id
-				folderName
-			}
-		}
-	`;
-
-	const fileSubscriptionGraphql = gql`
-		subscription {
-			file(${objectToGraphqlArgs(fileArguments)}) {
-				id
-				fileName
-			}
-		}
-	`;
-
-	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
-	const { data: folders } = useSubscription(folderSubscriptionGraphql);
-	const { data: files } = useSubscription(fileSubscriptionGraphql);
-
-	// useEffect(() => {
-	// 	console.log(folders, files);
-	// }, [folders, files]);
 
 	const handleOnContextMenu = (e) => {
 		let target = e.target;
@@ -155,31 +123,31 @@ const DirectoryLayout = () => {
 		let tempSelectedFiles;
 
 		if (type == 'folder') {
-			tempSelectedFiles = selectedFiles;
-			if (selectedFolders.includes(record.id)) {
-				tempSelectedFolders = [...selectedFolders];
-				const index = tempSelectedFolders.findIndex((el) => el == record.id);
-				tempSelectedFolders.splice(index, 1);
+			if (!localStorage.multiselect) {
+				tempSelectedFolders = [record.id];
+				tempSelectedFiles = [];
 			} else {
-				if (localStorage.multiselect) {
-					tempSelectedFolders = [...selectedFolders, record.id];
+				tempSelectedFiles = selectedFiles;
+				if (selectedFolders.includes(record.id)) {
+					tempSelectedFolders = [...selectedFolders];
+					const index = tempSelectedFolders.findIndex((el) => el == record.id);
+					tempSelectedFolders.splice(index, 1);
 				} else {
-					tempSelectedFolders = [record.id];
-					tempSelectedFiles = [];
+					tempSelectedFolders = [...selectedFolders, record.id];
 				}
 			}
 		} else if (type == 'file') {
-			tempSelectedFolders = selectedFolders;
-			if (selectedFiles.includes(record.id)) {
-				tempSelectedFiles = [...selectedFiles];
-				const index = tempSelectedFiles.findIndex((el) => el == record.id);
-				tempSelectedFiles.splice(index, 1);
+			if (!localStorage.multiselect) {
+				tempSelectedFiles = [record.id];
+				tempSelectedFolders = [];
 			} else {
-				if (localStorage.multiselect) {
-					tempSelectedFiles = [...selectedFiles, record.id];
+				tempSelectedFolders = selectedFolders;
+				if (selectedFiles.includes(record.id)) {
+					tempSelectedFiles = [...selectedFiles];
+					const index = tempSelectedFiles.findIndex((el) => el == record.id);
+					tempSelectedFiles.splice(index, 1);
 				} else {
-					tempSelectedFiles = [record.id];
-					tempSelectedFolders = [];
+					tempSelectedFiles = [...selectedFiles, record.id];
 				}
 			}
 		}
@@ -198,54 +166,50 @@ const DirectoryLayout = () => {
 		<div className="w-full" onContextMenu={handleOnContextMenu}>
 			<FileUploadDiv folderId={getFolderId({ tabsState, activeTabId })}>
 				<div>
-					{folders &&
-						folders.folder
-							.filter((record) => fileFolderFilter(record, 'folder'))
-							.map((folder) => (
-								<FileUploadDiv key={folder.id} folderId={folder.id}>
-									<div
-										className={
-											'directoryLayoutFolder flex ' +
-											(tabsState[activeTabId].selectedFolders.includes(
-												folder.id
-											)
-												? 'bg-zinc-500'
-												: '')
-										}
-										onClick={() =>
-											handleSelectFileFolderOnClick(folder, 'folder')
-										}
-										onDoubleClick={() => updateCurrentFolderId(folder.id)}
-									>
-										<div style={{ width: '25%' }}>{folder.folderName}</div>
-										<div style={{ width: '25%' }}>a</div>
-										<div style={{ width: '25%' }}>b</div>
-										<div style={{ width: '25%' }}>c</div>
-									</div>
-								</FileUploadDiv>
-							))}
-					{files &&
-						files.file
-							.filter((record) => fileFolderFilter(record, 'file'))
-							.map((file) => (
+					{folders
+						.filter((record) => fileFolderFilter(record, 'folder'))
+						.map((folder) => (
+							<FileUploadDiv key={folder.id} folderId={folder.id}>
 								<div
-									key={file.id}
 									className={
 										'directoryLayoutFolder flex ' +
-										(tabsState[activeTabId].selectedFiles.includes(file.id)
+										(tabsState[activeTabId].selectedFolders.includes(folder.id)
 											? 'bg-zinc-500'
 											: '')
 									}
-									onClick={() => handleSelectFileFolderOnClick(file, 'file')}
+									onClick={() =>
+										handleSelectFileFolderOnClick(folder, 'folder')
+									}
+									onDoubleClick={() => updateCurrentFolderId(folder.id)}
 								>
-									<div style={{ width: '25%' }}>
-										{renderFilename(file.fileName)}
-									</div>
+									<div style={{ width: '25%' }}>{folder.folderName}</div>
 									<div style={{ width: '25%' }}>a</div>
 									<div style={{ width: '25%' }}>b</div>
 									<div style={{ width: '25%' }}>c</div>
 								</div>
-							))}
+							</FileUploadDiv>
+						))}
+					{files
+						.filter((record) => fileFolderFilter(record, 'file'))
+						.map((file) => (
+							<div
+								key={file.id}
+								className={
+									'directoryLayoutFolder flex ' +
+									(tabsState[activeTabId].selectedFiles.includes(file.id)
+										? 'bg-zinc-500'
+										: '')
+								}
+								onClick={() => handleSelectFileFolderOnClick(file, 'file')}
+							>
+								<div style={{ width: '25%' }}>
+									{renderFilename(file.fileName)}
+								</div>
+								<div style={{ width: '25%' }}>a</div>
+								<div style={{ width: '25%' }}>b</div>
+								<div style={{ width: '25%' }}>c</div>
+							</div>
+						))}
 				</div>
 
 				<ControlledMenu
