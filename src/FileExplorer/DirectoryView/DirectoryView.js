@@ -33,6 +33,7 @@ const DirectoryView = () => {
 			file(${objectToGraphqlArgs(fileArguments)}) {
 				id
 				fileName
+				size
 			}
 		}
 	`;
@@ -61,7 +62,7 @@ const DirectoryView = () => {
 				<DirectoryLayout {...props} />
 				{localStorage.showDetailsPane && <DetailsPane />}
 			</div>
-			<Footer />
+			<Footer {...props} />
 		</div>
 	);
 };
