@@ -117,7 +117,8 @@ const DirectoryLayout = ({
 		}
 	};
 
-	const handleSelectFileFolderOnClick = (record, type) => {
+	const handleSelectFileFolderOnClick = (e, record, type) => {
+		e.stopPropagation(); // allows empty space to be clicked to clear all folders or files selected
 		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
 		let tempSelectedFolders;
 		let tempSelectedFiles;
@@ -162,8 +163,23 @@ const DirectoryLayout = ({
 		);
 	};
 
+	const handleEmptySpaceOnClick = () => {
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: [] },
+					selectedFolders: { $set: [] },
+				},
+			})
+		);
+	};
+
 	return (
-		<div className="w-full" onContextMenu={handleOnContextMenu}>
+		<div
+			className="w-full"
+			onContextMenu={handleOnContextMenu}
+			onClick={handleEmptySpaceOnClick}
+		>
 			<FileUploadDiv folderId={getFolderId({ tabsState, activeTabId })}>
 				<div>
 					{folders
@@ -177,8 +193,8 @@ const DirectoryLayout = ({
 											? 'bg-zinc-500'
 											: '')
 									}
-									onClick={() =>
-										handleSelectFileFolderOnClick(folder, 'folder')
+									onClick={(e) =>
+										handleSelectFileFolderOnClick(e, folder, 'folder')
 									}
 									onDoubleClick={() => updateCurrentFolderId(folder.id)}
 								>
@@ -200,7 +216,7 @@ const DirectoryLayout = ({
 										? 'bg-zinc-500'
 										: '')
 								}
-								onClick={() => handleSelectFileFolderOnClick(file, 'file')}
+								onClick={(e) => handleSelectFileFolderOnClick(e, file, 'file')}
 							>
 								<div style={{ width: '25%' }}>
 									{renderFilename(file.fileName)}
