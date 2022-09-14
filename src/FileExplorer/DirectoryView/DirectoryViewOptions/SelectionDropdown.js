@@ -27,14 +27,14 @@ const SelectionDropdown = ({ folders, files }) => {
 		const selectedFolders = folders.map((folder) => folder.id);
 		const selectedFiles = files.map((file) => file.id);
 
-		setTabsState({
-			...update(tabsState, {
+		setTabsState(
+			update(tabsState, {
 				[activeTabId]: {
 					selectedFiles: { $set: selectedFiles },
 					selectedFolders: { $set: selectedFolders },
 				},
-			}),
-		});
+			})
+		);
 	};
 
 	const invertSelection = () => {
@@ -47,25 +47,25 @@ const SelectionDropdown = ({ folders, files }) => {
 			.filter((file) => !prevSelectedFiles.includes(file.id))
 			.map((file) => file.id);
 
-		setTabsState({
-			...update(tabsState, {
+		setTabsState(
+			update(tabsState, {
 				[activeTabId]: {
 					selectedFiles: { $set: selectedFiles },
 					selectedFolders: { $set: selectedFolders },
 				},
-			}),
-		});
+			})
+		);
 	};
 
 	const clearSelection = () => {
-		setTabsState({
-			...update(tabsState, {
+		setTabsState(
+			update(tabsState, {
 				[activeTabId]: {
 					selectedFiles: { $set: [] },
 					selectedFolders: { $set: [] },
 				},
-			}),
-		});
+			})
+		);
 	};
 
 	return (

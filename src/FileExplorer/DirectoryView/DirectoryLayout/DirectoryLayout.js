@@ -67,15 +67,15 @@ const DirectoryLayout = ({
 	};
 
 	const updateCurrentFolderId = (folderId) => {
-		setTabsState({
-			...update(tabsState, {
+		setTabsState(
+			update(tabsState, {
 				[activeTabId]: {
 					path: { $push: [folderId] },
 					selectedFiles: { $set: [] }, // clears selected files
 					selectedFolders: { $set: [] }, // clears selected folders
 				},
-			}),
-		});
+			})
+		);
 	};
 
 	useEffect(() => {
