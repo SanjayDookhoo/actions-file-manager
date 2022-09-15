@@ -24,6 +24,9 @@ const DirectoryView = () => {
 			folder(${objectToGraphqlArgs(folderArguments)}) {
 				id
 				folderName
+				meta {
+					modified
+				}
 			}
 		}
 	`;
@@ -34,6 +37,9 @@ const DirectoryView = () => {
 				id
 				fileName
 				size
+				meta {
+					modified
+				}
 			}
 		}
 	`;

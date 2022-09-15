@@ -16,14 +16,14 @@ import './CustomReactMenu/custom-css.css';
 
 export const FileExplorerContext = createContext();
 
+const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 const initialLocalStorageState = {
 	multiselect: false,
 	showHiddenItems: true,
 	showFileExtensions: false,
 	showDetailsPane: true,
 	layout: 'details',
-	sorting: {},
-	grouping: {},
+	folderSpecific: {},
 };
 
 const FileExplorer = () => {
@@ -36,11 +36,11 @@ const FileExplorer = () => {
 	const [closedTabs, setClosedTabs] = useState([]);
 	const fileExplorerRef = useRef();
 	const [localStorage, _setLocalStorage] = useState(() => {
-		const data = window.localStorage.getItem('fileExplorer');
+		const data = window.localStorage.getItem(localStorageKey);
 		if (data) return JSON.parse(data);
 		else {
 			window.localStorage.setItem(
-				'fileExplorer',
+				localStorageKey,
 				JSON.stringify(initialLocalStorageState)
 			);
 			return initialLocalStorageState;
@@ -49,7 +49,7 @@ const FileExplorer = () => {
 
 	const setLocalStorage = (data) => {
 		_setLocalStorage(data);
-		window.localStorage.setItem('fileExplorer', JSON.stringify(data));
+		window.localStorage.setItem(localStorageKey, JSON.stringify(data));
 	};
 
 	const value = {
@@ -66,9 +66,9 @@ const FileExplorer = () => {
 		setLocalStorage,
 	};
 
-	useEffect(() => {
-		console.log(tabsState, activeTabId);
-	}, [tabsState, activeTabId]);
+	// useEffect(() => {
+	// 	console.log(tabsState, activeTabId);
+	// }, [tabsState, activeTabId]);
 
 	return (
 		<FileExplorerContext.Provider value={value}>

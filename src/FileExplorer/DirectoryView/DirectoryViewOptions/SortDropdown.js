@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../utils/constants';
 import {
@@ -11,11 +11,79 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
+import { update } from '../../utils/utils';
+import { FileExplorerContext } from '../../FileExplorer';
 
 const SortDropdown = () => {
-	const [sortOrder, setSortOrder] = useState('ascending');
-	const [sortBy, setSortBy] = useState('name');
-	const [groupBy, setGroupBy] = useState('none');
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+	} = useContext(FileExplorerContext);
+
+	const { path } = tabsState[activeTabId];
+	const {
+		sortOrder = 'ascending',
+		sortBy = 'name',
+		groupOrder = 'ascending',
+		groupBy = 'none',
+	} = localStorage.folderSpecific?.[path] ?? {};
+
+	const setLocalStorageFolderSpecific = (obj) => {
+		setLocalStorage(
+			update(localStorage, {
+				folderSpecific: {
+					$merge: {
+						[path]: obj,
+					},
+				},
+			})
+		);
+	};
+
+	const setSortOrder = (val) => {
+		const sortOrder = val;
+		setLocalStorageFolderSpecific({
+			sortOrder,
+			sortBy,
+			groupOrder,
+			groupBy,
+		});
+	};
+
+	const setSortBy = (val) => {
+		const sortBy = val;
+		setLocalStorageFolderSpecific({
+			sortOrder,
+			sortBy,
+			groupOrder,
+			groupBy,
+		});
+	};
+
+	const setGroupOrder = (val) => {
+		const groupOrder = val;
+		setLocalStorageFolderSpecific({
+			sortOrder,
+			sortBy,
+			groupOrder,
+			groupBy,
+		});
+	};
+
+	const setGroupBy = (val) => {
+		const groupBy = val;
+		setLocalStorageFolderSpecific({
+			sortOrder,
+			sortBy,
+			groupOrder,
+			groupBy,
+		});
+	};
+
 	return (
 		<Menu
 			menuButton={
@@ -31,6 +99,24 @@ const SortDropdown = () => {
 				>
 					<FileMenuItemGroup />
 				</MenuRadioGroup>
+
+				<MenuDivider />
+
+				<MenuRadioGroup
+					value={sortOrder}
+					onRadioChange={(e) => setSortOrder(e.value)}
+				>
+					<FileMenuItem
+						description="Ascending"
+						type="radio"
+						value="ascending"
+					/>
+					<FileMenuItem
+						description="Descending"
+						type="radio"
+						value="descending"
+					/>
+				</MenuRadioGroup>
 			</FileSubMenu>
 			<FileSubMenu controlledStatePadding={true} description="Group By">
 				<MenuRadioGroup
@@ -40,20 +126,25 @@ const SortDropdown = () => {
 					<FileMenuItem description="None" type="radio" value="none" />
 					<FileMenuItemGroup />
 				</MenuRadioGroup>
-			</FileSubMenu>
 
-			<MenuDivider />
-			<MenuRadioGroup
-				value={sortOrder}
-				onRadioChange={(e) => setSortOrder(e.value)}
-			>
-				<FileMenuItem description="Ascending" type="radio" value="ascending" />
-				<FileMenuItem
-					description="Descending"
-					type="radio"
-					value="descending"
-				/>
-			</MenuRadioGroup>
+				<MenuDivider />
+
+				<MenuRadioGroup
+					value={groupOrder}
+					onRadioChange={(e) => setGroupOrder(e.value)}
+				>
+					<FileMenuItem
+						description="Ascending"
+						type="radio"
+						value="ascending"
+					/>
+					<FileMenuItem
+						description="Descending"
+						type="radio"
+						value="descending"
+					/>
+				</MenuRadioGroup>
+			</FileSubMenu>
 		</Menu>
 	);
 };

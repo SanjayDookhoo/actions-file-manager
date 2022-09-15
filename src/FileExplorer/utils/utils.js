@@ -38,7 +38,7 @@ export const getFolderId = ({ tabsState, activeTabId }) => {
 const k = 1024;
 
 // date memoizing to prevent multiple calls with the same value from being called multiple times
-const initialDateMemoizeObj = {
+let initialDateMemoizeObj = {
 	_aLongTimeAgo: {},
 	_earlierThisYear: {},
 	_lastMonth: {},
@@ -63,7 +63,10 @@ const dateMemoizeCheck = (condition, val) => {
 		date.getMonth() != currDate.getMonth() ||
 		date.getDay() != currDate.getDay()
 	) {
-		dateMemoize.dateMemoizeObj = { ...initialDateMemoizeObj }; // reset
+		dateMemoize = {
+			dateMemoizeObj: { ...initialDateMemoizeObj },
+			date: currDate,
+		};
 	}
 
 	return dateMemoize.dateMemoizeObj[condition]?.[val];
@@ -220,4 +223,16 @@ export const conditions = {
 		'Gigantic (> 4GB)': (val) => val > 4 * k * k * k,
 		Unspecified: (val) => val == null,
 	},
+};
+
+export const formatBytes = (bytes, decimals = 2) => {
+	if (!+bytes) return '0 Bytes';
+
+	const k = 1024;
+	const dm = decimals < 0 ? 0 : decimals;
+	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };

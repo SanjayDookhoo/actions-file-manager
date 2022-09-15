@@ -10,8 +10,9 @@ import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
-import { getFolderId, update } from '../../utils/utils';
+import { formatBytes, getFolderId, update } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
+import { axiosClientFileExtension } from '../../endpoint';
 
 const initialVisibleColumns = {
 	name: true,
@@ -41,6 +42,59 @@ const DirectoryLayout = ({
 
 	const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
 
+	/**
+	 * [
+	 * 		{
+	 * 			id:
+	 * 			type: 'folder' || 'file'
+	 * 		}
+	 * ]
+	 */
+	const [filtered, setFiltered] = useState([]);
+	const [filteredSorted, setFilteredSorted] = useState([]);
+	const [filteredSortedGrouped, setFilteredSortedGrouped] = useState([]);
+	const [filteredSortedGroupListing, setFilteredSortedGroupListing] = useState(
+		[]
+	); // name and type
+
+	useEffect(() => {
+		const filteredFolders = folders.map((folder) => ({
+			id: folder.id,
+			type: 'folder',
+		}));
+		const filteredFiles = files.map((file) => ({ id: file.id, type: 'file' }));
+		setFiltered([...filteredFolders, ...filteredFiles]);
+	}, [files, folders]);
+
+	useEffect(() => {
+		setFilteredSorted([...filtered]);
+	}, [filtered]);
+
+	useEffect(() => {
+		const temp = {
+			test1: filteredSorted.slice(0, Math.floor(filteredSorted.length / 2)),
+			test2: filteredSorted.slice(
+				Math.floor(filteredSorted.length / 2),
+				filteredSorted.length
+			),
+		};
+		setFilteredSortedGrouped(temp);
+
+		// *****************************************************
+
+		// const grouping ={
+		// 	name: {},
+		// 	fileType: {},
+		// }
+		// filteredSorted.forEach(item => {
+		// 	const {id, type} = item
+		// 	if(type == 'file'){
+		// 		const file = files.find(file => file.id == id)
+		// 		if(f)
+		// 	}
+		// })
+	}, [filteredSorted]);
+
 	const handleOnContextMenu = (e) => {
 		let target = e.target;
 		while (
@@ -66,18 +120,6 @@ const DirectoryLayout = ({
 		toggleMenu(true);
 	};
 
-	const updateCurrentFolderId = (folderId) => {
-		setTabsState(
-			update(tabsState, {
-				[activeTabId]: {
-					path: { $push: [folderId] },
-					selectedFiles: { $set: [] }, // clears selected files
-					selectedFolders: { $set: [] }, // clears selected folders
-				},
-			})
-		);
-	};
-
 	useEffect(() => {
 		const currentFolder =
 			tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
@@ -92,21 +134,6 @@ const DirectoryLayout = ({
 		}
 	}, [tabsState, activeTabId]);
 
-	const renderFilename = (filename) => {
-		const filenameSplit = filename.split('.');
-		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the filename should not be considered a extension
-		if (
-			localStorage.showFileExtensions ||
-			(!localStorage.showFileExtensions &&
-				localStorage.showHiddenItems &&
-				!filenameSplit[0])
-		) {
-			return filename;
-		} else {
-			return filenameSplit.slice(0, filenameSplit.length - 1).join('.');
-		}
-	};
-
 	const fileFolderFilter = (record, type) => {
 		if (localStorage.showHiddenItems) {
 			return true;
@@ -115,52 +142,6 @@ const DirectoryLayout = ({
 			const nameSplit = name.split('.');
 			return nameSplit[0];
 		}
-	};
-
-	const handleSelectFileFolderOnClick = (e, record, type) => {
-		e.stopPropagation(); // allows empty space to be clicked to clear all folders or files selected
-		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
-		let tempSelectedFolders;
-		let tempSelectedFiles;
-
-		if (type == 'folder') {
-			if (!localStorage.multiselect) {
-				tempSelectedFolders = [record.id];
-				tempSelectedFiles = [];
-			} else {
-				tempSelectedFiles = selectedFiles;
-				if (selectedFolders.includes(record.id)) {
-					tempSelectedFolders = [...selectedFolders];
-					const index = tempSelectedFolders.findIndex((el) => el == record.id);
-					tempSelectedFolders.splice(index, 1);
-				} else {
-					tempSelectedFolders = [...selectedFolders, record.id];
-				}
-			}
-		} else if (type == 'file') {
-			if (!localStorage.multiselect) {
-				tempSelectedFiles = [record.id];
-				tempSelectedFolders = [];
-			} else {
-				tempSelectedFolders = selectedFolders;
-				if (selectedFiles.includes(record.id)) {
-					tempSelectedFiles = [...selectedFiles];
-					const index = tempSelectedFiles.findIndex((el) => el == record.id);
-					tempSelectedFiles.splice(index, 1);
-				} else {
-					tempSelectedFiles = [...selectedFiles, record.id];
-				}
-			}
-		}
-
-		setTabsState(
-			update(tabsState, {
-				[activeTabId]: {
-					selectedFiles: { $set: tempSelectedFiles },
-					selectedFolders: { $set: tempSelectedFolders },
-				},
-			})
-		);
 	};
 
 	const handleEmptySpaceOnClick = () => {
@@ -174,6 +155,15 @@ const DirectoryLayout = ({
 		);
 	};
 
+	const groupRenderProps = {
+		files,
+		folders,
+	};
+
+	// useEffect(() => {
+	// 	console.log(filteredSortedGrouped);
+	// }, [filteredSortedGrouped]);
+
 	return (
 		<div
 			className="w-full"
@@ -182,50 +172,16 @@ const DirectoryLayout = ({
 		>
 			<FileUploadDiv folderId={getFolderId({ tabsState, activeTabId })}>
 				<div>
-					{folders
-						.filter((record) => fileFolderFilter(record, 'folder'))
-						.map((folder) => (
-							<FileUploadDiv key={folder.id} folderId={folder.id}>
-								<div
-									className={
-										'directoryLayoutFolder flex ' +
-										(tabsState[activeTabId].selectedFolders.includes(folder.id)
-											? 'bg-zinc-500'
-											: '')
-									}
-									onClick={(e) =>
-										handleSelectFileFolderOnClick(e, folder, 'folder')
-									}
-									onDoubleClick={() => updateCurrentFolderId(folder.id)}
-								>
-									<div style={{ width: '25%' }}>{folder.folderName}</div>
-									<div style={{ width: '25%' }}>a</div>
-									<div style={{ width: '25%' }}>b</div>
-									<div style={{ width: '25%' }}>c</div>
-								</div>
-							</FileUploadDiv>
-						))}
-					{files
-						.filter((record) => fileFolderFilter(record, 'file'))
-						.map((file) => (
-							<div
-								key={file.id}
-								className={
-									'directoryLayoutFolder flex ' +
-									(tabsState[activeTabId].selectedFiles.includes(file.id)
-										? 'bg-zinc-500'
-										: '')
-								}
-								onClick={(e) => handleSelectFileFolderOnClick(e, file, 'file')}
-							>
-								<div style={{ width: '25%' }}>
-									{renderFilename(file.fileName)}
-								</div>
-								<div style={{ width: '25%' }}>a</div>
-								<div style={{ width: '25%' }}>b</div>
-								<div style={{ width: '25%' }}>c</div>
-							</div>
-						))}
+					{Object.entries(filteredSortedGrouped).map(
+						([groupName, items], i) => (
+							<GroupRender
+								key={i}
+								groupName={groupName}
+								items={items}
+								{...groupRenderProps}
+							/>
+						)
+					)}
 				</div>
 
 				<ControlledMenu
@@ -295,3 +251,225 @@ const DirectoryLayout = ({
 };
 
 export default DirectoryLayout;
+
+const GroupRender = ({ groupName, items, ...otherProps }) => {
+	const [collapsed, setCollapsed] = useState(false);
+
+	const handleOnClick = (e) => {
+		e.stopPropagation();
+		setCollapsed(!collapsed);
+	};
+
+	return (
+		<>
+			<div onClick={handleOnClick}>
+				{groupName} ({items.length})
+			</div>
+			{!collapsed && (
+				<>
+					{items.map((item) => (
+						<FileFolderRender
+							key={`${item.type}-${item.id}`}
+							item={item}
+							{...otherProps}
+						/>
+					))}
+				</>
+			)}
+		</>
+	);
+};
+
+const FileFolderRender = ({ item, files, folders }) => {
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+	} = useContext(FileExplorerContext);
+
+	const [record, setRecord] = useState({});
+
+	useEffect(() => {
+		const { id, type } = item;
+		let tempRecord;
+		if (type == 'folder')
+			tempRecord = folders.find((folder) => folder.id == id);
+		else if (type == 'file') tempRecord = files.find((file) => file.id == id);
+		setRecord(tempRecord);
+	}, [item, files, folders]);
+
+	const handleSelectFileFolderOnClick = (e, id, type) => {
+		e.stopPropagation(); // allows empty space to be clicked to clear all folders or files selected
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		let tempSelectedFolders;
+		let tempSelectedFiles;
+
+		if (type == 'folder') {
+			if (!localStorage.multiselect) {
+				tempSelectedFolders = [id];
+				tempSelectedFiles = [];
+			} else {
+				tempSelectedFiles = selectedFiles;
+				if (selectedFolders.includes(id)) {
+					tempSelectedFolders = [...selectedFolders];
+					const index = tempSelectedFolders.findIndex((el) => el == id);
+					tempSelectedFolders.splice(index, 1);
+				} else {
+					tempSelectedFolders = [...selectedFolders, id];
+				}
+			}
+		} else if (type == 'file') {
+			if (!localStorage.multiselect) {
+				tempSelectedFiles = [id];
+				tempSelectedFolders = [];
+			} else {
+				tempSelectedFolders = selectedFolders;
+				if (selectedFiles.includes(id)) {
+					tempSelectedFiles = [...selectedFiles];
+					const index = tempSelectedFiles.findIndex((el) => el == id);
+					tempSelectedFiles.splice(index, 1);
+				} else {
+					tempSelectedFiles = [...selectedFiles, id];
+				}
+			}
+		}
+
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: tempSelectedFiles },
+					selectedFolders: { $set: tempSelectedFolders },
+				},
+			})
+		);
+	};
+
+	const renderDate = (date) => {
+		if (!date) return '';
+		return new Date(date).toGMTString();
+	};
+
+	const renderProps = {
+		renderDate,
+		handleSelectFileFolderOnClick,
+		record,
+	};
+
+	return (
+		<>
+			{item.type == 'folder' && <RenderFolder {...renderProps} />}
+
+			{item.type == 'file' && <RenderFile {...renderProps} />}
+		</>
+	);
+};
+
+const RenderFolder = ({
+	record,
+	renderDate,
+	handleSelectFileFolderOnClick,
+}) => {
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+	} = useContext(FileExplorerContext);
+
+	const updateCurrentFolderId = (folderId) => {
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					path: { $push: [folderId] },
+					selectedFiles: { $set: [] }, // clears selected files
+					selectedFolders: { $set: [] }, // clears selected folders
+				},
+			})
+		);
+	};
+
+	return (
+		<FileUploadDiv folderId={record.id}>
+			<div
+				className={
+					'directoryLayoutFolder flex ' +
+					(tabsState[activeTabId].selectedFolders.includes(record.id)
+						? 'bg-zinc-500'
+						: '')
+				}
+				onClick={(e) => handleSelectFileFolderOnClick(e, record.id, 'folder')}
+				onDoubleClick={() => updateCurrentFolderId(record.id)}
+			>
+				<div style={{ width: '25%' }}>{record.folderName}</div>
+				<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
+				<div style={{ width: '25%' }}>File Folder</div>
+				<div style={{ width: '25%' }}></div>
+			</div>
+		</FileUploadDiv>
+	);
+};
+
+const RenderFile = ({ record, renderDate, handleSelectFileFolderOnClick }) => {
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+	} = useContext(FileExplorerContext);
+	const [extensionDetails, setExtensionDetails] = useState({});
+
+	useEffect(() => {
+		const { fileName } = record;
+		if (fileName) {
+			const extension = fileName.split('.').pop();
+			axiosClientFileExtension({
+				url: '/details',
+				method: 'GET',
+				params: {
+					extension,
+				},
+			}).then((res) => {
+				setExtensionDetails(res.data);
+			});
+		}
+	}, [record]);
+
+	const renderFilename = (filename = '') => {
+		const filenameSplit = filename.split('.');
+		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the filename should not be considered a extension
+		if (
+			localStorage.showFileExtensions ||
+			(!localStorage.showFileExtensions &&
+				localStorage.showHiddenItems &&
+				!filenameSplit[0])
+		) {
+			return filename;
+		} else {
+			return filenameSplit.slice(0, filenameSplit.length - 1).join('.');
+		}
+	};
+
+	return (
+		<div
+			className={
+				'directoryLayoutFolder flex ' +
+				(tabsState[activeTabId].selectedFiles.includes(record.id)
+					? 'bg-zinc-500'
+					: '')
+			}
+			onClick={(e) => handleSelectFileFolderOnClick(e, record.id, 'file')}
+		>
+			<div style={{ width: '25%' }}>{renderFilename(record.fileName)}</div>
+			<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
+			<div style={{ width: '25%' }}>{extensionDetails.fullName}</div>
+			<div style={{ width: '25%' }}>{formatBytes(record.size)}</div>
+		</div>
+	);
+};
