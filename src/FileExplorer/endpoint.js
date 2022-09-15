@@ -1,23 +1,24 @@
 import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 
-const graphql_endpoint = 'http://localhost:8080/v1/graphql';
-const file_endpoint = 'http://localhost:5000';
+const graphqlEndpoint = 'http://localhost:8080/v1/graphql';
+const backendEndpoint = 'http://localhost:5000';
+const fileExtensionEndpoint = 'http://localhost:4000';
 const token = JSON.parse(localStorage.getItem('profile'))?.token;
 
 // graphql mutation Login or Signup is of the 'anonymous' role and requires not authorization
-const graphql_headers = !token
+const graphqlHeaders = !token
 	? {}
 	: {
 			authorization: `Bearer ${token}`,
 	  };
-const graphQLClient = new GraphQLClient(graphql_endpoint, {
-	headers: graphql_headers,
+const graphQLClient = new GraphQLClient(graphqlEndpoint, {
+	headers: graphqlHeaders,
 });
 
 // https://stackoverflow.com/questions/51794553/how-do-i-create-configuration-for-axios-for-default-request-headers-in-every-htt
 const axiosClientFiles = axios.create({
-	baseURL: file_endpoint,
+	baseURL: backendEndpoint,
 	headers: {
 		'Content-Type': 'multipart/form-data; charset=utf-8',
 		authorization: `Bearer ${token}`,
@@ -25,11 +26,22 @@ const axiosClientFiles = axios.create({
 });
 
 const axiosClientJSON = axios.create({
-	baseURL: file_endpoint,
+	baseURL: backendEndpoint,
 	headers: {
 		'Content-Type': 'application/json',
 		authorization: `Bearer ${token}`,
 	},
 });
+const axiosClientFileExtension = axios.create({
+	baseURL: fileExtensionEndpoint,
+	// headers: {
+	// 	'Content-Type': 'application/json',
+	// },
+});
 
-export { graphQLClient, axiosClientFiles, axiosClientJSON };
+export {
+	graphQLClient,
+	axiosClientFiles,
+	axiosClientJSON,
+	axiosClientFileExtension,
+};

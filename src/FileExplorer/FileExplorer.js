@@ -21,6 +21,9 @@ const initialLocalStorageState = {
 	showHiddenItems: true,
 	showFileExtensions: false,
 	showDetailsPane: true,
+	layout: 'details',
+	sorting: {},
+	grouping: {},
 };
 
 const FileExplorer = () => {
