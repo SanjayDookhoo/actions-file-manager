@@ -10,9 +10,13 @@ import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
-import { formatBytes, getFolderId, update } from '../../utils/utils';
+import {
+	createBuckets,
+	formatBytes,
+	getFolderId,
+	update,
+} from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
-import { axiosClientFileExtension } from '../../endpoint';
 
 const initialVisibleColumns = {
 	name: true,
@@ -25,6 +29,7 @@ const initialVisibleColumns = {
 const DirectoryLayout = ({
 	files,
 	folders,
+	fileExtensionsMap,
 	setFolderArguments,
 	setFileArguments,
 }) => {
@@ -51,11 +56,34 @@ const DirectoryLayout = ({
 	 * ]
 	 */
 	const [filtered, setFiltered] = useState([]);
-	const [filteredSorted, setFilteredSorted] = useState([]);
-	const [filteredSortedGrouped, setFilteredSortedGrouped] = useState([]);
-	const [filteredSortedGroupListing, setFilteredSortedGroupListing] = useState(
-		[]
-	); // name and type
+	const [filteredGrouped, setFilteredGrouped] = useState({});
+	const [groupBuckets, setGroupBuckets] = useState({});
+
+	const { path } = tabsState[activeTabId];
+	const {
+		sortOrder = 'ascending',
+		sortBy = 'name',
+		groupOrder = 'ascending',
+		groupBy = 'none',
+	} = localStorage.folderSpecific?.[path] ?? {};
+
+	useEffect(() => {
+		if (groupBy != 'none' && groupBuckets[groupBy]) {
+			const orderedKeys = Object.keys(groupBuckets[groupBy]).sort((a, b) =>
+				groupOrder == 'ascending' ? a.localeCompare(b) : b.localeCompare(a)
+			);
+			const tempFilteredGroup = {};
+
+			orderedKeys.forEach((key) => {
+				tempFilteredGroup[key] = groupBuckets[groupBy][key];
+			});
+			setFilteredGrouped(tempFilteredGroup);
+		} else {
+			setFilteredGrouped({
+				noneGrouping: filtered,
+			});
+		}
+	}, [groupBy, groupOrder, groupBuckets, filtered]);
 
 	useEffect(() => {
 		const filteredFolders = folders.map((folder) => ({
@@ -67,33 +95,15 @@ const DirectoryLayout = ({
 	}, [files, folders]);
 
 	useEffect(() => {
-		setFilteredSorted([...filtered]);
-	}, [filtered]);
-
-	useEffect(() => {
-		const temp = {
-			test1: filteredSorted.slice(0, Math.floor(filteredSorted.length / 2)),
-			test2: filteredSorted.slice(
-				Math.floor(filteredSorted.length / 2),
-				filteredSorted.length
-			),
-		};
-		setFilteredSortedGrouped(temp);
-
-		// *****************************************************
-
-		// const grouping ={
-		// 	name: {},
-		// 	fileType: {},
-		// }
-		// filteredSorted.forEach(item => {
-		// 	const {id, type} = item
-		// 	if(type == 'file'){
-		// 		const file = files.find(file => file.id == id)
-		// 		if(f)
-		// 	}
-		// })
-	}, [filteredSorted]);
+		const bucket = createBuckets({
+			records: filtered,
+			files,
+			folders,
+			fileExtensionsMap,
+		});
+		console.log(bucket);
+		setGroupBuckets(bucket);
+	}, [filtered, fileExtensionsMap]);
 
 	const handleOnContextMenu = (e) => {
 		let target = e.target;
@@ -158,11 +168,8 @@ const DirectoryLayout = ({
 	const groupRenderProps = {
 		files,
 		folders,
+		fileExtensionsMap,
 	};
-
-	// useEffect(() => {
-	// 	console.log(filteredSortedGrouped);
-	// }, [filteredSortedGrouped]);
 
 	return (
 		<div
@@ -172,16 +179,14 @@ const DirectoryLayout = ({
 		>
 			<FileUploadDiv folderId={getFolderId({ tabsState, activeTabId })}>
 				<div>
-					{Object.entries(filteredSortedGrouped).map(
-						([groupName, items], i) => (
-							<GroupRender
-								key={i}
-								groupName={groupName}
-								items={items}
-								{...groupRenderProps}
-							/>
-						)
-					)}
+					{Object.entries(filteredGrouped).map(([groupName, items], i) => (
+						<GroupRender
+							key={i}
+							groupName={groupName}
+							items={items}
+							{...groupRenderProps}
+						/>
+					))}
 				</div>
 
 				<ControlledMenu
@@ -262,9 +267,11 @@ const GroupRender = ({ groupName, items, ...otherProps }) => {
 
 	return (
 		<>
-			<div onClick={handleOnClick}>
-				{groupName} ({items.length})
-			</div>
+			{groupName != 'noneGrouping' && (
+				<div onClick={handleOnClick}>
+					{groupName} ({items.length})
+				</div>
+			)}
 			{!collapsed && (
 				<>
 					{items.map((item) => (
@@ -280,7 +287,7 @@ const GroupRender = ({ groupName, items, ...otherProps }) => {
 	);
 };
 
-const FileFolderRender = ({ item, files, folders }) => {
+const FileFolderRender = ({ item, files, folders, fileExtensionsMap }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -358,11 +365,17 @@ const FileFolderRender = ({ item, files, folders }) => {
 		record,
 	};
 
+	const renderFileProps = {
+		fileExtensionsMap,
+	};
+
 	return (
 		<>
 			{item.type == 'folder' && <RenderFolder {...renderProps} />}
 
-			{item.type == 'file' && <RenderFile {...renderProps} />}
+			{item.type == 'file' && (
+				<RenderFile {...renderProps} {...renderFileProps} />
+			)}
 		</>
 	);
 };
@@ -414,7 +427,12 @@ const RenderFolder = ({
 	);
 };
 
-const RenderFile = ({ record, renderDate, handleSelectFileFolderOnClick }) => {
+const RenderFile = ({
+	record,
+	renderDate,
+	handleSelectFileFolderOnClick,
+	fileExtensionsMap,
+}) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -423,23 +441,6 @@ const RenderFile = ({ record, renderDate, handleSelectFileFolderOnClick }) => {
 		localStorage,
 		setLocalStorage,
 	} = useContext(FileExplorerContext);
-	const [extensionDetails, setExtensionDetails] = useState({});
-
-	useEffect(() => {
-		const { fileName } = record;
-		if (fileName) {
-			const extension = fileName.split('.').pop();
-			axiosClientFileExtension({
-				url: '/details',
-				method: 'GET',
-				params: {
-					extension,
-				},
-			}).then((res) => {
-				setExtensionDetails(res.data);
-			});
-		}
-	}, [record]);
 
 	const renderFilename = (filename = '') => {
 		const filenameSplit = filename.split('.');
@@ -468,7 +469,10 @@ const RenderFile = ({ record, renderDate, handleSelectFileFolderOnClick }) => {
 		>
 			<div style={{ width: '25%' }}>{renderFilename(record.fileName)}</div>
 			<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
-			<div style={{ width: '25%' }}>{extensionDetails.fullName}</div>
+			<div style={{ width: '25%' }}>
+				{record.fileName &&
+					fileExtensionsMap[record.fileName.split('.').pop()]?.fullName}
+			</div>
 			<div style={{ width: '25%' }}>{formatBytes(record.size)}</div>
 		</div>
 	);

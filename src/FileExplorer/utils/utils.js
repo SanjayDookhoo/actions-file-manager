@@ -35,194 +35,182 @@ export const getFolderId = ({ tabsState, activeTabId }) => {
 	return folderId;
 };
 
-const k = 1024;
+export const createBuckets = ({
+	records,
+	files,
+	folders,
+	fileExtensionsMap,
+}) => {
+	const bucket = {};
 
-// date memoizing to prevent multiple calls with the same value from being called multiple times
-let initialDateMemoizeObj = {
-	_aLongTimeAgo: {},
-	_earlierThisYear: {},
-	_lastMonth: {},
-	_earlierThisMonth: {},
-	_lastWeek: {},
-	_earlierThisWeek: {},
-	_yesterday: {},
-	_today: {},
-};
+	const _bucketPush = (bucketName, groupName, item) => {
+		if (!bucket[bucketName]) {
+			bucket[bucketName] = {};
+		}
+		if (!bucket[bucketName][groupName]) {
+			bucket[bucketName][groupName] = [];
+		}
+		bucket[bucketName][groupName].push(item);
+	};
+	const _earlierThisYear = (valDate) => {
+		const min = new Date();
+		min.setMonth(0);
+		min.setDate(1);
+		min.setHours(0, 0, 0, 0);
+		return valDate > min;
+	};
 
-const dateMemoize = {
-	dateMemoizeObj: { ...initialDateMemoizeObj },
-	date: new Date(),
-};
+	const _lastMonth = (valDate) => {
+		const min = new Date();
+		min.setMonth(min.getMonth() - 1);
+		min.setDate(1);
+		min.setHours(0, 0, 0, 0);
+		const max = new Date();
+		max.setDate(1);
+		max.setHours(0, 0, 0, 0);
+		return valDate > min && valDate < max;
+	};
 
-const dateMemoizeCheck = (condition, val) => {
-	const { date } = dateMemoize;
-	const currDate = new Date();
+	const _earlierThisMonth = (valDate) => {
+		const d = new Date();
+		d.setDate(1);
+		d.setHours(0, 0, 0, 0);
+		return valDate > d;
+	};
 
-	if (
-		date.getFullYear() != currDate.getFullYear() ||
-		date.getMonth() != currDate.getMonth() ||
-		date.getDay() != currDate.getDay()
-	) {
-		dateMemoize = {
-			dateMemoizeObj: { ...initialDateMemoizeObj },
-			date: currDate,
-		};
-	}
+	const _lastWeek = (valDate) => {
+		const max = new Date();
+		let day;
+		day = max.getDay();
+		max.setHours(0, 0, 0, 0);
+		max.setDate(max.getDate() - day);
 
-	return dateMemoize.dateMemoizeObj[condition]?.[val];
-};
+		const min = new Date();
+		day = min.getDay();
+		min.setHours(0, 0, 0, 0);
+		min.setDate(min.getDate() - day - 7);
 
-const _aLongTimeAgo = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_aLongTimeAgo', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
+		// within last week AND in this month
+		return (
+			valDate > min && valDate < max && min.getMonth() == valDate.getMonth()
+		);
+	};
 
-	return (dateMemoize.dateMemoizeObj['_aLongTimeAgo'][val] =
-		!_earlierThisYear(val) &&
-		!_lastMonth(val) &&
-		!_earlierThisMonth(val) &&
-		!_lastWeek(val) &&
-		!_earlierThisWeek(val) &&
-		!_yesterday(val) &&
-		!_today(val));
-};
+	const _earlierThisWeek = (valDate) => {
+		const d = new Date();
+		const day = d.getDay();
+		d.setHours(0, 0, 0, 0);
+		d.setDate(d.getDate() - day);
+		return valDate > d;
+	};
 
-const _earlierThisYear = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_earlierThisYear', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
+	const _yesterday = (valDate) => {
+		const d = new Date();
+		d.setDate(d.getDate() - 1);
+		return valDate.toDateString() == d.toDateString();
+	};
 
-	const valDate = new Date(val);
-	const min = new Date();
-	min.setMonth(0);
-	min.setDate(1);
-	min.setHours(0, 0, 0, 0);
-	return (dateMemoize.dateMemoizeObj['_earlierThisYear'][val] =
-		valDate > min &&
-		!_lastMonth(val) &&
-		!_earlierThisMonth(val) &&
-		!_lastWeek(val) &&
-		!_earlierThisWeek(val) &&
-		!_yesterday(val) &&
-		!_today(val));
-};
+	const _today = (valDate) => {
+		const d = new Date();
+		return valDate.toDateString() == d.toDateString();
+	};
 
-const _lastMonth = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_lastMonth', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
+	records.forEach((item) => {
+		const { id, type } = item;
+		// name
+		let name;
+		if (type == 'file') {
+			name = files.find((file) => file.id == id).fileName;
+		} else if (type == 'folder') {
+			name = folders.find((folder) => folder.id == id).folderName;
+		}
+		if (/[0-9]/.test(name.charAt(0))) {
+			_bucketPush('name', '0-9', item);
+		} else if (/[a-hA-H]/.test(name.charAt(0))) {
+			_bucketPush('name', 'A-H', item);
+		} else if (/[i-pI-P]/.test(name.charAt(0))) {
+			_bucketPush('name', 'I-P', item);
+		} else if (/[q-zQ-Z]/.test(name.charAt(0))) {
+			_bucketPush('name', 'Q-Z', item);
+		} else {
+			_bucketPush('name', 'Other', item);
+		}
 
-	const valDate = new Date(val);
-	const min = new Date();
-	min.setMonth(min.getMonth() - 1);
-	min.setDate(1);
-	min.setHours(0, 0, 0, 0);
-	const max = new Date();
-	max.setDate(1);
-	max.setHours(0, 0, 0, 0);
-	return (dateMemoize.dateMemoizeObj['_lastMonth'][val] =
-		valDate > min && valDate < max);
-};
+		// type
+		if (type == 'file') {
+			const file = files.find((file) => file.id == id);
+			const { fileName } = file;
+			const fileType = fileName.split('.').pop();
+			const fileTypeFullName = fileExtensionsMap[fileType]?.fullName;
+			if (fileTypeFullName) {
+				_bucketPush('type', fileTypeFullName, item);
+			} else {
+				_bucketPush('type', 'Other', item);
+			}
+		} else if (type == 'folder') {
+			_bucketPush('type', 'File folder', item);
+		}
 
-const _earlierThisMonth = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_earlierThisMonth', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
+		// date
+		// a week is treated as beginning on sunday and ending on saturday
+		const dateVariations = ['created', 'modified', 'lastAccessed'];
 
-	const valDate = new Date(val);
-	const d = new Date();
-	d.setDate(1);
-	d.setHours(0, 0, 0, 0);
-	return (dateMemoize.dateMemoizeObj['_earlierThisMonth'][val] =
-		valDate > d &&
-		!_lastWeek(val) &&
-		!_earlierThisWeek(val) &&
-		!_yesterday(val) &&
-		!_today(val));
-};
+		dateVariations.forEach((currDateVariation) => {
+			let _date;
+			if (type == 'file') {
+				_date = files.find((file) => file.id == id).meta[currDateVariation];
+			} else if (type == 'folder') {
+				_date = folders.find((folder) => folder.id == id).meta[
+					currDateVariation
+				];
+			}
+			const date = new Date(_date);
+			if (_today(date)) {
+				_bucketPush(currDateVariation, 'Today', item);
+			} else if (_yesterday(date)) {
+				_bucketPush(currDateVariation, 'Yesterday', item);
+			} else if (_earlierThisWeek(date)) {
+				_bucketPush(currDateVariation, 'Earlier this week', item);
+			} else if (_lastWeek(date)) {
+				_bucketPush(currDateVariation, 'Last week', item);
+			} else if (_earlierThisMonth(date)) {
+				_bucketPush(currDateVariation, 'Earlier this month', item);
+			} else if (_lastMonth(date)) {
+				_bucketPush(currDateVariation, 'Last Month', item);
+			} else if (_earlierThisYear(date)) {
+				_bucketPush(currDateVariation, 'Earlier this year', item);
+			} else {
+				_bucketPush(currDateVariation, 'A long time ago', item);
+			}
+		});
 
-const _lastWeek = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_lastWeek', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
+		// size
+		if (type == 'file') {
+			const k = 1024;
+			const file = files.find((file) => file.id == id);
+			const { size } = file;
 
-	const valDate = new Date(val);
-	const max = new Date();
-	let day;
-	day = max.getDay();
-	max.setHours(0, 0, 0, 0);
-	max.setDate(max.getDate() - day);
+			if (size == 0) {
+				_bucketPush('size', 'Empty (0KB)', item);
+			} else if (size <= 16 * k) {
+				_bucketPush('size', 'Tiny (0 - 16 KB)', item);
+			} else if (size <= k * k) {
+				_bucketPush('size', 'Small (16KB - 1 MB)', item);
+			} else if (size <= 128 * k * k) {
+				_bucketPush('size', 'Medium (1 - 128 MB)', item);
+			} else if (size <= k * k * k) {
+				_bucketPush('size', 'Large (128 MB - 1 GB)', item);
+			} else if (size <= 4 * k * k * k) {
+				_bucketPush('size', 'Huge (1 - 4 GB)', item);
+			} else {
+				_bucketPush('size', 'Gigantic (> 4GB)', item);
+			}
+		} else if (type == 'folder') {
+			_bucketPush('size', 'Unspecified', item);
+		}
+	});
 
-	const min = new Date();
-	day = min.getDay();
-	min.setHours(0, 0, 0, 0);
-	min.setDate(min.getDate() - day - 7);
-
-	// within last week AND in this month
-	return (dateMemoize.dateMemoizeObj['_lastWeek'][val] =
-		valDate > min && valDate < max && min.getMonth() == valDate.getMonth());
-};
-
-const _earlierThisWeek = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_earlierThisWeek', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
-
-	const valDate = new Date(val);
-	const d = new Date();
-	const day = d.getDay();
-	d.setHours(0, 0, 0, 0);
-	d.setDate(d.getDate() - day);
-	return (dateMemoize.dateMemoizeObj['_earlierThisWeek'][val] =
-		valDate > d && !_yesterday(val) && !_today(val));
-};
-
-const _yesterday = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_yesterday', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
-
-	const valDate = new Date(val);
-	const d = new Date();
-	d.setDate(d.getDate() - 1);
-	return (dateMemoize.dateMemoizeObj['_yesterday'][val] =
-		valDate.toDateString() == d.toDateString());
-};
-
-const _today = (val) => {
-	const dateMemoizeCheckVal = dateMemoizeCheck('_today', val);
-	if (dateMemoizeCheckVal != undefined) return dateMemoizeCheckVal;
-
-	const valDate = new Date(val);
-	const d = new Date();
-	return (dateMemoize.dateMemoizeObj['_today'][val] =
-		valDate.toDateString() == d.toDateString());
-};
-
-export const conditions = {
-	name: {
-		'0-9': (val) => val == /[0-9]/.test(val.charAt(0)),
-		'A-H': (val) => val == /[a-hA-H]/.test(val.charAt(0)),
-		'I-P': (val) => val == /[i-pI-P]/.test(val.charAt(0)),
-		'Q-Z': (val) => val == /[q-zQ-Z]/.test(val.charAt(0)),
-		Other: (val) => val == /[0-9a-hA-Hi-pI-Pq-zQ-Z]/.test(val.charAt(0)),
-	},
-	// a week is treated as beginning on sunday and ending on saturday
-	date: {
-		// 'Select a date or date range': (val, dateRange) => val == 0,
-		'A long time ago': _aLongTimeAgo,
-		'Earlier this year': _earlierThisYear,
-		'Last month': _lastMonth,
-		'Earlier this month': _earlierThisMonth,
-		'Last week': _lastWeek,
-		'Earlier this week': _earlierThisWeek,
-		Yesterday: _yesterday,
-		Today: _today,
-	},
-	// type: {},
-	size: {
-		'Empty (0KB)': (val) => val == 0,
-		'Tiny (0 - 16 KB)': (val) => val > 0 && val <= 16 * k,
-		'Small (16KB - 1 MB)': (val) => val > 16 * k && val <= k * k,
-		'Medium (1 - 128 MB)': (val) => val > k * k && val <= 128 * k * k,
-		'Large (128 MB - 1 GB)': (val) => val > 128 * k * k && val <= k * k * k,
-		'Huge (1 - 4 GB)': (val) => val > k * k * k && val <= 4 * k * k * k,
-		'Gigantic (> 4GB)': (val) => val > 4 * k * k * k,
-		Unspecified: (val) => val == null,
-	},
+	return bucket;
 };
 
 export const formatBytes = (bytes, decimals = 2) => {

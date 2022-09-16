@@ -6,6 +6,8 @@ import DetailsPane from './DetailsPane/DetailsPane';
 import { FileExplorerContext } from '../FileExplorer';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
+import { axiosClientFileExtension } from '../endpoint';
+import { getFileExtensionDetails } from '../utils/utils';
 
 const DirectoryView = () => {
 	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);
@@ -18,6 +20,7 @@ const DirectoryView = () => {
 		initialFolderArguments
 	);
 	const [fileArguments, setFileArguments] = useState(initialFileArguments);
+	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
 
 	const folderSubscriptionGraphql = gql`
 		subscription {
@@ -50,6 +53,35 @@ const DirectoryView = () => {
 	const { data: _files } = useSubscription(fileSubscriptionGraphql);
 	const files = _files?.file ?? [];
 
+	useEffect(() => {
+		const promises = [];
+		const fileExtensions = files
+			.filter((file) => file.fileName.split('.')[0])
+			.map((file) => file.fileName.split('.').pop());
+		const fileExtensionsUnique = [...new Set(fileExtensions)];
+		const tempFileExtensionsMap = {};
+
+		for (const extension of fileExtensionsUnique) {
+			promises.push(
+				axiosClientFileExtension({
+					url: '/details',
+					method: 'GET',
+					params: {
+						extension,
+					},
+				})
+			);
+		}
+
+		// TODO: what if a file type is tried to be gotten and fails?
+		Promise.all(promises).then(async (allResponses) => {
+			allResponses.forEach((response, i) => {
+				tempFileExtensionsMap[fileExtensionsUnique[i]] = response.data;
+				setFileExtensionsMap(tempFileExtensionsMap);
+			});
+		});
+	}, [files]);
+
 	// useEffect(() => {
 	// 	console.log(folders, files);
 	// }, [folders, files]);
@@ -59,6 +91,7 @@ const DirectoryView = () => {
 		setFileArguments,
 		folders,
 		files,
+		fileExtensionsMap,
 	};
 
 	return (
