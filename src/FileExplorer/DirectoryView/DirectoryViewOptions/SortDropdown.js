@@ -127,23 +127,27 @@ const SortDropdown = () => {
 					<FileMenuItemGroup />
 				</MenuRadioGroup>
 
-				<MenuDivider />
+				{groupBy != 'none' && (
+					<>
+						<MenuDivider />
 
-				<MenuRadioGroup
-					value={groupOrder}
-					onRadioChange={(e) => setGroupOrder(e.value)}
-				>
-					<FileMenuItem
-						description="Ascending"
-						type="radio"
-						value="ascending"
-					/>
-					<FileMenuItem
-						description="Descending"
-						type="radio"
-						value="descending"
-					/>
-				</MenuRadioGroup>
+						<MenuRadioGroup
+							value={groupOrder}
+							onRadioChange={(e) => setGroupOrder(e.value)}
+						>
+							<FileMenuItem
+								description="Ascending"
+								type="radio"
+								value="ascending"
+							/>
+							<FileMenuItem
+								description="Descending"
+								type="radio"
+								value="descending"
+							/>
+						</MenuRadioGroup>
+					</>
+				)}
 			</FileSubMenu>
 		</Menu>
 	);

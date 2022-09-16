@@ -12,6 +12,7 @@ import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import {
 	createBuckets,
+	dateVariations,
 	formatBytes,
 	getFolderId,
 	update,
@@ -69,9 +70,8 @@ const DirectoryLayout = ({
 
 	useEffect(() => {
 		if (groupBy != 'none' && groupBuckets[groupBy]) {
-			const orderedKeys = Object.keys(groupBuckets[groupBy]).sort((a, b) =>
-				groupOrder == 'ascending' ? a.localeCompare(b) : b.localeCompare(a)
-			);
+			let orderedKeys = Object.keys(groupBuckets[groupBy]);
+			if (sortOrder == 'descending') orderedKeys = [...orderedKeys].reverse();
 			const tempFilteredGroup = {};
 
 			orderedKeys.forEach((key) => {
@@ -256,12 +256,94 @@ const DirectoryLayout = ({
 
 export default DirectoryLayout;
 
-const GroupRender = ({ groupName, items, ...otherProps }) => {
+const GroupRender = ({
+	groupName,
+	items,
+	files,
+	folders,
+	fileExtensionsMap,
+	...otherProps
+}) => {
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+	} = useContext(FileExplorerContext);
+	const { path } = tabsState[activeTabId];
+	const {
+		sortOrder = 'ascending',
+		sortBy = 'name',
+		groupOrder = 'ascending',
+		groupBy = 'none',
+	} = localStorage.folderSpecific?.[path] ?? {};
 	const [collapsed, setCollapsed] = useState(false);
+	const [itemsSorted, setItemsSorted] = useState([]);
+
+	useEffect(() => {
+		const handleSort = (_a, _b) => {
+			if (!fileExtensionsMap) {
+				return true;
+			}
+			const recordA = getRecord(_a);
+			const recordB = getRecord(_b);
+
+			if (sortBy == 'name') {
+				const a = recordA[sortBy];
+				const b = recordB[sortBy];
+				const compare = a.localeCompare(b);
+				return compare * (sortOrder == 'ascending' ? 1 : -1);
+			} else if (dateVariations.includes(sortBy)) {
+				const a = recordA.meta[sortBy];
+				const b = recordB.meta[sortBy];
+				const compare = new Date(a) - new Date(b);
+				return compare * (sortOrder == 'ascending' ? 1 : -1);
+			} else if (sortBy == 'size') {
+				const a = recordA[sortBy];
+				const b = recordB[sortBy];
+				const compare = a - b;
+				return compare * (sortOrder == 'ascending' ? 1 : -1);
+			} else if (sortBy == 'type') {
+				const aExt = recordA.name.split('.').pop();
+				const bExt = recordB.name.split('.').pop();
+				let a =
+					_a.type == 'folder'
+						? 'File folder'
+						: fileExtensionsMap?.[aExt]?.fullName;
+				let b =
+					_b.type == 'folder'
+						? 'File folder'
+						: fileExtensionsMap?.[bExt]?.fullName;
+				a = a ? a : aExt.toUpperCase() + ' File';
+				b = b ? b : bExt.toUpperCase() + ' File';
+				const compare = a.localeCompare(b);
+				return compare * (sortOrder == 'ascending' ? 1 : -1);
+			}
+		};
+
+		const tempItemsSorted = [...items].sort(handleSort);
+		setItemsSorted(tempItemsSorted);
+	}, [items, sortBy, sortOrder, fileExtensionsMap]);
 
 	const handleOnClick = (e) => {
 		e.stopPropagation();
 		setCollapsed(!collapsed);
+	};
+
+	const getRecord = (item) => {
+		const { id, type } = item;
+		let record;
+		if (type == 'folder') record = folders.find((folder) => folder.id == id);
+		else if (type == 'file') record = files.find((file) => file.id == id);
+		return record;
+	};
+
+	const fileFolderRenderProps = {
+		getRecord,
+		fileExtensionsMap,
+		...otherProps,
 	};
 
 	return (
@@ -273,11 +355,11 @@ const GroupRender = ({ groupName, items, ...otherProps }) => {
 			)}
 			{!collapsed && (
 				<>
-					{items.map((item) => (
+					{itemsSorted.map((item) => (
 						<FileFolderRender
 							key={`${item.type}-${item.id}`}
 							item={item}
-							{...otherProps}
+							{...fileFolderRenderProps}
 						/>
 					))}
 				</>
@@ -286,7 +368,7 @@ const GroupRender = ({ groupName, items, ...otherProps }) => {
 	);
 };
 
-const FileFolderRender = ({ item, files, folders, fileExtensionsMap }) => {
+const FileFolderRender = ({ item, getRecord, fileExtensionsMap }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -299,13 +381,8 @@ const FileFolderRender = ({ item, files, folders, fileExtensionsMap }) => {
 	const [record, setRecord] = useState({});
 
 	useEffect(() => {
-		const { id, type } = item;
-		let tempRecord;
-		if (type == 'folder')
-			tempRecord = folders.find((folder) => folder.id == id);
-		else if (type == 'file') tempRecord = files.find((file) => file.id == id);
-		setRecord(tempRecord);
-	}, [item, files, folders]);
+		setRecord(getRecord(item));
+	}, [item]);
 
 	const handleSelectFileFolderOnClick = (e, id, type) => {
 		e.stopPropagation(); // allows empty space to be clicked to clear all folders or files selected
@@ -358,7 +435,18 @@ const FileFolderRender = ({ item, files, folders, fileExtensionsMap }) => {
 		return new Date(date).toGMTString();
 	};
 
+	const renderType = (record) => {
+		if (record.__typename == 'Folder') {
+			return 'File folder';
+		} else {
+			const ext = (record.name ?? '').split('.').pop();
+			let fullName = fileExtensionsMap?.[ext]?.fullName;
+			return fullName ? fullName : ext.toUpperCase() + ' file';
+		}
+	};
+
 	const renderProps = {
+		renderType,
 		renderDate,
 		handleSelectFileFolderOnClick,
 		record,
@@ -386,6 +474,7 @@ const FileFolderRender = ({ item, files, folders, fileExtensionsMap }) => {
 const RenderFolder = ({
 	record,
 	renderDate,
+	renderType,
 	handleSelectFileFolderOnClick,
 }) => {
 	const {
@@ -423,7 +512,7 @@ const RenderFolder = ({
 			>
 				<div style={{ width: '25%' }}>{record.name}</div>
 				<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
-				<div style={{ width: '25%' }}>File Folder</div>
+				<div style={{ width: '25%' }}>{renderType(record)}</div>
 				<div style={{ width: '25%' }}></div>
 			</div>
 		</FileUploadDiv>
@@ -433,6 +522,7 @@ const RenderFolder = ({
 const RenderFile = ({
 	record,
 	renderDate,
+	renderType,
 	handleSelectFileFolderOnClick,
 	fileExtensionsMap,
 }) => {
@@ -472,10 +562,7 @@ const RenderFile = ({
 		>
 			<div style={{ width: '25%' }}>{renderFileName(record.name)}</div>
 			<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
-			<div style={{ width: '25%' }}>
-				{record.name &&
-					fileExtensionsMap[record.name.split('.').pop()]?.fullName}
-			</div>
+			<div style={{ width: '25%' }}>{renderType(record)}</div>
 			<div style={{ width: '25%' }}>{formatBytes(record.size)}</div>
 		</div>
 	);

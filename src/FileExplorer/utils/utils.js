@@ -145,7 +145,7 @@ export const createBuckets = ({
 			if (fileTypeFullName) {
 				_bucketPush('type', fileTypeFullName, item);
 			} else {
-				_bucketPush('type', 'Other', item);
+				_bucketPush('type', fileType.toUpperCase() + ' File', item);
 			}
 		} else if (type == 'folder') {
 			_bucketPush('type', 'File folder', item);
@@ -153,8 +153,6 @@ export const createBuckets = ({
 
 		// date
 		// a week is treated as beginning on sunday and ending on saturday
-		const dateVariations = ['created', 'modified', 'lastAccessed'];
-
 		dateVariations.forEach((currDateVariation) => {
 			let _date;
 			if (type == 'file') {
@@ -224,3 +222,5 @@ export const formatBytes = (bytes, decimals = 2) => {
 
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
+
+export const dateVariations = ['created', 'modified', 'lastAccessed'];

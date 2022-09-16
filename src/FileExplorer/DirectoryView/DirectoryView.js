@@ -28,6 +28,8 @@ const DirectoryView = () => {
 				name
 				meta {
 					modified
+					created
+					lastAccessed
 				}
 			}
 		}
@@ -41,6 +43,8 @@ const DirectoryView = () => {
 				size
 				meta {
 					modified
+					created
+					lastAccessed
 				}
 			}
 		}
