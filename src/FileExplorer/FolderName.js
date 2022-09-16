@@ -8,7 +8,7 @@ const FolderName = ({ folderId }) => {
 	const query = gql`
 		query {
 			folderByPk(${objectToGraphqlArgs(queryArguments)}) {
-				folderName
+				name
 			}
 		}
 	`;
@@ -17,11 +17,7 @@ const FolderName = ({ folderId }) => {
 
 	return (
 		<div>
-			{Number.isInteger(folderId) ? (
-				<>{data?.folderByPk?.folderName}</>
-			) : (
-				folderId
-			)}
+			{Number.isInteger(folderId) ? <>{data?.folderByPk?.name}</> : folderId}
 		</div>
 	);
 };

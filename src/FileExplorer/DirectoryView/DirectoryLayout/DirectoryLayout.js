@@ -143,11 +143,11 @@ const DirectoryLayout = ({
 		}
 	}, [tabsState, activeTabId]);
 
-	const fileFolderFilter = (record, type) => {
+	const fileFolderFilter = (record) => {
 		if (localStorage.showHiddenItems) {
 			return true;
 		} else {
-			const name = record[`${type}Name`]; // fileName || folderName
+			const name = record.name;
 			const nameSplit = name.split('.');
 			return nameSplit[0];
 		}
@@ -417,7 +417,7 @@ const RenderFolder = ({
 				onClick={(e) => handleSelectFileFolderOnClick(e, record.id, 'folder')}
 				onDoubleClick={() => updateCurrentFolderId(record.id)}
 			>
-				<div style={{ width: '25%' }}>{record.folderName}</div>
+				<div style={{ width: '25%' }}>{record.name}</div>
 				<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
 				<div style={{ width: '25%' }}>File Folder</div>
 				<div style={{ width: '25%' }}></div>
@@ -441,18 +441,18 @@ const RenderFile = ({
 		setLocalStorage,
 	} = useContext(FileExplorerContext);
 
-	const renderFilename = (filename = '') => {
-		const filenameSplit = filename.split('.');
-		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the filename should not be considered a extension
+	const renderFileName = (name = '') => {
+		const nameSplit = name.split('.');
+		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the name should not be considered a extension
 		if (
 			localStorage.showFileExtensions ||
 			(!localStorage.showFileExtensions &&
 				localStorage.showHiddenItems &&
-				!filenameSplit[0])
+				!nameSplit[0])
 		) {
-			return filename;
+			return name;
 		} else {
-			return filenameSplit.slice(0, filenameSplit.length - 1).join('.');
+			return nameSplit.slice(0, nameSplit.length - 1).join('.');
 		}
 	};
 
@@ -466,11 +466,11 @@ const RenderFile = ({
 			}
 			onClick={(e) => handleSelectFileFolderOnClick(e, record.id, 'file')}
 		>
-			<div style={{ width: '25%' }}>{renderFilename(record.fileName)}</div>
+			<div style={{ width: '25%' }}>{renderFileName(record.name)}</div>
 			<div style={{ width: '25%' }}>{renderDate(record.meta?.modified)}</div>
 			<div style={{ width: '25%' }}>
-				{record.fileName &&
-					fileExtensionsMap[record.fileName.split('.').pop()]?.fullName}
+				{record.name &&
+					fileExtensionsMap[record.name.split('.').pop()]?.fullName}
 			</div>
 			<div style={{ width: '25%' }}>{formatBytes(record.size)}</div>
 		</div>

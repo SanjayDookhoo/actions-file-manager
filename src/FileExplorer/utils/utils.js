@@ -120,9 +120,9 @@ export const createBuckets = ({
 		// name
 		let name;
 		if (type == 'file') {
-			name = files.find((file) => file.id == id).fileName;
+			name = files.find((file) => file.id == id).name;
 		} else if (type == 'folder') {
-			name = folders.find((folder) => folder.id == id).folderName;
+			name = folders.find((folder) => folder.id == id).name;
 		}
 		if (/[0-9]/.test(name.charAt(0))) {
 			_bucketPush('name', '0-9', item);
@@ -139,8 +139,8 @@ export const createBuckets = ({
 		// type
 		if (type == 'file') {
 			const file = files.find((file) => file.id == id);
-			const { fileName } = file;
-			const fileType = fileName.split('.').pop();
+			const { name } = file;
+			const fileType = name.split('.').pop();
 			const fileTypeFullName = fileExtensionsMap[fileType]?.fullName;
 			if (fileTypeFullName) {
 				_bucketPush('type', fileTypeFullName, item);

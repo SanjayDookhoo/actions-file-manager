@@ -44,13 +44,13 @@ const NewDropdown = () => {
 
 	const handleNewFolderOnClick = (e) => {
 		const folderId = getFolderId({ tabsState, activeTabId });
-		const folderName = prompt('Enter folder name', '');
-		if (folderName) {
+		const name = prompt('Enter folder name', '');
+		if (name) {
 			const res = axiosClientJSON({
 				url: '/createNewFolder',
 				method: 'POST',
 				data: {
-					folderName,
+					name,
 					parentFolderId: folderId,
 				},
 			});

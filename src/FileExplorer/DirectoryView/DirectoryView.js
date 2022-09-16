@@ -25,7 +25,7 @@ const DirectoryView = () => {
 		subscription {
 			folder(${objectToGraphqlArgs(folderArguments)}) {
 				id
-				folderName
+				name
 				meta {
 					modified
 				}
@@ -37,7 +37,7 @@ const DirectoryView = () => {
 		subscription {
 			file(${objectToGraphqlArgs(fileArguments)}) {
 				id
-				fileName
+				name
 				size
 				meta {
 					modified
@@ -55,8 +55,8 @@ const DirectoryView = () => {
 	useEffect(() => {
 		const promises = [];
 		const fileExtensions = files
-			.filter((file) => file.fileName.split('.')[0])
-			.map((file) => file.fileName.split('.').pop());
+			.filter((file) => file.name.split('.')[0])
+			.map((file) => file.name.split('.').pop());
 		const fileExtensionsUnique = [...new Set(fileExtensions)];
 		const tempFileExtensionsMap = {};
 
