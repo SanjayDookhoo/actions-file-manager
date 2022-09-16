@@ -79,8 +79,10 @@ const DirectoryView = () => {
 		// TODO: what if a file type is tried to be gotten and fails?
 		Promise.all(promises).then(async (allResponses) => {
 			allResponses.forEach((response, i) => {
-				tempFileExtensionsMap[fileExtensionsUnique[i]] = response.data;
-				setFileExtensionsMap(tempFileExtensionsMap);
+				if (response.status == 200) {
+					tempFileExtensionsMap[fileExtensionsUnique[i]] = response.data;
+					setFileExtensionsMap(tempFileExtensionsMap);
+				}
 			});
 		});
 	}, [files]);
