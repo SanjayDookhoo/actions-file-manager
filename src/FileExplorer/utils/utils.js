@@ -224,3 +224,10 @@ export const formatBytes = (bytes, decimals = 2) => {
 };
 
 export const dateVariations = ['created', 'modified', 'lastAccessed'];
+
+export const camelCaseToPhrase = (s) => {
+	s = s.replace(/([A-Z])/g, ' $1').trim(); // Insert space before capital letters
+	s = s.toLowerCase();
+	s = s.charAt(0).toUpperCase() + s.slice(1); // capitalize first letter
+	return s;
+};

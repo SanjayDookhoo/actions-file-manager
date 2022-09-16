@@ -15,6 +15,8 @@ import SortDropdown from './SortDropdown';
 import SelectionDropdown from './SelectionDropdown';
 import LayoutDropdown from './LayoutDropdown';
 import NewDropdown from './NewDropdown';
+import GroupDropdown from './GroupDropdown';
+import FilterContext from './FilterContext';
 
 const DirectoryViewOptions = (props) => {
 	return (
@@ -25,7 +27,9 @@ const DirectoryViewOptions = (props) => {
 			</div>
 			<div className="flex">
 				<SelectionDropdown {...props} />
+				<FilterContext {...props} />
 				<SortDropdown />
+				<GroupDropdown />
 				<LayoutDropdown />
 			</div>
 		</div>

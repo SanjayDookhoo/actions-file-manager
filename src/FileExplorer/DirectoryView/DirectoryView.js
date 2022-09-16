@@ -20,6 +20,7 @@ const DirectoryView = () => {
 	);
 	const [fileArguments, setFileArguments] = useState(initialFileArguments);
 	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
+	const [filtered, setFiltered] = useState([]);
 
 	const folderSubscriptionGraphql = gql`
 		subscription {
@@ -97,6 +98,8 @@ const DirectoryView = () => {
 		folders,
 		files,
 		fileExtensionsMap,
+		filtered,
+		setFiltered,
 	};
 
 	return (

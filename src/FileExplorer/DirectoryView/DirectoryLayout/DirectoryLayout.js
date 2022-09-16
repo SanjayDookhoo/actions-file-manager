@@ -33,6 +33,8 @@ const DirectoryLayout = ({
 	fileExtensionsMap,
 	setFolderArguments,
 	setFileArguments,
+	filtered,
+	setFiltered,
 }) => {
 	const {
 		tabsState,
@@ -56,7 +58,6 @@ const DirectoryLayout = ({
 	 * 		}
 	 * ]
 	 */
-	const [filtered, setFiltered] = useState([]);
 	const [filteredGrouped, setFilteredGrouped] = useState({});
 	const [groupBuckets, setGroupBuckets] = useState({});
 
@@ -84,15 +85,6 @@ const DirectoryLayout = ({
 			});
 		}
 	}, [groupBy, groupOrder, groupBuckets, filtered]);
-
-	useEffect(() => {
-		const filteredFolders = folders.map((folder) => ({
-			id: folder.id,
-			type: 'folder',
-		}));
-		const filteredFiles = files.map((file) => ({ id: file.id, type: 'file' }));
-		setFiltered([...filteredFolders, ...filteredFiles]);
-	}, [files, folders]);
 
 	useEffect(() => {
 		const bucket = createBuckets({

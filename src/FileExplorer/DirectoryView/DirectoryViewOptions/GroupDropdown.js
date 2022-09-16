@@ -15,7 +15,7 @@ import { update } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
 import FileMenuItemGroup from './FileMenuItemGroup';
 
-const SortDropdown = () => {
+const GroupDropdown = () => {
 	const {
 		tabsState,
 		setTabsState,
@@ -45,8 +45,8 @@ const SortDropdown = () => {
 		);
 	};
 
-	const setSortOrder = (val) => {
-		const sortOrder = val;
+	const setGroupOrder = (val) => {
+		const groupOrder = val;
 		setLocalStorageFolderSpecific({
 			sortOrder,
 			sortBy,
@@ -55,8 +55,8 @@ const SortDropdown = () => {
 		});
 	};
 
-	const setSortBy = (val) => {
-		const sortBy = val;
+	const setGroupBy = (val) => {
+		const groupBy = val;
 		setLocalStorageFolderSpecific({
 			sortOrder,
 			sortBy,
@@ -68,30 +68,42 @@ const SortDropdown = () => {
 	return (
 		<Menu
 			menuButton={
-				<a title="Sort">
-					<span className={buttonStyle}>swap_vert</span>
+				<a title="Group">
+					<span className={buttonStyle}>dvr</span>
 				</a>
 			}
 		>
-			<MenuRadioGroup value={sortBy} onRadioChange={(e) => setSortBy(e.value)}>
+			<MenuRadioGroup
+				value={groupBy}
+				onRadioChange={(e) => setGroupBy(e.value)}
+			>
+				<FileMenuItem description="None" type="radio" value="none" />
 				<FileMenuItemGroup />
 			</MenuRadioGroup>
 
-			<MenuDivider />
+			{groupBy != 'none' && (
+				<>
+					<MenuDivider />
 
-			<MenuRadioGroup
-				value={sortOrder}
-				onRadioChange={(e) => setSortOrder(e.value)}
-			>
-				<FileMenuItem description="Ascending" type="radio" value="ascending" />
-				<FileMenuItem
-					description="Descending"
-					type="radio"
-					value="descending"
-				/>
-			</MenuRadioGroup>
+					<MenuRadioGroup
+						value={groupOrder}
+						onRadioChange={(e) => setGroupOrder(e.value)}
+					>
+						<FileMenuItem
+							description="Ascending"
+							type="radio"
+							value="ascending"
+						/>
+						<FileMenuItem
+							description="Descending"
+							type="radio"
+							value="descending"
+						/>
+					</MenuRadioGroup>
+				</>
+			)}
 		</Menu>
 	);
 };
 
-export default SortDropdown;
+export default GroupDropdown;
