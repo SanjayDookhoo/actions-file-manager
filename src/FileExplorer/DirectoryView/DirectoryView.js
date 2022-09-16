@@ -7,7 +7,6 @@ import { FileExplorerContext } from '../FileExplorer';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
 import { axiosClientFileExtension } from '../endpoint';
-import { getFileExtensionDetails } from '../utils/utils';
 
 const DirectoryView = () => {
 	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);

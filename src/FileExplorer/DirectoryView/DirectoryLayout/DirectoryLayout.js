@@ -101,7 +101,6 @@ const DirectoryLayout = ({
 			folders,
 			fileExtensionsMap,
 		});
-		console.log(bucket);
 		setGroupBuckets(bucket);
 	}, [filtered, fileExtensionsMap]);
 
