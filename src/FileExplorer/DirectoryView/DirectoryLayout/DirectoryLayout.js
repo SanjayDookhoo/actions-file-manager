@@ -370,10 +370,14 @@ const FileFolderRender = ({ item, files, folders, fileExtensionsMap }) => {
 
 	return (
 		<>
-			{item.type == 'folder' && <RenderFolder {...renderProps} />}
+			{record && (
+				<>
+					{item.type == 'folder' && <RenderFolder {...renderProps} />}
 
-			{item.type == 'file' && (
-				<RenderFile {...renderProps} {...renderFileProps} />
+					{item.type == 'file' && (
+						<RenderFile {...renderProps} {...renderFileProps} />
+					)}
+				</>
 			)}
 		</>
 	);
