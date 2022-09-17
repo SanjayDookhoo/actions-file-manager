@@ -59,33 +59,37 @@ const FilterContext = ({
 		setGroupBuckets(bucket);
 	}, [files, folders, fileExtensionsMap]);
 
+	// setFiltered is called in here, this limits the actual amount of records shown
 	useEffect(() => {
-		const tempGroupBuckets = { ...groupBuckets };
-
+		// for each groupName, it will include only the filterOptions that the filter allows
+		// no filter applied to a groupName means all filterOptions will be shown
+		const groupBurcketsFilterSelected = { ...groupBuckets };
 		Object.entries(filterSelected).forEach(([groupName, filterOptionKeys]) => {
-			tempGroupBuckets[groupName] = {}; // clear all
+			groupBurcketsFilterSelected[groupName] = {}; // clear all
 
 			filterOptionKeys.forEach((filterOptionKey) => {
-				tempGroupBuckets[groupName] = {
-					...tempGroupBuckets[groupName],
+				groupBurcketsFilterSelected[groupName] = {
+					...groupBurcketsFilterSelected[groupName],
 					[filterOptionKey]: groupBuckets[groupName][filterOptionKey],
 				};
 			});
 		});
 
+		// for each groupName, all the filterOptions arrays are merged into one single array of records the filter allows
 		const inclusion = {};
-		Object.entries(tempGroupBuckets).forEach(([groupName, filterOptions]) => {
-			let temp = [];
+		Object.entries(groupBurcketsFilterSelected).forEach(
+			([groupName, filterOptions]) => {
+				let temp = [];
 
-			Object.values(filterOptions).forEach((value) => {
-				temp = [...temp, ...Object.values(value)];
-			});
-			inclusion[groupName] = [...new Set(temp)];
-		});
+				Object.values(filterOptions).forEach((value) => {
+					temp = [...temp, ...Object.values(value)];
+				});
+				inclusion[groupName] = [...new Set(temp)];
+			}
+		);
 
-		console.log(inclusion);
+		// create final array of items created here, the smallest array of groupName is chosen, where each value in that array is compared with the other groups, if the value exists in all other groups, then it is allowed to be shown
 
-		// create final array of items
 		// choose array of the smallest length to start with
 		let smallestGroupName;
 		let smallestGroupSize;
@@ -99,7 +103,7 @@ const FilterContext = ({
 			}
 		});
 
-		// may not yet have data to give a value to smallestGroupName
+		// may not yet have data to give a value to smallestGroupName, based on how the useEffects are executed
 		if (smallestGroupName) {
 			const finalList = [];
 			inclusion[smallestGroupName].forEach((el) => {
@@ -124,24 +128,29 @@ const FilterContext = ({
 		const tempFilterSelected = { ...filterSelected };
 		let tempGroupName = tempFilterSelected[groupName];
 
+		// if no property of groupName, create it and add filterOption
 		if (!tempGroupName) {
 			tempFilterSelected[groupName] = [filterOption];
 			setFilterSelected(tempFilterSelected);
 		} else {
 			tempGroupName = [...tempGroupName];
+
 			if (tempGroupName.includes(filterOption)) {
 				const index = tempGroupName.indexOf(filterOption);
 				tempGroupName.splice(index, 1);
+				// needs to be removed, but if its removed, and the property now has no items, the entire property should be removed, because an empty group name property is treated as all selected
 				if (tempGroupName.length == 0) {
 					delete tempFilterSelected[groupName];
 					setFilterSelected(tempFilterSelected);
 				} else {
+					// just remove filterOption and update state
 					setFilterSelected({
 						...tempFilterSelected,
 						[groupName]: tempGroupName,
 					});
 				}
 			} else {
+				// property of groupName, does not include filterOption, simply just add it
 				tempGroupName.push(filterOption);
 				setFilterSelected({
 					...tempFilterSelected,
