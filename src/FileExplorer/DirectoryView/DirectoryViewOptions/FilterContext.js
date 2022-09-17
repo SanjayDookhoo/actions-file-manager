@@ -37,6 +37,11 @@ const FilterContext = ({
 	const [groupBuckets, setGroupBuckets] = useState({});
 	const [isOpen, setOpen] = useState();
 	const ref = useRef(null);
+	const { path } = tabsState[activeTabId];
+
+	useEffect(() => {
+		setFilterSelected({});
+	}, [path]);
 
 	useEffect(() => {
 		const filteredFolders = folders.map((folder) => ({

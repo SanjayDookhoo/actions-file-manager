@@ -94,7 +94,7 @@ const DirectoryLayout = ({
 			fileExtensionsMap,
 		});
 		setGroupBuckets(bucket);
-	}, [filtered, fileExtensionsMap]);
+	}, [filtered, files, folders, fileExtensionsMap]);
 
 	const handleOnContextMenu = (e) => {
 		let target = e.target;
@@ -281,6 +281,10 @@ const GroupRender = ({
 			}
 			const recordA = getRecord(_a);
 			const recordB = getRecord(_b);
+
+			if (!recordA || !recordB) {
+				return 1;
+			}
 
 			if (sortBy == 'name') {
 				const a = recordA[sortBy];

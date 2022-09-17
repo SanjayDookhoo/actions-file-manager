@@ -117,12 +117,20 @@ export const createBuckets = ({
 
 	records.forEach((item) => {
 		const { id, type } = item;
+
+		const file = files.find((file) => file.id == id);
+		const folder = folders.find((folder) => folder.id == id);
+
+		if (!file && !folder) {
+			return bucket;
+		}
+
 		// name
 		let name;
 		if (type == 'file') {
-			name = files.find((file) => file.id == id).name;
+			name = file.name;
 		} else if (type == 'folder') {
-			name = folders.find((folder) => folder.id == id).name;
+			name = folder.name;
 		}
 		if (/[0-9]/.test(name.charAt(0))) {
 			_bucketPush('name', '0-9', item);
@@ -138,7 +146,6 @@ export const createBuckets = ({
 
 		// type
 		if (type == 'file') {
-			const file = files.find((file) => file.id == id);
 			const { name } = file;
 			const fileType = name.split('.').pop();
 			const fileTypeFullName = fileExtensionsMap[fileType]?.fullName;
@@ -156,11 +163,9 @@ export const createBuckets = ({
 		dateVariations.forEach((currDateVariation) => {
 			let _date;
 			if (type == 'file') {
-				_date = files.find((file) => file.id == id).meta[currDateVariation];
+				_date = file.meta[currDateVariation];
 			} else if (type == 'folder') {
-				_date = folders.find((folder) => folder.id == id).meta[
-					currDateVariation
-				];
+				_date = folder.meta[currDateVariation];
 			}
 			const date = new Date(_date);
 			if (_today(date)) {
@@ -185,7 +190,6 @@ export const createBuckets = ({
 		// size
 		if (type == 'file') {
 			const k = 1024;
-			const file = files.find((file) => file.id == id);
 			const { size } = file;
 
 			if (size == 0) {
