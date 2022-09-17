@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../utils/constants';
 import {
@@ -8,6 +8,7 @@ import {
 	SubMenu,
 	MenuRadioGroup,
 	MenuDivider,
+	ControlledMenu,
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
@@ -34,6 +35,8 @@ const FilterContext = ({
 
 	const [filterSelected, setFilterSelected] = useState({});
 	const [groupBuckets, setGroupBuckets] = useState({});
+	const [isOpen, setOpen] = useState();
+	const ref = useRef(null);
 
 	useEffect(() => {
 		const filteredFolders = folders.map((folder) => ({
@@ -143,14 +146,13 @@ const FilterContext = ({
 		}
 	};
 
-	const handleCheckboxOnChange = (e, groupName, filterOption) => {
-		e.stopPropagation();
+	const handleCheckboxOnChange = (groupName, filterOption) => {
 		handleFilterStateChange(groupName, filterOption);
 	};
 
 	const handleFilterOptionOnClick = (groupName, filterOption) => {
 		handleFilterStateChange(groupName, filterOption);
-		// TODO: close menu
+		setOpen(false); // close menu
 	};
 
 	const isChecked = (groupName, filterOption) => {
@@ -159,48 +161,52 @@ const FilterContext = ({
 	};
 
 	return (
-		<Menu
-			menuButton={
-				<a title="Filter">
-					<span className={buttonStyle}>
-						{Object.keys(filterSelected).length == 0
-							? 'filter_alt_off'
-							: 'filter_alt'}
-					</span>
-				</a>
-			}
-		>
-			<div className="flex" style={{ width: '1000px' }}>
-				{Object.entries(groupBuckets).map(([groupName, filterOptions]) => (
-					<div key={groupName} className="px-4">
-						<div className="py-2 flex">
-							{camelCaseToPhrase(groupName)}
-							{filterSelected[groupName] && (
-								<span className={buttonStyle}>filter_alt</span>
-							)}
-						</div>
-						{Object.keys(filterOptions).map((filterOption) => (
-							<div
-								key={filterOption}
-								className="flex"
-								onClick={() =>
-									handleFilterOptionOnClick(groupName, filterOption)
-								}
-							>
-								<input
-									type="checkbox"
-									checked={isChecked(groupName, filterOption)}
-									onChange={(e) =>
-										handleCheckboxOnChange(e, groupName, filterOption)
-									}
-								/>
-								<div>{filterOption}</div>
+		<>
+			<a title="Filter" ref={ref} onClick={() => setOpen(true)}>
+				<span className={buttonStyle}>
+					{Object.keys(filterSelected).length == 0
+						? 'filter_alt_off'
+						: 'filter_alt'}
+				</span>
+			</a>
+			<ControlledMenu
+				state={isOpen ? 'open' : 'closed'}
+				anchorRef={ref}
+				onClose={() => setOpen(false)}
+			>
+				<div className="flex" style={{ width: '1000px' }}>
+					{Object.entries(groupBuckets).map(([groupName, filterOptions]) => (
+						<div key={groupName} className="px-4">
+							<div className="py-2 flex">
+								{camelCaseToPhrase(groupName)}
+								{filterSelected[groupName] && (
+									<span className={buttonStyle}>filter_alt</span>
+								)}
 							</div>
-						))}
-					</div>
-				))}
-			</div>
-		</Menu>
+							{Object.keys(filterOptions).map((filterOption) => (
+								<div
+									key={filterOption}
+									className="flex"
+									onClick={() =>
+										handleFilterOptionOnClick(groupName, filterOption)
+									}
+								>
+									<input
+										type="checkbox"
+										checked={isChecked(groupName, filterOption)}
+										onChange={(e) =>
+											handleCheckboxOnChange(groupName, filterOption)
+										}
+										onClick={(e) => e.stopPropagation()}
+									/>
+									<div>{filterOption}</div>
+								</div>
+							))}
+						</div>
+					))}
+				</div>
+			</ControlledMenu>
+		</>
 	);
 };
 
