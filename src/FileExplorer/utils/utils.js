@@ -116,7 +116,7 @@ export const createBuckets = ({
 	};
 
 	records.forEach((item) => {
-		const { id, type } = item;
+		const { id, __typename } = item;
 
 		const file = files.find((file) => file.id == id);
 		const folder = folders.find((folder) => folder.id == id);
@@ -127,9 +127,9 @@ export const createBuckets = ({
 
 		// name
 		let name;
-		if (type == 'file') {
+		if (__typename == 'File') {
 			name = file.name;
-		} else if (type == 'folder') {
+		} else {
 			name = folder.name;
 		}
 		if (/[0-9]/.test(name.charAt(0))) {
@@ -145,7 +145,7 @@ export const createBuckets = ({
 		}
 
 		// type
-		if (type == 'file') {
+		if (__typename == 'File') {
 			const { name } = file;
 			const fileType = name.split('.').pop();
 			const fileTypeFullName = fileExtensionsMap[fileType]?.fullName;
@@ -154,7 +154,7 @@ export const createBuckets = ({
 			} else {
 				_bucketPush('type', fileType.toUpperCase() + ' File', item);
 			}
-		} else if (type == 'folder') {
+		} else {
 			_bucketPush('type', 'File folder', item);
 		}
 
@@ -162,9 +162,9 @@ export const createBuckets = ({
 		// a week is treated as beginning on sunday and ending on saturday
 		dateVariations.forEach((currDateVariation) => {
 			let _date;
-			if (type == 'file') {
+			if (__typename == 'File') {
 				_date = file.meta[currDateVariation];
-			} else if (type == 'folder') {
+			} else {
 				_date = folder.meta[currDateVariation];
 			}
 			const date = new Date(_date);
@@ -188,7 +188,7 @@ export const createBuckets = ({
 		});
 
 		// size
-		if (type == 'file') {
+		if (__typename == 'File') {
 			const k = 1024;
 			const { size } = file;
 
@@ -207,7 +207,7 @@ export const createBuckets = ({
 			} else {
 				_bucketPush('size', 'Gigantic (> 4GB)', item);
 			}
-		} else if (type == 'folder') {
+		} else {
 			_bucketPush('size', 'Unspecified', item);
 		}
 	});

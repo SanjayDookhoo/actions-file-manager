@@ -60,11 +60,11 @@ const Group = ({
 				const aExt = recordA.name.split('.').pop();
 				const bExt = recordB.name.split('.').pop();
 				let a =
-					_a.type == 'folder'
+					_a.__typename == 'Folder'
 						? 'File folder'
 						: fileExtensionsMap?.[aExt]?.fullName;
 				let b =
-					_b.type == 'folder'
+					_b.__typename == 'Folder'
 						? 'File folder'
 						: fileExtensionsMap?.[bExt]?.fullName;
 				a = a ? a : aExt.toUpperCase() + ' File';
@@ -84,10 +84,11 @@ const Group = ({
 	};
 
 	const getRecord = (item) => {
-		const { id, type } = item;
+		const { id, __typename } = item;
 		let record;
-		if (type == 'folder') record = folders.find((folder) => folder.id == id);
-		else if (type == 'file') record = files.find((file) => file.id == id);
+		if (__typename == 'Folder')
+			record = folders.find((folder) => folder.id == id);
+		else record = files.find((file) => file.id == id);
 		return record;
 	};
 
@@ -112,7 +113,11 @@ const Group = ({
 					}
 				>
 					{itemsSorted.map((item) => (
-						<Item key={`${item.type}-${item.id}`} item={item} {...itemProps} />
+						<Item
+							key={`${item.__typename}-${item.id}`}
+							item={item}
+							{...itemProps}
+						/>
 					))}
 				</div>
 			)}

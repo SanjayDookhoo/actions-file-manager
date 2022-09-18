@@ -26,10 +26,6 @@ const IconsLayout = (props) => {
 
 	const { layout } = localStorage;
 
-	useEffect(() => {
-		console.log(layout);
-	}, [localStorage]);
-
 	return (
 		<>
 			<div

@@ -29,13 +29,13 @@ const Item = ({ item, getRecord, fileExtensionsMap }) => {
 		<>
 			{record && (
 				<div onContextMenu={handleOnContextMenu}>
-					{item.type == 'folder' && (
+					{item.__typename == 'Folder' && (
 						<FileUploadDiv folderId={record.id}>
 							<Layout {...layoutProps} />
 						</FileUploadDiv>
 					)}
 
-					{item.type == 'file' && (
+					{item.__typename == 'File' && (
 						<div
 							// similar class to what FileUploadDiv uses, without the hover over with files effect
 							className={

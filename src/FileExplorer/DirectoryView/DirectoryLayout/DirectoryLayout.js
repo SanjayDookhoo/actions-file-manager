@@ -22,14 +22,6 @@ import defaultFile from '../../assets/defaultFile.webp';
 import folder from '../../assets/folder.svg';
 import Group from './Group/Group';
 
-const initialVisibleColumns = {
-	name: true,
-	dateCreated: true,
-	dateModified: true,
-	type: true,
-	size: true,
-};
-
 const DirectoryLayout = ({
 	files,
 	folders,

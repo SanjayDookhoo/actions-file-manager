@@ -55,13 +55,20 @@ const FilterContext = ({
 			}
 		};
 
-		const filteredFolders = folders.filter(_hiddenFilter).map((folder) => ({
-			id: folder.id,
-			type: 'folder',
-		}));
-		const filteredFiles = files
-			.filter(_hiddenFilter)
-			.map((file) => ({ id: file.id, type: 'file' }));
+		const filteredFolders = folders.filter(_hiddenFilter).map((folder) => {
+			const { id, __typename } = folder;
+			return {
+				id,
+				__typename,
+			};
+		});
+		const filteredFiles = files.filter(_hiddenFilter).map((file) => {
+			const { id, __typename } = file;
+			return {
+				id,
+				__typename,
+			};
+		});
 		const records = [...filteredFolders, ...filteredFiles];
 		const bucket = createBuckets({
 			records,
