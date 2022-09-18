@@ -47,11 +47,10 @@ const DirectoryLayout = ({
 		localStorage,
 		setLocalStorage,
 	} = useContext(FileExplorerContext);
-	const [menuProps, toggleMenu] = useMenuState();
-	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
-	const [contextMenuOf, setContextMenuOf] = useState(null);
-
-	const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
+	const [menuPropsHeader, toggleMenuHeader] = useMenuState();
+	const [anchorPointHeader, setAnchorPointHeader] = useState({ x: 0, y: 0 });
+	const [menuPropsEmpty, toggleMenuHeaderEmpty] = useMenuState();
+	const [anchorPointEmpty, setAnchorPointEmpty] = useState({ x: 0, y: 0 });
 
 	/**
 	 * [
@@ -100,29 +99,17 @@ const DirectoryLayout = ({
 		setGroupBuckets(bucket);
 	}, [filtered, files, folders, fileExtensionsMap]);
 
-	const handleOnContextMenu = (e) => {
-		let target = e.target;
-		while (
-			!target.classList.contains('fileExplorer') &&
-			!target.classList.contains('directoryLayoutDetailsHeader') &&
-			!target.classList.contains('directoryLayoutFolder') &&
-			!target.classList.contains('directoryLayoutFile')
-		) {
-			target = target.parentElement;
-		}
-		if (target.classList.contains('directoryLayoutDetailsHeader')) {
-			setContextMenuOf('directoryLayoutDetailsHeader');
-		} else if (target.classList.contains('directoryLayoutFolder')) {
-			setContextMenuOf('directoryLayoutFolder');
-		} else if (target.classList.contains('directoryLayoutFile')) {
-			setContextMenuOf('directoryLayoutFile');
-		} else {
-			setContextMenuOf('directoryLayoutEmptySpace');
-		}
-
+	const handleOnContextMenuHeader = (e) => {
 		e.preventDefault();
-		setAnchorPoint({ x: e.clientX, y: e.clientY });
-		toggleMenu(true);
+		e.stopPropagation();
+		setAnchorPointHeader({ x: e.clientX, y: e.clientY });
+		toggleMenuHeader(true);
+	};
+
+	const handleOnContextMenuEmpty = (e) => {
+		e.preventDefault();
+		setAnchorPointEmpty({ x: e.clientX, y: e.clientY });
+		toggleMenuHeaderEmpty(true);
 	};
 
 	useEffect(() => {
@@ -150,6 +137,15 @@ const DirectoryLayout = ({
 		);
 	};
 
+	const setDetailsLayoutMeta = (e, key) => {
+		const { checked } = e;
+		setLocalStorage(
+			update(localStorage, {
+				detailsLayoutMeta: { [key]: { visible: { $set: checked } } },
+			})
+		);
+	};
+
 	const groupProps = {
 		files,
 		folders,
@@ -159,8 +155,8 @@ const DirectoryLayout = ({
 	return (
 		<div
 			className="w-full"
-			onContextMenu={handleOnContextMenu}
 			onClick={handleEmptySpaceOnClick}
+			onContextMenu={handleOnContextMenuEmpty}
 		>
 			<FileUploadDiv
 				folderId={getFolderId({ tabsState, activeTabId })}
@@ -177,8 +173,37 @@ const DirectoryLayout = ({
 									return a - b;
 								})
 								.map(([key, meta]) => (
-									<div style={{ width: meta.width }}>{key}</div>
+									<div
+										style={{ width: meta.width }}
+										onContextMenu={handleOnContextMenuHeader}
+									>
+										{key}
+									</div>
 								))}
+
+							<ControlledMenu
+								{...menuPropsHeader}
+								anchorPoint={anchorPointHeader}
+								onClose={() => toggleMenuHeader(false)}
+							>
+								<div className="w-64">
+									<FileMenuItem
+										controlledStatePadding={true}
+										description="Size all columns to fit"
+									/>
+									<MenuDivider />
+									{Object.entries(localStorage.detailsLayoutMeta).map(
+										([key, meta]) => (
+											<FileMenuItem
+												type="checkbox"
+												checked={meta.visible}
+												onClick={(e) => setDetailsLayoutMeta(e, key)}
+												description={key}
+											/>
+										)
+									)}
+								</div>
+							</ControlledMenu>
 						</div>
 					)}
 
@@ -193,65 +218,11 @@ const DirectoryLayout = ({
 				</div>
 
 				<ControlledMenu
-					{...menuProps}
-					anchorPoint={anchorPoint}
-					onClose={() => toggleMenu(false)}
+					{...menuPropsEmpty}
+					anchorPoint={anchorPointEmpty}
+					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
-					<div className="w-64">
-						{contextMenuOf == 'directoryLayoutDetailsHeader' && (
-							<>
-								<FileMenuItem
-									controlledStatePadding={true}
-									description="Size all columns to fit"
-								/>
-								<MenuDivider />
-								{Object.entries(visibleColumns).map(([column, value]) => (
-									<FileMenuItem
-										type="checkbox"
-										checked={value}
-										onClick={(e) =>
-											setVisibleColumns({
-												...visibleColumns,
-												[column]: e.checked,
-											})
-										}
-										description={column}
-									/>
-								))}
-							</>
-						)}
-						{contextMenuOf == 'directoryLayoutFolder' && (
-							<>
-								<FileFocusableItem title="cut" icon="cut" />
-								<FileFocusableItem title="copy" icon="content_copy" />
-								<FileFocusableItem title="paste" icon="content_paste" />
-								<FileFocusableItem
-									title="share"
-									icon="drive_file_rename_outline"
-								/>
-								<FileFocusableItem title="delete" icon="delete" />
-								<MenuDivider />
-								<FileMenuItem description="Open in new tab" />
-								<FileMenuItem description="Add to favorites" />
-							</>
-						)}
-						{contextMenuOf == 'directoryLayoutFile' && (
-							<>
-								<FileFocusableItem title="cut" icon="cut" />
-								<FileFocusableItem title="copy" icon="content_copy" />
-								<FileFocusableItem title="paste" icon="content_paste" />
-								<FileFocusableItem
-									title="share"
-									icon="drive_file_rename_outline"
-								/>
-								<FileFocusableItem title="delete" icon="delete" />
-								<MenuDivider />
-								<FileMenuItem description="Create folder with selection" />
-							</>
-						)}
-
-						{contextMenuOf == 'directoryLayoutEmptySpace' && <></>}
-					</div>
+					<div className="w-64">Empty Test</div>
 				</ControlledMenu>
 			</FileUploadDiv>
 		</div>

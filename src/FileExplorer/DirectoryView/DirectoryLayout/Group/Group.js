@@ -105,7 +105,12 @@ const Group = ({
 				</div>
 			)}
 			{!collapsed && (
-				<div className="flex w-full h-full flex-wrap">
+				<div
+					className={
+						'flex w-full h-full ' +
+						(localStorage.layout == 'details' ? 'flex-col' : 'flex-wrap')
+					}
+				>
 					{itemsSorted.map((item) => (
 						<Item key={`${item.type}-${item.id}`} item={item} {...itemProps} />
 					))}
