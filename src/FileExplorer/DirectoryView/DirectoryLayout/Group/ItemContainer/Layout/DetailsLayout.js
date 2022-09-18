@@ -58,7 +58,9 @@ const DetailsLayout = (props) => {
 						return a - b;
 					})
 					.map(([key, meta]) => (
-						<div style={{ width: meta.width }}>{columnDetails(key)}</div>
+						<div key={key} style={{ width: meta.width }}>
+							{columnDetails(key)}
+						</div>
 					))}
 			</div>
 		</>

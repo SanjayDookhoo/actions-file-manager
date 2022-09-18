@@ -174,6 +174,7 @@ const DirectoryLayout = ({
 								})
 								.map(([key, meta]) => (
 									<div
+										key={key}
 										style={{ width: meta.width }}
 										onContextMenu={handleOnContextMenuHeader}
 									>
@@ -195,6 +196,7 @@ const DirectoryLayout = ({
 									{Object.entries(localStorage.detailsLayoutMeta).map(
 										([key, meta]) => (
 											<FileMenuItem
+												key={key}
 												type="checkbox"
 												checked={meta.visible}
 												onClick={(e) => setDetailsLayoutMeta(e, key)}

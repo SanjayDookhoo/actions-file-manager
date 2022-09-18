@@ -25,7 +25,6 @@ const FileUploadDiv = (props) => {
 		let files = await getFilesFromDataTransferItems(e.dataTransfer.items);
 		uploadFiles(files, folderId);
 	};
-	console.log(style);
 
 	return (
 		<div

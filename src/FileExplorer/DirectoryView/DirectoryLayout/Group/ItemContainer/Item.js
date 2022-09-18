@@ -1,5 +1,7 @@
-import { ControlledMenu, useMenuState } from '@szhsin/react-menu';
+import { ControlledMenu, MenuDivider, useMenuState } from '@szhsin/react-menu';
 import { useContext, useEffect, useState } from 'react';
+import FileFocusableItem from '../../../../CustomReactMenu/FileFocusableItem';
+import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
 const Item = ({ item, getRecord, fileExtensionsMap }) => {
@@ -49,7 +51,27 @@ const Item = ({ item, getRecord, fileExtensionsMap }) => {
 						anchorPoint={anchorPoint}
 						onClose={() => toggleMenuHeader(false)}
 					>
-						<div className="w-64">File/Folder Test</div>
+						<div className="w-64">
+							<FileFocusableItem title="cut" icon="cut" />
+							<FileFocusableItem title="copy" icon="content_copy" />
+							<FileFocusableItem title="paste" icon="content_paste" />
+							<FileFocusableItem
+								title="share"
+								icon="drive_file_rename_outline"
+							/>
+							<FileFocusableItem title="delete" icon="delete" />
+							<MenuDivider />
+							{record.__typename == 'Folder' ? (
+								<>
+									<FileMenuItem description="Create folder with selection" />
+								</>
+							) : (
+								<>
+									<FileMenuItem description="Open in new tab" />
+									<FileMenuItem description="Add to favorites" />
+								</>
+							)}
+						</div>
 					</ControlledMenu>
 				</div>
 			)}
