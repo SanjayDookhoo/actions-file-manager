@@ -140,24 +140,56 @@ const Search = () => {
 
 	const handleOnClick = (record) => {
 		const { relativePath } = record;
-		setTabsState(
-			update(tabsState, {
-				[activeTabId]: {
-					path: {
-						$push: relativePath,
+
+		if (relativePath.length == 0) {
+			// just select the file
+			setTabsState(
+				update(tabsState, {
+					[activeTabId]: {
+						// clearing other selected files and folders
+						selectedFolders: {
+							$set: record.__typename == 'Folder' ? [record.id] : [],
+						},
+						selectedFiles: {
+							$set: record.__typename == 'File' ? [record.id] : [],
+						},
 					},
-					selectedFolders: {
-						$set: record.__typename == 'Folder' ? [record.id] : [],
+				})
+			);
+		} else {
+			const { paths, currentIndex } = tabsState[activeTabId].history;
+			const newPath = [...tabsState[activeTabId].path, ...relativePath];
+			let newPaths = [...paths];
+			newPaths = newPaths.splice(0, currentIndex + 1);
+			newPaths = [...newPaths, newPath];
+			setTabsState(
+				update(tabsState, {
+					[activeTabId]: {
+						// adding path in a way that allows keeping track of history
+						path: { $set: newPath },
+						history: {
+							paths: { $set: newPaths },
+							currentIndex: { $apply: (val) => val + 1 },
+						},
+						// clearing other selected files and folders
+						selectedFolders: {
+							$set: record.__typename == 'Folder' ? [record.id] : [],
+						},
+						selectedFiles: {
+							$set: record.__typename == 'File' ? [record.id] : [],
+						},
 					},
-					selectedFiles: {
-						$set: record.__typename == 'File' ? [record.id] : [],
-					},
-				},
-			})
-		);
+				})
+			);
+		}
+
 		toggleMenu(false);
 		setSearch('');
 	};
+
+	useEffect(() => {
+		console.log(tabsState);
+	}, [tabsState]);
 
 	return (
 		<div

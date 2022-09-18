@@ -1,23 +1,59 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { FileExplorerContext } from '../FileExplorer';
 import { buttonStyle } from '../utils/constants';
+import { update } from '../utils/utils';
 import FolderPath from './FolderPath/FolderPath';
 import Search from './Search/Search';
 
 const NavigationBar = () => {
+	const { tabsState, setTabsState, activeTabId } =
+		useContext(FileExplorerContext);
+
+	const handleForwardBack = (num) => {
+		const { paths, currentIndex } = tabsState[activeTabId].history;
+		const index = currentIndex + num;
+		let path = paths[index];
+		console.log(path);
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					// adding path in a way that allows keeping track of history
+					path: { $set: path },
+					history: {
+						currentIndex: { $set: index },
+					},
+					// clearing other selected files and folders
+					selectedFolders: {
+						$set: [],
+					},
+					selectedFiles: {
+						$set: [],
+					},
+				},
+			})
+		);
+	};
+
 	return (
 		<div className="flex items-center justify-start bg-zinc-800">
 			<a>
-				<span className={buttonStyle}>west</span>
+				<span className={buttonStyle} onClick={() => handleForwardBack(-1)}>
+					west
+				</span>
 			</a>
 			<a>
-				<span className={buttonStyle}>east</span>
+				<span className={buttonStyle} onClick={() => handleForwardBack(1)}>
+					east
+				</span>
 			</a>
-			<a>
-				<span className={buttonStyle}>north</span>
-			</a>
-			<a>
+			{/* <a>
+				<span className={buttonStyle} onClick={handleUp}>
+					north
+				</span>
+			</a> */}
+			{/* <a>
 				<span className={buttonStyle}>refresh</span>
-			</a>
+			</a> */}
 			<FolderPath />
 			<Search />
 			<a>

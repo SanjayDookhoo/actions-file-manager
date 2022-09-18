@@ -5,4 +5,8 @@ export const initialTabState = {
 	selectedFiles: [],
 	multiSelectActive: false,
 	path: ['home'],
+	history: {
+		paths: [['home']],
+		currentIndex: 0,
+	},
 };

@@ -64,12 +64,23 @@ const Layout = ({ record }) => {
 	};
 
 	const updateCurrentFolderId = (folderId) => {
+		const { paths, currentIndex } = tabsState[activeTabId].history;
+		const newPath = [...tabsState[activeTabId].path, folderId];
+		let newPaths = [...paths];
+		newPaths = newPaths.splice(0, currentIndex + 1);
+		newPaths = [...newPaths, newPath];
 		setTabsState(
 			update(tabsState, {
 				[activeTabId]: {
-					path: { $push: [folderId] },
-					selectedFiles: { $set: [] }, // clears selected files
-					selectedFolders: { $set: [] }, // clears selected folders
+					// adding path in a way that allows keeping track of history
+					path: { $set: newPath },
+					history: {
+						paths: { $set: newPaths },
+						currentIndex: { $apply: (val) => val + 1 },
+					},
+					// clearing other selected files and folders
+					selectedFiles: { $set: [] },
+					selectedFolders: { $set: [] },
 				},
 			})
 		);
