@@ -5,7 +5,6 @@ import RenderIcon from './RenderIcon';
 const IconsLayout = (props) => {
 	const {
 		record,
-		fileExtensionsMap,
 		handleSelectFileFolderOnClick,
 		updateCurrentFolderId,
 		renderDate,
@@ -22,6 +21,7 @@ const IconsLayout = (props) => {
 		setActiveTabId,
 		localStorage,
 		setLocalStorage,
+		fileExtensionsMap,
 	} = useContext(FileExplorerContext);
 
 	const { layout } = localStorage;

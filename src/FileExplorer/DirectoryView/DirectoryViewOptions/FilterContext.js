@@ -15,15 +15,7 @@ import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { camelCaseToPhrase, createBuckets, update } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
 
-const FilterContext = ({
-	files,
-	folders,
-	fileExtensionsMap,
-	setFolderArguments,
-	setFileArguments,
-	filtered,
-	setFiltered,
-}) => {
+const FilterContext = () => {
 	const {
 		tabsState,
 		setTabsState,
@@ -31,6 +23,13 @@ const FilterContext = ({
 		setActiveTabId,
 		localStorage,
 		setLocalStorage,
+		files,
+		folders,
+		fileExtensionsMap,
+		setFolderArguments,
+		setFileArguments,
+		filtered,
+		setFiltered,
 	} = useContext(FileExplorerContext);
 
 	const [filterSelected, setFilterSelected] = useState({});

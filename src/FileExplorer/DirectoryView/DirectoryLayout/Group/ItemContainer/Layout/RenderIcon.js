@@ -1,7 +1,11 @@
+import { useContext } from 'react';
 import defaultFile from '../../../../../assets/defaultFile.webp';
 import folder from '../../../../../assets/folder.svg';
+import { FileExplorerContext } from '../../../../../FileExplorer';
 
-const RenderIcon = ({ record, fileExtensionsMap, className, style }) => {
+const RenderIcon = ({ record, className, style }) => {
+	const { fileExtensionsMap } = useContext(FileExplorerContext);
+
 	const ext = (record.name ?? '').split('.').pop();
 	let iconURL = fileExtensionsMap?.[ext]?.icons.normal;
 

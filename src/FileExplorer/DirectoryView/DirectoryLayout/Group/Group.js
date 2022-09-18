@@ -3,14 +3,7 @@ import { dateVariations } from '../../../utils/utils';
 import { FileExplorerContext } from '../../../FileExplorer';
 import Item from './ItemContainer/Item';
 
-const Group = ({
-	groupName,
-	items,
-	files,
-	folders,
-	fileExtensionsMap,
-	...otherProps
-}) => {
+const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -18,6 +11,7 @@ const Group = ({
 		setActiveTabId,
 		localStorage,
 		setLocalStorage,
+		fileExtensionsMap,
 	} = useContext(FileExplorerContext);
 	const { path } = tabsState[activeTabId];
 	const {
@@ -94,7 +88,6 @@ const Group = ({
 
 	const itemProps = {
 		getRecord,
-		fileExtensionsMap,
 		...otherProps,
 	};
 

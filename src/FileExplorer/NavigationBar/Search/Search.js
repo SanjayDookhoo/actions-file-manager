@@ -18,9 +18,14 @@ import { axiosClientJSON } from '../../endpoint';
 import { FileExplorerContext } from '../../FileExplorer';
 import { getFolderId, update } from '../../utils/utils';
 
-const Search = ({ fileExtensionsMap }) => {
-	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
-		useContext(FileExplorerContext);
+const Search = () => {
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		fileExtensionsMap,
+	} = useContext(FileExplorerContext);
 
 	const [search, setSearch] = useState('');
 	const inputRef = useRef();

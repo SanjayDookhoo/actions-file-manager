@@ -22,15 +22,7 @@ import defaultFile from '../../assets/defaultFile.webp';
 import folder from '../../assets/folder.svg';
 import Group from './Group/Group';
 
-const DirectoryLayout = ({
-	files,
-	folders,
-	fileExtensionsMap,
-	setFolderArguments,
-	setFileArguments,
-	filtered,
-	setFiltered,
-}) => {
+const DirectoryLayout = () => {
 	const {
 		tabsState,
 		setTabsState,
@@ -38,6 +30,13 @@ const DirectoryLayout = ({
 		setActiveTabId,
 		localStorage,
 		setLocalStorage,
+		files,
+		folders,
+		fileExtensionsMap,
+		setFolderArguments,
+		setFileArguments,
+		filtered,
+		setFiltered,
 	} = useContext(FileExplorerContext);
 	const [menuPropsHeader, toggleMenuHeader] = useMenuState();
 	const [anchorPointHeader, setAnchorPointHeader] = useState({ x: 0, y: 0 });

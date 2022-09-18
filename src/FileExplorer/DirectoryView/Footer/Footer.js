@@ -3,8 +3,9 @@ import { FileExplorerContext } from '../../FileExplorer';
 import { formatBytes } from '../../utils/utils';
 
 const className = 'px-2';
-const Footer = ({ folders, files }) => {
-	const { tabsState, activeTabId } = useContext(FileExplorerContext);
+const Footer = () => {
+	const { tabsState, activeTabId, folders, files } =
+		useContext(FileExplorerContext);
 	const [countSelected, setCountSelected] = useState(0);
 	const [totalSize, setTotalSize] = useState(null);
 

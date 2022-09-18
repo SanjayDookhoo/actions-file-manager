@@ -5,7 +5,7 @@ import DetailsLayout from './DetailsLayout';
 import TilesLayout from './TilesLayout';
 import IconsLayout from './IconsLayout';
 
-const Layout = ({ record, fileExtensionsMap }) => {
+const Layout = ({ record }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -13,6 +13,7 @@ const Layout = ({ record, fileExtensionsMap }) => {
 		setActiveTabId,
 		localStorage,
 		setLocalStorage,
+		fileExtensionsMap,
 	} = useContext(FileExplorerContext);
 
 	const handleSelectFileFolderOnClick = (e, record) => {
@@ -128,7 +129,6 @@ const Layout = ({ record, fileExtensionsMap }) => {
 
 	const props = {
 		record,
-		fileExtensionsMap,
 		handleSelectFileFolderOnClick,
 		updateCurrentFolderId,
 		renderDate,

@@ -14,6 +14,9 @@ import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
 import { initialLocalStorageState } from './utils/constants';
+import { gql, useSubscription } from '@apollo/client';
+import { objectToGraphqlArgs } from 'hasura-args';
+import { axiosClientFileExtension } from './endpoint';
 
 export const FileExplorerContext = createContext();
 
@@ -45,6 +48,82 @@ const FileExplorer = () => {
 		window.localStorage.setItem(localStorageKey, JSON.stringify(data));
 	};
 
+	const initialFolderArguments = {
+		where: { parentFolderId: { _isNull: true } },
+	};
+	const initialFileArguments = { where: { folderId: { _isNull: true } } };
+	const [folderArguments, setFolderArguments] = useState(
+		initialFolderArguments
+	);
+	const [fileArguments, setFileArguments] = useState(initialFileArguments);
+	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
+	const [filtered, setFiltered] = useState([]);
+
+	const folderSubscriptionGraphql = gql`
+		subscription {
+			folder(${objectToGraphqlArgs(folderArguments)}) {
+				id
+				name
+				meta {
+					modified
+					created
+					lastAccessed
+				}
+			}
+		}
+	`;
+
+	const fileSubscriptionGraphql = gql`
+		subscription {
+			file(${objectToGraphqlArgs(fileArguments)}) {
+				id
+				name
+				size
+				meta {
+					modified
+					created
+					lastAccessed
+				}
+			}
+		}
+	`;
+
+	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
+	const { data: _folders } = useSubscription(folderSubscriptionGraphql);
+	const folders = _folders?.folder ?? [];
+	const { data: _files } = useSubscription(fileSubscriptionGraphql);
+	const files = _files?.file ?? [];
+
+	useEffect(() => {
+		const promises = [];
+		const fileExtensions = files
+			.filter((file) => file.name.split('.')[0])
+			.map((file) => file.name.split('.').pop());
+		const fileExtensionsUnique = [...new Set(fileExtensions)];
+		const tempFileExtensionsMap = {};
+
+		for (const extension of fileExtensionsUnique) {
+			promises.push(
+				axiosClientFileExtension({
+					url: '/details',
+					method: 'GET',
+					params: {
+						extension,
+					},
+				})
+			);
+		}
+
+		Promise.all(promises).then(async (allResponses) => {
+			allResponses.forEach((response, i) => {
+				if (response.status == 200) {
+					tempFileExtensionsMap[fileExtensionsUnique[i]] = response.data;
+					setFileExtensionsMap(tempFileExtensionsMap);
+				}
+			});
+		});
+	}, [files]);
+
 	const value = {
 		tabsState,
 		setTabsState,
@@ -57,11 +136,14 @@ const FileExplorer = () => {
 		setClosedTabs,
 		localStorage,
 		setLocalStorage,
+		setFolderArguments,
+		setFileArguments,
+		folders,
+		files,
+		fileExtensionsMap,
+		filtered,
+		setFiltered,
 	};
-
-	// useEffect(() => {
-	// 	console.log(tabsState, activeTabId);
-	// }, [tabsState, activeTabId]);
 
 	return (
 		<FileExplorerContext.Provider value={value}>

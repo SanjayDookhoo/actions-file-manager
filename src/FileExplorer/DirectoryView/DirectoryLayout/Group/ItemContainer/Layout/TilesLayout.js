@@ -1,9 +1,10 @@
+import { useContext } from 'react';
+import { FileExplorerContext } from '../../../../../FileExplorer';
 import RenderIcon from './RenderIcon';
 
 const TilesLayout = (props) => {
 	const {
 		record,
-		fileExtensionsMap,
 		handleSelectFileFolderOnClick,
 		updateCurrentFolderId,
 		renderDate,
@@ -12,6 +13,8 @@ const TilesLayout = (props) => {
 		renderSize,
 		recordIsSelected,
 	} = props;
+
+	const { fileExtensionsMap } = useContext(FileExplorerContext);
 
 	return (
 		<>

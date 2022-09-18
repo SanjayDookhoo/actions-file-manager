@@ -14,13 +14,15 @@ import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { FileExplorerContext } from '../../FileExplorer';
 import { update } from '../../utils/utils';
 
-const SelectionDropdown = ({ folders, files }) => {
+const SelectionDropdown = () => {
 	const {
 		tabsState,
 		setTabsState,
 		activeTabId,
 		localStorage,
 		setLocalStorage,
+		folders,
+		files,
 	} = useContext(FileExplorerContext);
 
 	const selectAll = () => {

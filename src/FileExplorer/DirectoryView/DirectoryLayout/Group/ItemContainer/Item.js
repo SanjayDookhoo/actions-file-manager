@@ -4,7 +4,7 @@ import FileFocusableItem from '../../../../CustomReactMenu/FileFocusableItem';
 import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
-const Item = ({ item, getRecord, fileExtensionsMap }) => {
+const Item = ({ item, getRecord }) => {
 	const [record, setRecord] = useState({});
 	const [menuProps, toggleMenuHeader] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -22,7 +22,6 @@ const Item = ({ item, getRecord, fileExtensionsMap }) => {
 
 	const layoutProps = {
 		record,
-		fileExtensionsMap,
 	};
 
 	return (
