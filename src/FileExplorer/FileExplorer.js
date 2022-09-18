@@ -13,18 +13,11 @@ import { v4 as uuidv4 } from 'uuid';
 import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
+import { initialLocalStorageState } from './utils/constants';
 
 export const FileExplorerContext = createContext();
 
 const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
-const initialLocalStorageState = {
-	multiselect: false,
-	showHiddenItems: true,
-	showFileExtensions: false,
-	showDetailsPane: true,
-	layout: 'details',
-	folderSpecific: {},
-};
 
 const FileExplorer = () => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());

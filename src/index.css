@@ -24,6 +24,18 @@ input:focus {
 	outline: none;
 }
 
+.ellipsis-3-line {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+
+.ellipsis-4-line {
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
+}
+
 /* manually placed these values, the css file from the package applies too much undesired changes to my code with respect to the menu */
 /* .szh-menu__item--type-radio.szh-menu__item--checked:before {
 	content: '●';

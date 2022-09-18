@@ -16,9 +16,6 @@ import { FileExplorerContext } from '../../FileExplorer';
 const LayoutDropdown = () => {
 	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);
 	const [layout, setLayout] = useState('details');
-	const [showHiddenItems, setShowHiddenItems] = useState(false);
-	const [showFileExtensions, setShowFileExtensions] = useState(false);
-	const [showDetailsPane, setShowDetailsPane] = useState(false);
 
 	return (
 		<Menu
@@ -28,7 +25,12 @@ const LayoutDropdown = () => {
 				</a>
 			}
 		>
-			<MenuRadioGroup value={layout} onRadioChange={(e) => setLayout(e.value)}>
+			<MenuRadioGroup
+				value={localStorage.layout}
+				onRadioChange={(e) =>
+					setLocalStorage({ ...localStorage, layout: e.value })
+				}
+			>
 				<FileMenuItem description="Details" type="radio" value="details" />
 				<FileMenuItem description="Tiles" type="radio" value="tiles" />
 				<FileMenuItem

@@ -77,7 +77,7 @@ const GroupDropdown = () => {
 				value={groupBy}
 				onRadioChange={(e) => setGroupBy(e.value)}
 			>
-				<FileMenuItem description="None" type="radio" value="none" />
+				<FileMenuItem description="(None)" type="radio" value="none" />
 				<FileMenuItemGroup />
 			</MenuRadioGroup>
 
