@@ -34,15 +34,33 @@ const NavigationBar = () => {
 		);
 	};
 
+	const disabledBack = () => {
+		const { paths, currentIndex } = tabsState[activeTabId].history;
+		return currentIndex == 0;
+	};
+
+	const disabledForward = () => {
+		const { paths, currentIndex } = tabsState[activeTabId].history;
+		return currentIndex == paths.length - 1;
+	};
+
+	const disabledClasses = 'text-gray-600 pointer-events-none';
+
 	return (
 		<div className="flex items-center justify-start bg-zinc-800">
 			<a>
-				<span className={buttonStyle} onClick={() => handleForwardBack(-1)}>
+				<span
+					className={buttonStyle + (disabledBack() ? disabledClasses : '')}
+					onClick={() => handleForwardBack(-1)}
+				>
 					west
 				</span>
 			</a>
 			<a>
-				<span className={buttonStyle} onClick={() => handleForwardBack(1)}>
+				<span
+					className={buttonStyle + (disabledForward() ? disabledClasses : '')}
+					onClick={() => handleForwardBack(1)}
+				>
 					east
 				</span>
 			</a>
