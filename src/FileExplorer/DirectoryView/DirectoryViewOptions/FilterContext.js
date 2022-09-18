@@ -38,17 +38,30 @@ const FilterContext = ({
 	const [isOpen, setOpen] = useState();
 	const ref = useRef(null);
 	const { path } = tabsState[activeTabId];
+	const { showHiddenItems } = localStorage;
 
 	useEffect(() => {
 		setFilterSelected({});
 	}, [path]);
 
 	useEffect(() => {
-		const filteredFolders = folders.map((folder) => ({
+		const _hiddenFilter = (record) => {
+			if (showHiddenItems) {
+				return true;
+			} else {
+				const name = record.name;
+				const nameSplit = name.split('.');
+				return nameSplit[0];
+			}
+		};
+
+		const filteredFolders = folders.filter(_hiddenFilter).map((folder) => ({
 			id: folder.id,
 			type: 'folder',
 		}));
-		const filteredFiles = files.map((file) => ({ id: file.id, type: 'file' }));
+		const filteredFiles = files
+			.filter(_hiddenFilter)
+			.map((file) => ({ id: file.id, type: 'file' }));
 		const records = [...filteredFolders, ...filteredFiles];
 		const bucket = createBuckets({
 			records,
@@ -57,7 +70,7 @@ const FilterContext = ({
 			fileExtensionsMap,
 		});
 		setGroupBuckets(bucket);
-	}, [files, folders, fileExtensionsMap]);
+	}, [files, folders, fileExtensionsMap, showHiddenItems]);
 
 	// setFiltered is called in here, this limits the actual amount of records shown
 	useEffect(() => {

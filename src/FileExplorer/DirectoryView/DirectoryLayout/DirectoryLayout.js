@@ -139,16 +139,6 @@ const DirectoryLayout = ({
 		}
 	}, [tabsState, activeTabId]);
 
-	const fileFolderFilter = (record) => {
-		if (localStorage.showHiddenItems) {
-			return true;
-		} else {
-			const name = record.name;
-			const nameSplit = name.split('.');
-			return nameSplit[0];
-		}
-	};
-
 	const handleEmptySpaceOnClick = () => {
 		setTabsState(
 			update(tabsState, {
