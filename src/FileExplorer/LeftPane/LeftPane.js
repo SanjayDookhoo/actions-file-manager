@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
+import NavigationIconAndName from '../NavigationIconAndName';
 
 const LeftPane = () => {
 	const [favoritesIsOpen, setFavoritesIsOpen] = useState(true);
@@ -19,26 +20,27 @@ const LeftPane = () => {
 
 	return (
 		<div className="flex flex-col items-start" style={{ width: '250px' }}>
-			<button onContextMenu={(e) => handleOnContextMenu(e, 'home')}>
-				Home
+			<button onContextMenu={(e) => handleOnContextMenu(e, 'Home')}>
+				<NavigationIconAndName folderId="Home" />
 			</button>
 			<button onClick={() => setFavoritesIsOpen(!favoritesIsOpen)}>
-				Favorites
+				<NavigationIconAndName folderId="Favorites" />
 			</button>
 			{favoritesIsOpen &&
 				favorites.map((favorite) => (
 					<div
+						className="pl-6"
 						onContextMenu={(e) => handleOnContextMenu(e, 'favorite')}
 						key={favorite}
 					>
-						{favorite}
+						<NavigationIconAndName folderId="22" />
 					</div>
 				))}
 			<button onContextMenu={(e) => handleOnContextMenu(e, 'shared')}>
-				Shared with me
+				<NavigationIconAndName folderId="Shared with me" />
 			</button>
 			<button onContextMenu={(e) => handleOnContextMenu(e, 'recycleBin')}>
-				Recycle Bin
+				<NavigationIconAndName folderId="Recycle bin" />
 			</button>
 
 			<ControlledMenu

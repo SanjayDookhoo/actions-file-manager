@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
+import NavigationIconAndName from '../../NavigationIconAndName';
 import { buttonStyle } from '../../utils/constants';
 import { tabMaxWidth, tabMinWidth } from '../constants';
 
@@ -23,6 +24,8 @@ const Tab = (props) => {
 	const [width, setWidth] = useState(tabMaxWidth);
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+	// Because .reverse modifies the originally array, apply it to a copy of the array
+	const folderId = [...tabsState[tabId].path].reverse()[0];
 
 	useEffect(() => {
 		if (tabWidth) {
@@ -160,14 +163,7 @@ const Tab = (props) => {
 					style={{ width: 'calc(100% - 32px)' }}
 				>
 					{/* the width calc minuses the size of the close button */}
-					<span className={buttonStyle}>{icon}</span>
-					<div
-						className="inline text-ellipsis overflow-hidden select-none"
-						style={{ height: '25px' }} // manually set so the folder name doesnt break up into multi line words. also spaced well with icons
-					>
-						{/* Because .reverse modifies the originally array, apply it to a copy of the array */}
-						<FolderName folderId={[...tabsState[tabId].path].reverse()[0]} />
-					</div>
+					<NavigationIconAndName folderId={folderId} />
 				</div>
 				{Object.keys(tabsState).length != 1 && (
 					<a className="" onClick={handleClose}>

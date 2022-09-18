@@ -17,6 +17,7 @@ import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { axiosClientJSON } from '../../endpoint';
 import { FileExplorerContext } from '../../FileExplorer';
 import { getFolderId, update } from '../../utils/utils';
+import RenderIcon from '../../DirectoryView/DirectoryLayout/Group/ItemContainer/Layout/RenderIcon';
 
 const Search = () => {
 	const {
@@ -196,8 +197,12 @@ const Search = () => {
 							{value.map((record) => (
 								<FileMenuItem
 									key={`${record.id}-${record.__typename}`}
-									logo="folder"
-									// logo={<RenderIcon className="w-4 h-4" {...{ record, fileExtensionsMap }} />}
+									img={
+										<RenderIcon
+											className="w-6 h-6"
+											{...{ record, fileExtensionsMap }}
+										/>
+									}
 									description={record.name}
 									onKeyDown={handleOnKeyDownSearchItem}
 									onClick={() => handleOnClick(record)}

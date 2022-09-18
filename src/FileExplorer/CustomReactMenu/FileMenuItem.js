@@ -9,6 +9,7 @@ const newButtonStyle =
 const FileMenuItem = (props) => {
 	const {
 		logo,
+		img,
 		description,
 		shortcutHint,
 		controlledStatePadding,
@@ -22,6 +23,7 @@ const FileMenuItem = (props) => {
 					{(logo || logo === false) && (
 						<span className={newButtonStyle}>{logo}</span>
 					)}
+					{img}
 					<div>{description}</div>
 				</div>
 				{shortcutHint && (
