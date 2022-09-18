@@ -1,9 +1,27 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+	Fragment,
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import { buttonStyle } from '../../utils/constants';
-import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
+import {
+	ControlledMenu,
+	MenuDivider,
+	MenuItem,
+	useMenuState,
+} from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
+import { axiosClientJSON } from '../../endpoint';
+import { FileExplorerContext } from '../../FileExplorer';
+import { getFolderId, update } from '../../utils/utils';
 
-const Search = () => {
+const Search = ({ fileExtensionsMap }) => {
+	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
+		useContext(FileExplorerContext);
+
 	const [search, setSearch] = useState('');
 	const inputRef = useRef();
 	const searchContainerRef = useRef();
@@ -11,6 +29,46 @@ const Search = () => {
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const [captureFocus, setCaptureFocus] = useState(false);
+
+	const [searchResponse, setSearchResponse] = useState([]);
+
+	useEffect(() => {
+		const folderId = getFolderId({ tabsState, activeTabId });
+		if (search) {
+			const res = axiosClientJSON({
+				url: '/search',
+				method: 'POST',
+				data: {
+					search,
+					folderId,
+				},
+			}).then((res) => {
+				// console.log(res.data);
+
+				const format = {};
+
+				// seperate by depth found in folder
+				res.data.forEach((record) => {
+					const { relativePath } = record;
+					if (!format[relativePath.length]) {
+						format[relativePath.length] = [];
+					}
+					format[relativePath.length].push(record);
+				});
+
+				// sorted by least amount of name characters first, then by alphabetical order
+				Object.entries(format).forEach(([key, value]) => {
+					const ordered = [...value];
+					format[key] = ordered.sort(
+						(a, b) =>
+							a.name.length - b.name.length || a.name.localeCompare(b.name)
+					);
+				});
+
+				setSearchResponse(format);
+			});
+		}
+	}, [search]);
 
 	const handleRenderSearchMenu = () => {
 		const input = inputRef.current.getBoundingClientRect();
@@ -44,6 +102,7 @@ const Search = () => {
 			handleRenderSearchMenu();
 		} else {
 			toggleMenu(false);
+			setSearchResponse([]);
 		}
 	}, [search]);
 
@@ -63,6 +122,35 @@ const Search = () => {
 			e.preventDefault();
 			setCaptureFocus(true);
 		}
+	};
+
+	const title = (record) => {
+		const { relativePathName, name } = record;
+		if (relativePathName.length == 0) {
+			return '../' + name;
+		}
+		return '../' + relativePathName.join('/') + '/' + name;
+	};
+
+	const handleOnClick = (record) => {
+		const { relativePath } = record;
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					path: {
+						$push: relativePath,
+					},
+					selectedFolders: {
+						$set: record.__typename == 'Folder' ? [record.id] : [],
+					},
+					selectedFiles: {
+						$set: record.__typename == 'File' ? [record.id] : [],
+					},
+				},
+			})
+		);
+		toggleMenu(false);
+		setSearch('');
 	};
 
 	return (
@@ -98,16 +186,22 @@ const Search = () => {
 				onClose={() => toggleMenu(false)}
 			>
 				<div className="searchItems w-64">
-					<FileMenuItem
-						logo="folder"
-						description="Test"
-						onKeyDown={handleOnKeyDownSearchItem}
-					/>
-					<FileMenuItem
-						logo="folder"
-						description="Test"
-						onKeyDown={handleOnKeyDownSearchItem}
-					/>
+					{Object.values(searchResponse).map((value, i) => (
+						<Fragment key={value}>
+							{value.map((record) => (
+								<FileMenuItem
+									key={`${record.id}-${record.__typename}`}
+									logo="folder"
+									// logo={<RenderIcon className="w-4 h-4" {...{ record, fileExtensionsMap }} />}
+									description={record.name}
+									onKeyDown={handleOnKeyDownSearchItem}
+									onClick={() => handleOnClick(record)}
+									title={title(record)}
+								/>
+							))}
+							{i != Object.values(searchResponse).length - 1 && <MenuDivider />}
+						</Fragment>
+					))}
 				</div>
 			</ControlledMenu>
 		</div>

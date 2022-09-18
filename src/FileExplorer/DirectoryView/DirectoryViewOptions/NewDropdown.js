@@ -54,7 +54,6 @@ const NewDropdown = () => {
 					parentFolderId: folderId,
 				},
 			});
-			console.log(res);
 		}
 	};
 
