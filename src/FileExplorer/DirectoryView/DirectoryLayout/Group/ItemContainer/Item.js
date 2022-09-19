@@ -4,6 +4,11 @@ import FileFocusableItem from '../../../../CustomReactMenu/FileFocusableItem';
 import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
+
+import { gql, useQuery } from '@apollo/client';
+import { objectToGraphqlArgs } from 'hasura-args';
+import { graphQLClient } from '../../../../endpoint';
+
 const Item = ({ item, getRecord }) => {
 	const [record, setRecord] = useState({});
 	const [menuProps, toggleMenuHeader] = useMenuState();
@@ -18,6 +23,27 @@ const Item = ({ item, getRecord }) => {
 		e.stopPropagation();
 		setAnchorPoint({ x: e.clientX, y: e.clientY });
 		toggleMenuHeader(true);
+	};
+
+	const downloadFile = (record) => {
+		const { id } = record;
+
+		const queryArgs = {
+			id,
+		};
+		const query = gql`
+			query {
+				fileByPk(${objectToGraphqlArgs(queryArgs)}) {
+					fileLink {
+						URL
+					}
+				}
+			}
+		`;
+		graphQLClient.request(query).then((res) => {
+			const { URL } = res.fileByPk.fileLink;
+			window.open(URL, '_blank');
+		});
 	};
 
 	const layoutProps = {
@@ -62,12 +88,16 @@ const Item = ({ item, getRecord }) => {
 							<MenuDivider />
 							{record.__typename == 'Folder' ? (
 								<>
+									<FileMenuItem description="Open in new tab" />
+									<FileMenuItem description="Add to favorites" />
 									<FileMenuItem description="Create folder with selection" />
 								</>
 							) : (
 								<>
-									<FileMenuItem description="Open in new tab" />
-									<FileMenuItem description="Add to favorites" />
+									<FileMenuItem
+										description="Download"
+										onClick={() => downloadFile(record)}
+									/>
 								</>
 							)}
 						</div>

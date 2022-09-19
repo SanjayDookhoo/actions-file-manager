@@ -10,7 +10,8 @@ const token = JSON.parse(localStorage.getItem('profile'))?.token;
 const graphqlHeaders = !token
 	? {}
 	: {
-			authorization: `Bearer ${token}`,
+			// authorization: `Bearer ${token}`,
+			'x-hasura-admin-secret': 'myadminsecretkey',
 	  };
 const graphQLClient = new GraphQLClient(graphqlEndpoint, {
 	headers: graphqlHeaders,
