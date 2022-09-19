@@ -90,9 +90,19 @@ const FileExplorer = () => {
 
 	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
 	const { data: _folders } = useSubscription(folderSubscriptionGraphql);
-	const folders = _folders?.folder ?? [];
 	const { data: _files } = useSubscription(fileSubscriptionGraphql);
-	const files = _files?.file ?? [];
+	const [files, setFiles] = useState([]);
+	const [folders, setFolders] = useState([]);
+
+	useEffect(() => {
+		if (!_files) setFiles([]);
+		else setFiles(_files.file);
+	}, [_files]);
+
+	useEffect(() => {
+		if (!_folders) setFolders([]);
+		else setFolders(_folders.folder);
+	}, [_folders]);
 
 	useEffect(() => {
 		const promises = [];

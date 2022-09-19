@@ -21,14 +21,6 @@ const FilesOptions = () => {
 		setFiltered,
 	} = useContext(FileExplorerContext);
 
-	useEffect(() => {
-		console.log(files, folders);
-	}, [files, folders]);
-
-	useEffect(() => {
-		console.log({ filtered });
-	}, [filtered]);
-
 	const handleCut = () => {
 		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
 		const res = axiosClientJSON({
