@@ -138,8 +138,9 @@ const FilterContext = () => {
 				}
 				if (flag) finalList.push(el);
 			});
-
 			setFiltered(finalList);
+		} else {
+			setFiltered([]);
 		}
 	}, [groupBuckets, filterSelected]);
 
