@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
-import { buttonStyle } from '../../utils/constants';
+import { buttonStyle, layoutOptions } from '../../utils/constants';
 import {
 	Menu,
 	MenuItem,
@@ -12,42 +12,28 @@ import {
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { FileExplorerContext } from '../../FileExplorer';
+import { camelCaseToPhrase } from '../../utils/utils';
 
 const LayoutDropdown = () => {
 	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);
-	const [layout, setLayout] = useState('details');
 
 	return (
-		<Menu
-			menuButton={
-				<a title="Sort">
-					<span className={buttonStyle}>grid_view</span>
-				</a>
-			}
-		>
+		<>
 			<MenuRadioGroup
 				value={localStorage.layout}
 				onRadioChange={(e) =>
 					setLocalStorage({ ...localStorage, layout: e.value })
 				}
 			>
-				<FileMenuItem description="Details" type="radio" value="details" />
-				<FileMenuItem description="Tiles" type="radio" value="tiles" />
-				<FileMenuItem
-					description="Small Icons"
-					type="radio"
-					value="smallIcons"
-				/>
-				<FileMenuItem
-					description="Medium Icons"
-					type="radio"
-					value="mediumIcons"
-				/>
-				<FileMenuItem
-					description="Large Icons"
-					type="radio"
-					value="largeIcons"
-				/>
+				{layoutOptions.map((layoutOption, i) => (
+					<FileMenuItem
+						key={layoutOption}
+						description={camelCaseToPhrase(layoutOption)}
+						type="radio"
+						value={layoutOption}
+						shortcutHint={`Ctrl+Shift+${i + 1}`}
+					/>
+				))}
 			</MenuRadioGroup>
 
 			<MenuDivider />
@@ -76,7 +62,7 @@ const LayoutDropdown = () => {
 					setLocalStorage({ ...localStorage, showDetailsPane: e.checked })
 				}
 			/>
-		</Menu>
+		</>
 	);
 };
 

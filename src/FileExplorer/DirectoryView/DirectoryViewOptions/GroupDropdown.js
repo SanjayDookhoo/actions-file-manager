@@ -66,13 +66,7 @@ const GroupDropdown = () => {
 	};
 
 	return (
-		<Menu
-			menuButton={
-				<a title="Group">
-					<span className={buttonStyle}>dvr</span>
-				</a>
-			}
-		>
+		<>
 			<MenuRadioGroup
 				value={groupBy}
 				onRadioChange={(e) => setGroupBy(e.value)}
@@ -102,7 +96,7 @@ const GroupDropdown = () => {
 					</MenuRadioGroup>
 				</>
 			)}
-		</Menu>
+		</>
 	);
 };
 

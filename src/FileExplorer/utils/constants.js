@@ -41,3 +41,11 @@ export const initialLocalStorageState = {
 	},
 	folderSpecific: {},
 };
+
+export const layoutOptions = [
+	'details',
+	'tiles',
+	'smallIcons',
+	'mediumIcons',
+	'largeIcons',
+];

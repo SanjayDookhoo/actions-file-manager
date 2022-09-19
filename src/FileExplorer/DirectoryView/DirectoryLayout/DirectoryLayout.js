@@ -21,6 +21,10 @@ import { FileExplorerContext } from '../../FileExplorer';
 import defaultFile from '../../assets/defaultFile.webp';
 import folder from '../../assets/folder.svg';
 import Group from './Group/Group';
+import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
+import GroupDropdown from '../DirectoryViewOptions/GroupDropdown';
+import SortDropdown from '../DirectoryViewOptions/SortDropdown';
+import LayoutDropdown from '../DirectoryViewOptions/LayoutDropdown';
 
 const DirectoryLayout = () => {
 	const {
@@ -215,7 +219,17 @@ const DirectoryLayout = () => {
 					anchorPoint={anchorPointEmpty}
 					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
-					<div className="w-64">Empty Test</div>
+					<div className="w-64">
+						<FileSubMenu controlledStatePadding={true} description="Layout">
+							<LayoutDropdown />
+						</FileSubMenu>
+						<FileSubMenu controlledStatePadding={true} description="Sort by">
+							<SortDropdown />
+						</FileSubMenu>
+						<FileSubMenu controlledStatePadding={true} description="Group by">
+							<GroupDropdown />
+						</FileSubMenu>
+					</div>
 				</ControlledMenu>
 			</FileUploadDiv>
 		</div>

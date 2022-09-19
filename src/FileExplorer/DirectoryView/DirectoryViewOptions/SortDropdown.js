@@ -66,13 +66,7 @@ const SortDropdown = () => {
 	};
 
 	return (
-		<Menu
-			menuButton={
-				<a title="Sort">
-					<span className={buttonStyle}>swap_vert</span>
-				</a>
-			}
-		>
+		<>
 			<MenuRadioGroup value={sortBy} onRadioChange={(e) => setSortBy(e.value)}>
 				<FileMenuItemGroup />
 			</MenuRadioGroup>
@@ -90,7 +84,7 @@ const SortDropdown = () => {
 					value="descending"
 				/>
 			</MenuRadioGroup>
-		</Menu>
+		</>
 	);
 };
 
