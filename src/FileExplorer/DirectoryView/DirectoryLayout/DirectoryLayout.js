@@ -220,13 +220,13 @@ const DirectoryLayout = () => {
 					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
 					<div className="w-64">
-						<FileSubMenu controlledStatePadding={true} description="Layout">
+						<FileSubMenu logo="grid_view" description="Layout">
 							<LayoutDropdown />
 						</FileSubMenu>
-						<FileSubMenu controlledStatePadding={true} description="Sort by">
+						<FileSubMenu logo="swap_vert" description="Sort by">
 							<SortDropdown />
 						</FileSubMenu>
-						<FileSubMenu controlledStatePadding={true} description="Group by">
+						<FileSubMenu logo="dvr" description="Group by">
 							<GroupDropdown />
 						</FileSubMenu>
 					</div>

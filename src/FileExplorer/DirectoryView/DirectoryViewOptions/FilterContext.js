@@ -208,7 +208,7 @@ const FilterContext = () => {
 				anchorRef={ref}
 				onClose={() => setOpen(false)}
 			>
-				<div className="flex" style={{ width: '1000px' }}>
+				<div className="flex">
 					{Object.entries(groupBuckets).map(([groupName, filterOptions]) => (
 						<div key={groupName} className="px-4">
 							<div className="py-2 flex">

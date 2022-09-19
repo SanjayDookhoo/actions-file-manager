@@ -85,7 +85,7 @@ const Tab = (props) => {
 			...currTab,
 			order: currTab.order + 1,
 		};
-		setActiveTabId(uuid); // TODO: not sure why the active tab isnt changing
+		setActiveTabId(uuid);
 		setTabsState(newTabsState);
 	};
 

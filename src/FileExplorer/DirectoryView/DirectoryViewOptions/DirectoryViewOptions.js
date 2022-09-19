@@ -69,7 +69,7 @@ const DirectoryViewOptions = () => {
 				</Menu>
 				<Menu
 					menuButton={
-						<a title="Sort">
+						<a title="Layout">
 							<span className={buttonStyle}>grid_view</span>
 						</a>
 					}
