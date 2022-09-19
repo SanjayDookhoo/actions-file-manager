@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { FileExplorerContext } from '../../../../../FileExplorer';
+import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const DetailsLayout = (props) => {
@@ -28,7 +29,8 @@ const DetailsLayout = (props) => {
 
 	const columnDetails = (key) => {
 		if (key == 'name') {
-			return renderName(record);
+			// return renderName(record);
+			return <Rename record={record} renderName={renderName} />;
 		} else if (['created', 'modified', 'lastAccessed'].includes(key)) {
 			return renderDate(record, key);
 		} else if (key == 'type') {

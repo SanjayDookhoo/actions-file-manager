@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { FileExplorerContext } from '../../../../../FileExplorer';
+import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const IconsLayout = (props) => {
@@ -52,7 +53,7 @@ const IconsLayout = (props) => {
 								className="text-ellipsis overflow-hidden whitespace-nowrap"
 								style={{ lineHeight: '21px' }}
 							>
-								{renderName(record)}
+								<Rename record={record} renderName={renderName} />
 							</div>
 						</div>
 					</>

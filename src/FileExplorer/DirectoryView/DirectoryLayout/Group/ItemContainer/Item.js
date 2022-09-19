@@ -81,7 +81,7 @@ const Item = ({ item, getRecord }) => {
 							<FileFocusableItem title="copy" icon="content_copy" />
 							<FileFocusableItem title="paste" icon="content_paste" />
 							<FileFocusableItem
-								title="share"
+								title="rename"
 								icon="drive_file_rename_outline"
 							/>
 							<FileFocusableItem title="delete" icon="delete" />

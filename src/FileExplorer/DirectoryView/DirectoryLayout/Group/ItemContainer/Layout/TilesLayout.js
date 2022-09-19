@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { FileExplorerContext } from '../../../../../FileExplorer';
+import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const TilesLayout = (props) => {
@@ -14,7 +15,8 @@ const TilesLayout = (props) => {
 		recordIsSelected,
 	} = props;
 
-	const { fileExtensionsMap } = useContext(FileExplorerContext);
+	const { fileExtensionsMap, tabsState, setTabsState, activeTabId } =
+		useContext(FileExplorerContext);
 
 	return (
 		<>
@@ -37,7 +39,7 @@ const TilesLayout = (props) => {
 							className="text-ellipsis overflow-hidden ellipsis-3-line"
 							style={{ lineHeight: '21px' }}
 						>
-							{renderName(record)}
+							<Rename record={record} renderName={renderName} />
 						</div>
 					) : (
 						<>

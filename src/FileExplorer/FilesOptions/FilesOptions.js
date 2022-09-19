@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { axiosClientJSON } from '../endpoint';
 import { FileExplorerContext } from '../FileExplorer';
 import { buttonStyle } from '../utils/constants';
-import { getFolderId } from '../utils/utils';
+import { getFolderId, update } from '../utils/utils';
 
 const FilesOptions = () => {
 	const {
@@ -59,6 +59,12 @@ const FilesOptions = () => {
 		});
 	};
 
+	const handleRename = () => {
+		setTabsState(
+			update(tabsState, { [activeTabId]: { renaming: { $set: true } } })
+		);
+	};
+
 	return (
 		<div className="flex">
 			<a title="cut" onClick={handleCut}>
@@ -70,7 +76,7 @@ const FilesOptions = () => {
 			<a title="paste" onClick={handlePaste}>
 				<span className={buttonStyle}>content_paste</span>
 			</a>
-			<a title="share">
+			<a title="rename" onClick={handleRename}>
 				<span className={buttonStyle}>drive_file_rename_outline</span>
 			</a>
 			<a title="delete">

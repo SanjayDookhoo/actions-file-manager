@@ -40,6 +40,7 @@ export const initialLocalStorageState = {
 		},
 	},
 	folderSpecific: {},
+	renaming: false,
 };
 
 export const layoutOptions = [
