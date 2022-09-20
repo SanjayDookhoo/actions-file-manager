@@ -4,7 +4,6 @@ import DirectoryViewOptions from './DirectoryViewOptions/DirectoryViewOptions';
 import Footer from './Footer/Footer';
 import DetailsPane from './DetailsPane/DetailsPane';
 import { FileExplorerContext } from '../FileExplorer';
-import { gql, useQuery, useSubscription } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
 import { axiosClientFileExtension } from '../endpoint';
 

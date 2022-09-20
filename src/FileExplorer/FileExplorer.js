@@ -14,9 +14,7 @@ import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
 import { initialLocalStorageState } from './utils/constants';
-import { gql, useSubscription } from '@apollo/client';
-import { objectToGraphqlArgs } from 'hasura-args';
-import { axiosClientFileExtension } from './endpoint';
+import { axiosClientFileExtension, backendEndpointWS } from './endpoint';
 
 export const FileExplorerContext = createContext();
 
@@ -59,50 +57,47 @@ const FileExplorer = () => {
 	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
 	const [filtered, setFiltered] = useState([]);
 
-	const folderSubscriptionGraphql = gql`
-		subscription {
-			folder(${objectToGraphqlArgs(folderArguments)}) {
-				id
-				name
-				meta {
-					modified
-					created
-					lastAccessed
-				}
-			}
-		}
-	`;
-
-	const fileSubscriptionGraphql = gql`
-		subscription {
-			file(${objectToGraphqlArgs(fileArguments)}) {
-				id
-				name
-				size
-				meta {
-					modified
-					created
-					lastAccessed
-				}
-			}
-		}
-	`;
-
-	// const { loading, error, data } = useSubscription(folderSubscriptionGraphql);
-	const { data: _folders } = useSubscription(folderSubscriptionGraphql);
-	const { data: _files } = useSubscription(fileSubscriptionGraphql);
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
 	useEffect(() => {
-		if (!_files) setFiles([]);
-		else setFiles(_files.file);
-	}, [_files]);
+		const socket = new WebSocket(backendEndpointWS);
+		socket.addEventListener('open', () => {
+			const socketMessageFile = {
+				subscriptionOf: 'File',
+				args: fileArguments,
+			};
+			const socketMessageFolder = {
+				subscriptionOf: 'Folder',
+				args: folderArguments,
+			};
 
-	useEffect(() => {
-		if (!_folders) setFolders([]);
-		else setFolders(_folders.folder);
-	}, [_folders]);
+			socket.send(JSON.stringify(socketMessageFile));
+			socket.send(JSON.stringify(socketMessageFolder));
+		});
+
+		socket.addEventListener('message', (message) => {
+			const { subscriptionOf, data } = JSON.parse(message.data);
+			if (subscriptionOf == 'File') {
+				setFiles(
+					data.file.map((record) => ({
+						...record,
+						__typename: subscriptionOf,
+					}))
+				);
+			} else if (subscriptionOf == 'Folder') {
+				setFolders(
+					data.folder.map((record) => ({
+						...record,
+						__typename: subscriptionOf,
+					}))
+				);
+			}
+		});
+		return () => {
+			socket.close();
+		};
+	}, [fileArguments, folderArguments]);
 
 	useEffect(() => {
 		const promises = [];

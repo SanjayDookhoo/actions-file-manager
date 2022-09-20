@@ -5,8 +5,6 @@ import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
 
-import { gql, useQuery } from '@apollo/client';
-import { objectToGraphqlArgs } from 'hasura-args';
 import { axiosClientJSON } from '../../../../endpoint';
 
 const Item = ({ item, getRecord }) => {

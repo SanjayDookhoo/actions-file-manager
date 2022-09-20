@@ -1,25 +1,24 @@
-import { gql, useQuery } from '@apollo/client';
-import { objectToGraphqlArgs } from 'hasura-args';
+import { useEffect, useState } from 'react';
+import { axiosClientJSON } from './endpoint';
 
 const FolderName = ({ folderId }) => {
-	const queryArguments = {
-		id: folderId,
-	};
-	const query = gql`
-		query {
-			folderByPk(${objectToGraphqlArgs(queryArguments)}) {
-				name
-			}
+	const [name, setName] = useState('');
+
+	useEffect(() => {
+		if (Number.isInteger(folderId)) {
+			axiosClientJSON({
+				url: '/getFolderName',
+				method: 'POST',
+				data: {
+					id: folderId,
+				},
+			}).then((res) => {
+				setName(res.data.name);
+			});
 		}
-	`;
+	}, []);
 
-	const { data } = useQuery(query);
-
-	return (
-		<div>
-			{Number.isInteger(folderId) ? <>{data?.folderByPk?.name}</> : folderId}
-		</div>
-	);
+	return <div>{Number.isInteger(folderId) ? <>{name}</> : folderId}</div>;
 };
 
 export default FolderName;

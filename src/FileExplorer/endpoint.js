@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 
+export const backendEndpointWS = 'ws://localhost:5000';
 const backendEndpoint = 'http://localhost:5000';
 const fileExtensionEndpoint = 'http://localhost:4000';
 const token = JSON.parse(localStorage.getItem('profile'))?.token;
