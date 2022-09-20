@@ -89,7 +89,7 @@ const Item = ({ item, getRecord }) => {
 							{record.__typename == 'Folder' ? (
 								<>
 									<FileMenuItem description="Open in new tab" />
-									<FileMenuItem description="Add to favorites" />
+									{/* <FileMenuItem description="Add to favorites" /> */}
 									<FileMenuItem description="Create folder with selection" />
 								</>
 							) : (

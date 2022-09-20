@@ -7,7 +7,7 @@ const modified = 'today';
 const lastAccessed = 'today';
 const owner = 'me';
 
-const PreviewPane = () => {
+const DetailsPane = () => {
 	const [view, setView] = useState('details'); // details || activity
 
 	return (
@@ -32,4 +32,4 @@ const PreviewPane = () => {
 	);
 };
 
-export default PreviewPane;
+export default DetailsPane;

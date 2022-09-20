@@ -16,7 +16,7 @@ const DirectoryView = () => {
 			<DirectoryViewOptions />
 			<div className="w-full flex justify-between flex-grow">
 				<DirectoryLayout />
-				{localStorage.showDetailsPane && <DetailsPane />}
+				{/* {localStorage.showDetailsPane && <DetailsPane />} */}
 			</div>
 			<Footer />
 		</div>

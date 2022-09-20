@@ -54,14 +54,14 @@ const LayoutDropdown = () => {
 					setLocalStorage({ ...localStorage, showFileExtensions: e.checked })
 				}
 			/>
-			<FileMenuItem
+			{/* <FileMenuItem
 				description="Show details pane"
 				type="checkbox"
 				checked={localStorage.showDetailsPane}
 				onClick={(e) =>
 					setLocalStorage({ ...localStorage, showDetailsPane: e.checked })
 				}
-			/>
+			/> */}
 		</>
 	);
 };

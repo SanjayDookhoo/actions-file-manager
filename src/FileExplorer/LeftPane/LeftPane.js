@@ -23,7 +23,7 @@ const LeftPane = () => {
 			<button onContextMenu={(e) => handleOnContextMenu(e, 'Home')}>
 				<NavigationIconAndName folderId="Home" />
 			</button>
-			<button onClick={() => setFavoritesIsOpen(!favoritesIsOpen)}>
+			{/* <button onClick={() => setFavoritesIsOpen(!favoritesIsOpen)}>
 				<NavigationIconAndName folderId="Favorites" />
 			</button>
 			{favoritesIsOpen &&
@@ -35,7 +35,7 @@ const LeftPane = () => {
 					>
 						<NavigationIconAndName folderId="22" />
 					</div>
-				))}
+				))} */}
 			<button onContextMenu={(e) => handleOnContextMenu(e, 'shared')}>
 				<NavigationIconAndName folderId="Shared with me" />
 			</button>
@@ -51,7 +51,7 @@ const LeftPane = () => {
 				<FileMenuItem logo="folder" description="Open in new tab" />
 				{contextMenuActive == 'favorite' && (
 					<>
-						<FileMenuItem logo={false} description="Unpin from favorites" />
+						{/* <FileMenuItem logo={false} description="Unpin from favorites" /> */}
 					</>
 				)}
 				{contextMenuActive == 'shared' && <></>}
