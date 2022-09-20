@@ -6,8 +6,25 @@ import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
 
 import { axiosClientJSON } from '../../../../endpoint';
+import { FileExplorerContext } from '../../../../FileExplorer';
 
 const Item = ({ item, getRecord }) => {
+	const {
+		tabsState,
+		setTabsState,
+		activeTabId,
+		setActiveTabId,
+		localStorage,
+		setLocalStorage,
+		files,
+		folders,
+		fileExtensionsMap,
+		setFolderArguments,
+		setFileArguments,
+		filtered,
+		setFiltered,
+	} = useContext(FileExplorerContext);
+
 	const [record, setRecord] = useState({});
 	const [menuProps, toggleMenuHeader] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -35,6 +52,30 @@ const Item = ({ item, getRecord }) => {
 		}).then((res) => {
 			const { URL } = res.data;
 			window.open(URL, '_blank');
+		});
+	};
+
+	const restore = () => {
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		axiosClientJSON({
+			url: '/restore',
+			method: 'POST',
+			data: {
+				selectedFolders,
+				selectedFiles,
+			},
+		});
+	};
+
+	const permanentlyDelete = () => {
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		axiosClientJSON({
+			url: '/permanentlyDelete',
+			method: 'POST',
+			data: {
+				selectedFolders,
+				selectedFiles,
+			},
 		});
 	};
 
@@ -77,6 +118,12 @@ const Item = ({ item, getRecord }) => {
 								icon="drive_file_rename_outline"
 							/>
 							<FileFocusableItem title="delete" icon="delete" />
+							<MenuDivider />
+							<FileMenuItem description="Restore" onClick={restore} />
+							<FileMenuItem
+								description="Permanently Delete"
+								onClick={permanentlyDelete}
+							/>
 							<MenuDivider />
 							{record.__typename == 'Folder' ? (
 								<>

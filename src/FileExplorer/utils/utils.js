@@ -253,7 +253,9 @@ export const rootNavigationMap = {
 		},
 	},
 	'Recycle bin': {
-		file: { deleted: { _eq: true } },
+		file: {
+			where: { deleted: { _eq: true } },
+		},
 		folder: {
 			where: { deleted: { _eq: true } },
 		},
