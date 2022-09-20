@@ -15,8 +15,10 @@ const FolderName = ({ folderId }) => {
 			}).then((res) => {
 				setName(res.data.name);
 			});
+		} else {
+			setName(folderId);
 		}
-	}, []);
+	}, [folderId]);
 
 	return <div>{Number.isInteger(folderId) ? <>{name}</> : folderId}</div>;
 };
