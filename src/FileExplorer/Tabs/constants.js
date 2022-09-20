@@ -4,9 +4,9 @@ export const initialTabState = {
 	selectedFolders: [],
 	selectedFiles: [],
 	multiSelectActive: false,
-	path: ['home'],
+	path: ['Home'],
 	history: {
-		paths: [['home']],
+		paths: [['Home']],
 		currentIndex: 0,
 	},
 };

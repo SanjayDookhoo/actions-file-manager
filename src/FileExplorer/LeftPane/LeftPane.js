@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import NavigationIconAndName from '../NavigationIconAndName';
+import { FileExplorerContext } from '../FileExplorer';
+import { update } from '../utils/utils';
 
 const LeftPane = () => {
+	const { tabsState, setTabsState, activeTabId } =
+		useContext(FileExplorerContext);
+
 	const [favoritesIsOpen, setFavoritesIsOpen] = useState(true);
 	const [favorites, setFavorites] = useState(['a', 'b']);
 
@@ -18,9 +23,35 @@ const LeftPane = () => {
 		setContextMenuActive(contextMenu);
 	};
 
+	const handleOnClick = (rootNavigation) => {
+		const newPath = [rootNavigation];
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					// adding path in a way that allows keeping track of history
+					path: { $set: newPath },
+					history: {
+						paths: { $push: [newPath] },
+						currentIndex: { $apply: (val) => val + 1 },
+					},
+					// clearing other selected files and folders
+					selectedFolders: {
+						$set: [],
+					},
+					selectedFiles: {
+						$set: [],
+					},
+				},
+			})
+		);
+	};
+
 	return (
 		<div className="flex flex-col items-start" style={{ width: '250px' }}>
-			<button onContextMenu={(e) => handleOnContextMenu(e, 'Home')}>
+			<button
+				onContextMenu={(e) => handleOnContextMenu(e, 'Home')}
+				onClick={() => handleOnClick('Home')}
+			>
 				<NavigationIconAndName folderId="Home" />
 			</button>
 			{/* <button onClick={() => setFavoritesIsOpen(!favoritesIsOpen)}>
@@ -36,10 +67,16 @@ const LeftPane = () => {
 						<NavigationIconAndName folderId="22" />
 					</div>
 				))} */}
-			<button onContextMenu={(e) => handleOnContextMenu(e, 'shared')}>
+			<button
+				onContextMenu={(e) => handleOnContextMenu(e, 'shared')}
+				onClick={() => handleOnClick('Shared with me')}
+			>
 				<NavigationIconAndName folderId="Shared with me" />
 			</button>
-			<button onContextMenu={(e) => handleOnContextMenu(e, 'recycleBin')}>
+			<button
+				onContextMenu={(e) => handleOnContextMenu(e, 'recycleBin')}
+				onClick={() => handleOnClick('Recycle bin')}
+			>
 				<NavigationIconAndName folderId="Recycle bin" />
 			</button>
 

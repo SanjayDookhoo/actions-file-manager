@@ -65,6 +65,26 @@ const FilesOptions = () => {
 		);
 	};
 
+	const handleDelete = async () => {
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		const res = await axiosClientJSON({
+			url: '/remove',
+			method: 'POST',
+			data: {
+				selectedFolders,
+				selectedFiles,
+			},
+		});
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: [] },
+					selectedFolders: { $set: [] },
+				},
+			})
+		);
+	};
+
 	return (
 		<div className="flex">
 			<a title="cut" onClick={handleCut}>
@@ -80,7 +100,9 @@ const FilesOptions = () => {
 				<span className={buttonStyle}>drive_file_rename_outline</span>
 			</a>
 			<a title="delete">
-				<span className={buttonStyle}>delete</span>
+				<span className={buttonStyle} onClick={handleDelete}>
+					delete
+				</span>
 			</a>
 		</div>
 	);

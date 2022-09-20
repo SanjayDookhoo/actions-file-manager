@@ -15,6 +15,7 @@ import {
 	dateVariations,
 	formatBytes,
 	getFolderId,
+	rootNavigationMap,
 	update,
 } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
@@ -110,14 +111,27 @@ const DirectoryLayout = () => {
 	useEffect(() => {
 		const currentFolder =
 			tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
-		const folderId = Number.isInteger(currentFolder) ? currentFolder : null;
 
-		if (folderId) {
-			setFolderArguments({ where: { parentFolderId: { _eq: folderId } } });
-			setFileArguments({ where: { folderId: { _eq: folderId } } });
+		if (Number.isInteger(currentFolder)) {
+			setFolderArguments({
+				where: {
+					_and: [
+						{ parentFolderId: { _eq: currentFolder } },
+						{ deleted: { _eq: false } },
+					],
+				},
+			});
+			setFileArguments({
+				where: {
+					_and: [
+						{ folderId: { _eq: currentFolder } },
+						{ deleted: { _eq: false } },
+					],
+				},
+			});
 		} else {
-			setFolderArguments({ where: { parentFolderId: { _isNull: true } } });
-			setFileArguments({ where: { folderId: { _isNull: true } } });
+			setFolderArguments(rootNavigationMap[currentFolder].folder);
+			setFileArguments(rootNavigationMap[currentFolder].file);
 		}
 	}, [tabsState, activeTabId]);
 

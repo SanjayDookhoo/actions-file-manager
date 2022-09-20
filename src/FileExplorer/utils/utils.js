@@ -235,3 +235,27 @@ export const camelCaseToPhrase = (s) => {
 	s = s.charAt(0).toUpperCase() + s.slice(1); // capitalize first letter
 	return s;
 };
+
+export const rootNavigationMap = {
+	Home: {
+		file: {
+			where: {
+				_and: [{ folderId: { _isNull: true } }, { deleted: { _eq: false } }],
+			},
+		},
+		folder: {
+			where: {
+				_and: [
+					{ parentFolderId: { _isNull: true } },
+					{ deleted: { _eq: false } },
+				],
+			},
+		},
+	},
+	'Recycle bin': {
+		file: { deleted: { _eq: true } },
+		folder: {
+			where: { deleted: { _eq: true } },
+		},
+	},
+};

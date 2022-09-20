@@ -15,6 +15,7 @@ import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
 import { initialLocalStorageState } from './utils/constants';
 import { axiosClientFileExtension, backendEndpointWS } from './endpoint';
+import { filesFoldersNewArgs, rootNavigationMap } from './utils/utils';
 
 export const FileExplorerContext = createContext();
 
@@ -47,13 +48,24 @@ const FileExplorer = () => {
 	};
 
 	const initialFolderArguments = {
-		where: { parentFolderId: { _isNull: true } },
+		where: {
+			_and: [
+				{ parentFolderId: { _isNull: true } },
+				{ deleted: { _eq: false } },
+			],
+		},
 	};
-	const initialFileArguments = { where: { folderId: { _isNull: true } } };
+	const initialFileArguments = {
+		where: {
+			_and: [{ folderId: { _isNull: true } }, { deleted: { _eq: false } }],
+		},
+	};
 	const [folderArguments, setFolderArguments] = useState(
-		initialFolderArguments
+		rootNavigationMap.Home.folder
 	);
-	const [fileArguments, setFileArguments] = useState(initialFileArguments);
+	const [fileArguments, setFileArguments] = useState(
+		rootNavigationMap.Home.file
+	);
 	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
 	const [filtered, setFiltered] = useState([]);
 
