@@ -7,7 +7,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { graphQLClient } from '../../../../../endpoint';
+import { axiosClientJSON } from '../../../../../endpoint';
 import { FileExplorerContext } from '../../../../../FileExplorer';
 import { update } from '../../../../../utils/utils';
 
@@ -45,39 +45,17 @@ const Rename = ({ record, renderName }) => {
 		setTabsState(
 			update(tabsState, { [activeTabId]: { renaming: { $set: false } } })
 		);
-		if (value) {
-			let mutation;
 
-			const args = {
-				where: {
-					id: { _eq: record.id },
-				},
-				_set: { name: value },
-			};
-
-			if (record.__typename == 'Folder') {
-				mutation = gql`
-					mutation {
-						updateFolder(${objectToGraphqlArgs(args)}) {
-							returning {
-								id
-							}
-						}
-					}
-				`;
-			} else {
-				mutation = gql`
-					mutation {
-						updateFile(${objectToGraphqlArgs(args)}) {
-							returning {
-								id
-							}
-						}
-					}
-				`;
-			}
-			const response = await graphQLClient.request(mutation);
-		}
+		const { id, __typename } = record;
+		axiosClientJSON({
+			url: '/rename',
+			method: 'POST',
+			data: {
+				name: value,
+				id,
+				__typename,
+			},
+		});
 	};
 
 	const handleOnBlur = async (e) => {

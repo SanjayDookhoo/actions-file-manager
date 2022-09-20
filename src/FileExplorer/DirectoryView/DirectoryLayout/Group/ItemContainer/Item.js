@@ -7,7 +7,7 @@ import Layout from './Layout/Layout';
 
 import { gql, useQuery } from '@apollo/client';
 import { objectToGraphqlArgs } from 'hasura-args';
-import { graphQLClient } from '../../../../endpoint';
+import { axiosClientJSON } from '../../../../endpoint';
 
 const Item = ({ item, getRecord }) => {
 	const [record, setRecord] = useState({});
@@ -28,20 +28,14 @@ const Item = ({ item, getRecord }) => {
 	const downloadFile = (record) => {
 		const { id } = record;
 
-		const queryArgs = {
-			id,
-		};
-		const query = gql`
-			query {
-				fileByPk(${objectToGraphqlArgs(queryArgs)}) {
-					fileLink {
-						URL
-					}
-				}
-			}
-		`;
-		graphQLClient.request(query).then((res) => {
-			const { URL } = res.fileByPk.fileLink;
+		axiosClientJSON({
+			url: '/downloadFile',
+			method: 'POST',
+			data: {
+				id,
+			},
+		}).then((res) => {
+			const { URL } = res.data;
 			window.open(URL, '_blank');
 		});
 	};
