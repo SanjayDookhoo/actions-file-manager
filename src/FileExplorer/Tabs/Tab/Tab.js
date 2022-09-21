@@ -60,6 +60,17 @@ const Tab = (props) => {
 		}
 	};
 
+	const onMouseDown = (e) => {
+		// middle mouse button handle
+		if (e.button == 1) {
+			e.preventDefault();
+
+			if (Object.keys(tabsState).length != 1) {
+				handleClose(e);
+			}
+		}
+	};
+
 	const handleOnClick = () => {
 		setActiveTabId(tabId);
 	};
@@ -122,6 +133,7 @@ const Tab = (props) => {
 		setAnchorPoint({ x: e.clientX, y: e.clientY });
 		toggleMenu(true);
 	};
+
 	const controlledMenuPortal = {
 		target: fileExplorerRef.current,
 		stablePosition: true,
@@ -135,6 +147,7 @@ const Tab = (props) => {
 			style={{ width }}
 			onClick={handleOnClick}
 			onContextMenu={handleOnContextMenu}
+			onMouseDown={onMouseDown}
 		>
 			{/* a extra padding container used here instead of margin, because that margin is not tied to the width like padding is */}
 			<div

@@ -101,6 +101,17 @@ const Item = ({ item, getRecord }) => {
 		});
 	};
 
+	const onMouseDown = (e) => {
+		// middle mouse button handle
+		if (e.button == 1) {
+			e.preventDefault();
+
+			if (item.__typename == 'Folder') {
+				handleOpenInNewTab();
+			}
+		}
+	};
+
 	const layoutProps = {
 		record,
 	};
@@ -108,7 +119,7 @@ const Item = ({ item, getRecord }) => {
 	return (
 		<>
 			{record && (
-				<div onContextMenu={handleOnContextMenu}>
+				<div onContextMenu={handleOnContextMenu} onMouseDown={onMouseDown}>
 					{item.__typename == 'Folder' && (
 						<FileUploadDiv folderId={record.id}>
 							<Layout {...layoutProps} />

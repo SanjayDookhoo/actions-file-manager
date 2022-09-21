@@ -36,11 +36,21 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 		});
 	};
 
+	const onMouseDown = (e) => {
+		// middle mouse button handle
+		if (e.button == 1) {
+			e.preventDefault();
+
+			handleOpenInNewTab();
+		}
+	};
+
 	return (
 		<>
 			<button
 				onContextMenu={handleOnContextMenu}
 				onClick={() => handleOnClick(title)}
+				onMouseDown={onMouseDown}
 			>
 				<NavigationIconAndName folderId={title} />
 			</button>
