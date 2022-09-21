@@ -11,7 +11,6 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import { gql } from 'graphql-request';
 import { axiosClientJSON } from '../../endpoint';
 import { getFolderId, uploadFiles } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';

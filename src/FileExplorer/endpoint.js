@@ -1,4 +1,3 @@
-import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 
 export const backendEndpointWS = 'ws://localhost:5000';

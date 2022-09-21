@@ -19,7 +19,8 @@ import {
 	axiosClientJSON,
 	backendEndpointWS,
 } from './endpoint';
-import { filesFoldersNewArgs, rootNavigationMap, update } from './utils/utils';
+import { rootNavigationMap, update } from './utils/utils';
+import useWebSocket from 'react-use-websocket';
 
 export const FileExplorerContext = createContext();
 
@@ -76,6 +77,8 @@ const FileExplorer = () => {
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
+	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS);
+
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		const link = params.get('link');
@@ -125,23 +128,22 @@ const FileExplorer = () => {
 	}, [window.location, files, folders]);
 
 	useEffect(() => {
-		const socket = new WebSocket(backendEndpointWS);
-		socket.addEventListener('open', () => {
-			const socketMessageFile = {
-				subscriptionOf: 'File',
-				args: fileArguments,
-			};
-			const socketMessageFolder = {
-				subscriptionOf: 'Folder',
-				args: folderArguments,
-			};
+		const socketMessageFile = {
+			subscriptionOf: 'File',
+			args: fileArguments,
+		};
+		const socketMessageFolder = {
+			subscriptionOf: 'Folder',
+			args: folderArguments,
+		};
 
-			socket.send(JSON.stringify(socketMessageFile));
-			socket.send(JSON.stringify(socketMessageFolder));
-		});
+		sendMessage(JSON.stringify(socketMessageFile));
+		sendMessage(JSON.stringify(socketMessageFolder));
+	}, [fileArguments, folderArguments]);
 
-		socket.addEventListener('message', (message) => {
-			const { subscriptionOf, data } = JSON.parse(message.data);
+	useEffect(() => {
+		if (lastMessage) {
+			const { subscriptionOf, data } = JSON.parse(lastMessage.data);
 			if (subscriptionOf == 'File') {
 				setFiles(
 					data.file.map((record) => ({
@@ -157,11 +159,8 @@ const FileExplorer = () => {
 					}))
 				);
 			}
-		});
-		return () => {
-			socket.close();
-		};
-	}, [fileArguments, folderArguments]);
+		}
+	}, [lastMessage]);
 
 	useEffect(() => {
 		const promises = [];
