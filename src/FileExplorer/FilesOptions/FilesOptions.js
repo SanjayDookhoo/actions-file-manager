@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
+import FileFocusableItem from '../CustomReactMenu/FileFocusableItem';
 import { axiosClientJSON } from '../endpoint';
 import { FileExplorerContext } from '../FileExplorer';
 import { buttonStyle } from '../utils/constants';
 import { getFolderId, update } from '../utils/utils';
 
-const FilesOptions = () => {
+const FilesOptions = ({ item }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -19,6 +20,7 @@ const FilesOptions = () => {
 		setFileArguments,
 		filtered,
 		setFiltered,
+		setSharingLinksIsOpen,
 	} = useContext(FileExplorerContext);
 
 	const handleCut = () => {
@@ -85,26 +87,66 @@ const FilesOptions = () => {
 		);
 	};
 
+	const handleShare = () => {
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		let record;
+
+		// find record
+		if (selectedFolders.length != 0) {
+			record = folders.find((folder) => folder.id == selectedFolders[0]);
+		} else {
+			record = files.find((file) => file.id == selectedFiles[0]);
+		}
+		setSharingLinksIsOpen(record);
+	};
+
+	const buttonList = [
+		{
+			title: 'cut',
+			onClick: handleCut,
+			icon: 'cut',
+		},
+		{
+			title: 'copy',
+			onClick: handleCopy,
+			icon: 'content_copy',
+		},
+		{
+			title: 'paste',
+			onClick: handlePaste,
+			icon: 'content_paste',
+		},
+		{
+			title: 'rename',
+			onClick: handleRename,
+			icon: 'drive_file_rename_outline',
+		},
+		{
+			title: 'share',
+			onClick: handleShare,
+			icon: 'share',
+		},
+		{
+			title: 'delete',
+			onClick: handleDelete,
+			icon: 'delete',
+		},
+	];
+
 	return (
-		<div className="flex">
-			<a title="cut" onClick={handleCut}>
-				<span className={buttonStyle}>cut</span>
-			</a>
-			<a title="copy" onClick={handleCopy}>
-				<span className={buttonStyle}>content_copy</span>
-			</a>
-			<a title="paste" onClick={handlePaste}>
-				<span className={buttonStyle}>content_paste</span>
-			</a>
-			<a title="rename" onClick={handleRename}>
-				<span className={buttonStyle}>drive_file_rename_outline</span>
-			</a>
-			<a title="delete">
-				<span className={buttonStyle} onClick={handleDelete}>
-					delete
-				</span>
-			</a>
-		</div>
+		<>
+			{buttonList.map(({ title, onClick, icon }) => (
+				<Fragment key={title}>
+					{item ? (
+						<FileFocusableItem title={title} icon={icon} onClick={onClick} />
+					) : (
+						<a title={title} onClick={onClick}>
+							<span className={buttonStyle}>{icon}</span>
+						</a>
+					)}
+				</Fragment>
+			))}
+		</>
 	);
 };
 

@@ -8,6 +8,7 @@ import Layout from './Layout/Layout';
 import { axiosClientJSON } from '../../../../endpoint';
 import { FileExplorerContext } from '../../../../FileExplorer';
 import { openInNewTab, update } from '../../../../utils/utils';
+import FilesOptions from '../../../../FilesOptions/FilesOptions';
 
 const Item = ({ item, getRecord }) => {
 	const {
@@ -113,10 +114,6 @@ const Item = ({ item, getRecord }) => {
 		}
 	};
 
-	const share = () => {
-		setSharingLinksIsOpen(record);
-	};
-
 	const layoutProps = {
 		record,
 	};
@@ -148,21 +145,13 @@ const Item = ({ item, getRecord }) => {
 						onClose={() => toggleMenuHeader(false)}
 					>
 						<div className="w-64" onClick={(e) => e.stopPropagation()}>
-							<FileFocusableItem title="cut" icon="cut" />
-							<FileFocusableItem title="copy" icon="content_copy" />
-							<FileFocusableItem title="paste" icon="content_paste" />
-							<FileFocusableItem
-								title="rename"
-								icon="drive_file_rename_outline"
-							/>
-							<FileFocusableItem title="delete" icon="delete" />
+							<FilesOptions item={true} />
 							<MenuDivider />
 							<FileMenuItem description="Restore" onClick={restore} />
 							<FileMenuItem
 								description="Permanently Delete"
 								onClick={permanentlyDelete}
 							/>
-							<FileMenuItem description="Share" onClick={share} />
 							<MenuDivider />
 							{record.__typename == 'Folder' ? (
 								<>
