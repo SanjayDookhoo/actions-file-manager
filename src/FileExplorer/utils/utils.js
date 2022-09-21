@@ -252,6 +252,10 @@ export const rootNavigationMap = {
 			},
 		},
 	},
+	'Shared with me': {
+		file: 'Shared with me',
+		folder: 'Shared with me',
+	},
 	'Recycle bin': {
 		file: {
 			where: { deleted: { _eq: true } },
