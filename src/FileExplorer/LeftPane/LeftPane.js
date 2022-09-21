@@ -3,25 +3,15 @@ import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import NavigationIconAndName from '../NavigationIconAndName';
 import { FileExplorerContext } from '../FileExplorer';
-import { update } from '../utils/utils';
+import { openInNewTab, rootNavigationMap, update } from '../utils/utils';
+import { initialTabState } from '../Tabs/constants';
 
 const LeftPane = () => {
 	const { tabsState, setTabsState, activeTabId } =
 		useContext(FileExplorerContext);
 
-	const [favoritesIsOpen, setFavoritesIsOpen] = useState(true);
-	const [favorites, setFavorites] = useState(['a', 'b']);
-
-	const [menuProps, toggleMenu] = useMenuState();
-	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
-	const [contextMenuActive, setContextMenuActive] = useState(null);
-
-	const handleOnContextMenu = (e, contextMenu) => {
-		e.preventDefault();
-		setAnchorPoint({ x: e.clientX, y: e.clientY });
-		toggleMenu(true);
-		setContextMenuActive(contextMenu);
-	};
+	// const [favoritesIsOpen, setFavoritesIsOpen] = useState(true);
+	// const [favorites, setFavorites] = useState(['a', 'b']);
 
 	const handleOnClick = (rootNavigation) => {
 		const newPath = [rootNavigation];
@@ -46,38 +36,58 @@ const LeftPane = () => {
 		);
 	};
 
+	const leftPaneButtonProps = {
+		handleOnClick,
+	};
+
 	return (
 		<div className="flex flex-col items-start" style={{ width: '250px' }}>
+			{Object.keys(rootNavigationMap).map((title) => (
+				<LeftPaneButton title={title} {...leftPaneButtonProps} />
+			))}
+		</div>
+	);
+};
+
+export default LeftPane;
+
+const LeftPaneButton = ({ title, handleOnClick }) => {
+	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
+		useContext(FileExplorerContext);
+
+	const [menuProps, toggleMenu] = useMenuState();
+	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+
+	const handleOnContextMenu = (e) => {
+		e.preventDefault();
+		setAnchorPoint({ x: e.clientX, y: e.clientY });
+		toggleMenu(true);
+	};
+
+	const handleOpenInNewTab = () => {
+		const tabId = activeTabId;
+		const newTabState = update(initialTabState, {
+			path: { $set: [title] },
+			history: {
+				paths: { $set: [title] },
+			},
+		});
+		openInNewTab({
+			tabsState,
+			tabId,
+			setActiveTabId,
+			setTabsState,
+			newTabState,
+		});
+	};
+
+	return (
+		<>
 			<button
-				onContextMenu={(e) => handleOnContextMenu(e, 'Home')}
-				onClick={() => handleOnClick('Home')}
+				onContextMenu={handleOnContextMenu}
+				onClick={() => handleOnClick(title)}
 			>
-				<NavigationIconAndName folderId="Home" />
-			</button>
-			{/* <button onClick={() => setFavoritesIsOpen(!favoritesIsOpen)}>
-				<NavigationIconAndName folderId="Favorites" />
-			</button>
-			{favoritesIsOpen &&
-				favorites.map((favorite) => (
-					<div
-						className="pl-6"
-						onContextMenu={(e) => handleOnContextMenu(e, 'favorite')}
-						key={favorite}
-					>
-						<NavigationIconAndName folderId="22" />
-					</div>
-				))} */}
-			<button
-				onContextMenu={(e) => handleOnContextMenu(e, 'shared')}
-				onClick={() => handleOnClick('Shared with me')}
-			>
-				<NavigationIconAndName folderId="Shared with me" />
-			</button>
-			<button
-				onContextMenu={(e) => handleOnContextMenu(e, 'recycleBin')}
-				onClick={() => handleOnClick('Recycle bin')}
-			>
-				<NavigationIconAndName folderId="Recycle bin" />
+				<NavigationIconAndName folderId={title} />
 			</button>
 
 			<ControlledMenu
@@ -85,21 +95,19 @@ const LeftPane = () => {
 				anchorPoint={anchorPoint}
 				onClose={() => toggleMenu(false)}
 			>
-				<FileMenuItem logo="folder" description="Open in new tab" />
-				{contextMenuActive == 'favorite' && (
-					<>
-						{/* <FileMenuItem logo={false} description="Unpin from favorites" /> */}
-					</>
-				)}
-				{contextMenuActive == 'shared' && <></>}
-				{contextMenuActive == 'recycleBin' && (
-					<>
-						<FileMenuItem logo={false} description="Empty recycle bin" />
-					</>
-				)}
+				<div onClick={(e) => e.stopPropagation()}>
+					<FileMenuItem
+						logo="folder"
+						description="Open in new tab"
+						onClick={handleOpenInNewTab}
+					/>
+					{title == 'Recycle bin' && (
+						<>
+							<FileMenuItem logo={false} description="Empty recycle bin" />
+						</>
+					)}
+				</div>
 			</ControlledMenu>
-		</div>
+		</>
 	);
 };
-
-export default LeftPane;

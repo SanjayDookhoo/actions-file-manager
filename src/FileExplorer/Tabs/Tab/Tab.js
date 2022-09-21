@@ -6,6 +6,7 @@ import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
 import NavigationIconAndName from '../../NavigationIconAndName';
 import { buttonStyle } from '../../utils/constants';
+import { openInNewTab } from '../../utils/utils';
 import { tabMaxWidth, tabMinWidth } from '../constants';
 
 const icon = 'folder';
@@ -63,30 +64,15 @@ const Tab = (props) => {
 		setActiveTabId(tabId);
 	};
 
-	const duplicateTab = (e) => {
-		// e.syntheticEvent.stopPropagation();
-		const currTab = tabsState[tabId];
-		const { order } = currTab;
-
-		let newTabsState = Object.fromEntries(
-			Object.entries(tabsState).map(([key, value]) => {
-				return [
-					key,
-					{
-						...value,
-						order: value.order > order ? value.order + 1 : value.order,
-					},
-				];
-			})
-		);
-
-		const uuid = uuidv4();
-		newTabsState[uuid] = {
-			...currTab,
-			order: currTab.order + 1,
-		};
-		setActiveTabId(uuid);
-		setTabsState(newTabsState);
+	const duplicateTab = () => {
+		const newTabState = tabsState[tabId];
+		openInNewTab({
+			tabsState,
+			tabId,
+			setActiveTabId,
+			setTabsState,
+			newTabState,
+		});
 	};
 
 	const closeTabsLeft = ({ data }) => {

@@ -7,6 +7,7 @@ import Layout from './Layout/Layout';
 
 import { axiosClientJSON } from '../../../../endpoint';
 import { FileExplorerContext } from '../../../../FileExplorer';
+import { openInNewTab, update } from '../../../../utils/utils';
 
 const Item = ({ item, getRecord }) => {
 	const {
@@ -79,6 +80,24 @@ const Item = ({ item, getRecord }) => {
 		});
 	};
 
+	const handleOpenInNewTab = () => {
+		const tabId = activeTabId;
+		const newTabState = update(tabsState[activeTabId], {
+			path: { $push: [record.id] },
+			history: {
+				paths: { $push: [record.id] },
+				currentIndex: { $apply: (val) => val + 1 },
+			},
+		});
+		openInNewTab({
+			tabsState,
+			tabId,
+			setActiveTabId,
+			setTabsState,
+			newTabState,
+		});
+	};
+
 	const layoutProps = {
 		record,
 	};
@@ -109,7 +128,7 @@ const Item = ({ item, getRecord }) => {
 						anchorPoint={anchorPoint}
 						onClose={() => toggleMenuHeader(false)}
 					>
-						<div className="w-64">
+						<div className="w-64" onClick={(e) => e.stopPropagation()}>
 							<FileFocusableItem title="cut" icon="cut" />
 							<FileFocusableItem title="copy" icon="content_copy" />
 							<FileFocusableItem title="paste" icon="content_paste" />
@@ -127,7 +146,10 @@ const Item = ({ item, getRecord }) => {
 							<MenuDivider />
 							{record.__typename == 'Folder' ? (
 								<>
-									<FileMenuItem description="Open in new tab" />
+									<FileMenuItem
+										description="Open in new tab"
+										onClick={handleOpenInNewTab}
+									/>
 									{/* <FileMenuItem description="Add to favorites" /> */}
 									<FileMenuItem description="Create folder with selection" />
 								</>

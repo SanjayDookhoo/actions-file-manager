@@ -1,5 +1,6 @@
 import { axiosClientFiles } from '../endpoint';
 import _update from 'immutability-helper';
+import { v4 as uuidv4 } from 'uuid';
 
 export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
@@ -264,4 +265,35 @@ export const rootNavigationMap = {
 			where: { deleted: { _eq: true } },
 		},
 	},
+};
+
+export const openInNewTab = ({
+	tabsState,
+	tabId,
+	setActiveTabId,
+	setTabsState,
+	newTabState,
+}) => {
+	const { order } = tabsState[tabId];
+
+	let newTabsState = Object.fromEntries(
+		Object.entries(tabsState).map(([key, value]) => {
+			return [
+				key,
+				{
+					...value,
+					order: value.order > order ? value.order + 1 : value.order,
+				},
+			];
+		})
+	);
+
+	const uuid = uuidv4();
+	newTabsState[uuid] = {
+		...newTabState,
+		order: order + 1,
+	};
+
+	setActiveTabId(uuid);
+	setTabsState(newTabsState);
 };
