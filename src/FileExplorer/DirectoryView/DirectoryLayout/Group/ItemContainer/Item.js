@@ -24,6 +24,7 @@ const Item = ({ item, getRecord }) => {
 		setFileArguments,
 		filtered,
 		setFiltered,
+		setSharingLinksIsOpen,
 	} = useContext(FileExplorerContext);
 
 	const [record, setRecord] = useState({});
@@ -112,6 +113,10 @@ const Item = ({ item, getRecord }) => {
 		}
 	};
 
+	const share = () => {
+		setSharingLinksIsOpen(record);
+	};
+
 	const layoutProps = {
 		record,
 	};
@@ -157,6 +162,7 @@ const Item = ({ item, getRecord }) => {
 								description="Permanently Delete"
 								onClick={permanentlyDelete}
 							/>
+							<FileMenuItem description="Share" onClick={share} />
 							<MenuDivider />
 							{record.__typename == 'Folder' ? (
 								<>

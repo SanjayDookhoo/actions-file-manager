@@ -25,6 +25,7 @@ import {
 import { rootNavigationMap, update } from './utils/utils';
 import useWebSocket from 'react-use-websocket';
 import NewFolder from './NewFolder';
+import SharingLinks from './SharingLinks';
 
 export const FileExplorerContext = createContext();
 
@@ -56,19 +57,6 @@ const FileExplorer = () => {
 		window.localStorage.setItem(localStorageKey, JSON.stringify(data));
 	};
 
-	const initialFolderArguments = {
-		where: {
-			_and: [
-				{ parentFolderId: { _isNull: true } },
-				{ deleted: { _eq: false } },
-			],
-		},
-	};
-	const initialFileArguments = {
-		where: {
-			_and: [{ folderId: { _isNull: true } }, { deleted: { _eq: false } }],
-		},
-	};
 	const [folderArguments, setFolderArguments] = useState(
 		rootNavigationMap.Home.folder
 	);
@@ -83,6 +71,7 @@ const FileExplorer = () => {
 
 	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS);
 
+	const [sharingLinksIsOpen, setSharingLinksIsOpen] = useState(false);
 	const [newFolderIsOpen, setNewFolderIsOpen] = useState(false);
 	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 
@@ -221,11 +210,15 @@ const FileExplorer = () => {
 		newFolderName,
 		setNewFolderName,
 		setNewFolderIsOpen,
+		setSharingLinksIsOpen,
 	};
 
 	return (
 		<FileExplorerContext.Provider value={value}>
 			{newFolderIsOpen && <NewFolder />}
+			{sharingLinksIsOpen && (
+				<SharingLinks sharingLinksIsOpen={sharingLinksIsOpen} />
+			)}
 			<div
 				className="fileExplorer w-full h-screen flex flex-col bg-zinc-700"
 				ref={fileExplorerRef}
