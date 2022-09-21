@@ -13,7 +13,10 @@ import { v4 as uuidv4 } from 'uuid';
 import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
-import { initialLocalStorageState } from './utils/constants';
+import {
+	initialLocalStorageState,
+	newFolderNameDefault,
+} from './utils/constants';
 import {
 	axiosClientFileExtension,
 	axiosClientJSON,
@@ -21,6 +24,7 @@ import {
 } from './endpoint';
 import { rootNavigationMap, update } from './utils/utils';
 import useWebSocket from 'react-use-websocket';
+import NewFolder from './NewFolder';
 
 export const FileExplorerContext = createContext();
 
@@ -78,6 +82,9 @@ const FileExplorer = () => {
 	const [folders, setFolders] = useState([]);
 
 	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS);
+
+	const [newFolderIsOpen, setNewFolderIsOpen] = useState(false);
+	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -211,10 +218,14 @@ const FileExplorer = () => {
 		fileExtensionsMap,
 		filtered,
 		setFiltered,
+		newFolderName,
+		setNewFolderName,
+		setNewFolderIsOpen,
 	};
 
 	return (
 		<FileExplorerContext.Provider value={value}>
+			{newFolderIsOpen && <NewFolder />}
 			<div
 				className="fileExplorer w-full h-screen flex flex-col bg-zinc-700"
 				ref={fileExplorerRef}

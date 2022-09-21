@@ -43,7 +43,16 @@ const DirectoryViewOptions = () => {
 	return (
 		<div className="w-full flex justify-between">
 			<div className="flex">
-				<NewDropdown />
+				<Menu
+					menuButton={
+						<a className="flex items-center" title="cut">
+							<span className={buttonStyle}>add</span>
+							New
+						</a>
+					}
+				>
+					<NewDropdown />
+				</Menu>
 				<FilesOptions />
 			</div>
 			<div className="flex">

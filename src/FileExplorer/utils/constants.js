@@ -50,3 +50,5 @@ export const layoutOptions = [
 	'mediumIcons',
 	'largeIcons',
 ];
+
+export const newFolderNameDefault = 'Untitled Folder';

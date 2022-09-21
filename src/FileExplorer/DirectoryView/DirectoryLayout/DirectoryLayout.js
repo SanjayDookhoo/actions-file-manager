@@ -26,6 +26,7 @@ import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import GroupDropdown from '../DirectoryViewOptions/GroupDropdown';
 import SortDropdown from '../DirectoryViewOptions/SortDropdown';
 import LayoutDropdown from '../DirectoryViewOptions/LayoutDropdown';
+import NewDropdown from '../DirectoryViewOptions/NewDropdown';
 
 const DirectoryLayout = () => {
 	const {
@@ -242,6 +243,10 @@ const DirectoryLayout = () => {
 						</FileSubMenu>
 						<FileSubMenu logo="dvr" description="Group by">
 							<GroupDropdown />
+						</FileSubMenu>
+						<MenuDivider />
+						<FileSubMenu logo="add" description="New">
+							<NewDropdown />
 						</FileSubMenu>
 					</div>
 				</ControlledMenu>
