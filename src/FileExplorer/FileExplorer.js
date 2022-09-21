@@ -14,8 +14,12 @@ import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
 import { initialLocalStorageState } from './utils/constants';
-import { axiosClientFileExtension, backendEndpointWS } from './endpoint';
-import { filesFoldersNewArgs, rootNavigationMap } from './utils/utils';
+import {
+	axiosClientFileExtension,
+	axiosClientJSON,
+	backendEndpointWS,
+} from './endpoint';
+import { filesFoldersNewArgs, rootNavigationMap, update } from './utils/utils';
 
 export const FileExplorerContext = createContext();
 
@@ -71,6 +75,54 @@ const FileExplorer = () => {
 
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		const link = params.get('link');
+
+		if (link) {
+			axiosClientJSON({
+				url: '/addSharedIdLink',
+				method: 'POST',
+				data: {
+					link,
+				},
+			});
+
+			const file = files.find((file) => {
+				const sharingPermissionLinks =
+					file.meta.sharingPermission.sharingPermissionLinks;
+				return sharingPermissionLinks.map((el) => el.link).includes(link);
+			});
+			const folder = folders.find((folder) => {
+				const sharingPermissionLinks =
+					folder.meta.sharingPermission.sharingPermissionLinks;
+				return sharingPermissionLinks.map((el) => el.link).includes(link);
+			});
+
+			setTabsState(
+				update(tabsState, {
+					[activeTabId]: {
+						path: { $set: ['Shared with me'] },
+						history: {
+							paths: { $set: ['Shared with me'] },
+							currentIndex: { $set: 0 },
+						},
+						selectedFiles: { $set: file ? [file.id] : [] },
+						selectedFolders: { $set: folder ? [folder.id] : [] },
+					},
+				})
+			);
+
+			if (file || folder) {
+				window.history.replaceState(
+					{},
+					document.title,
+					window.location.pathname
+				);
+			}
+		}
+	}, [window.location, files, folders]);
 
 	useEffect(() => {
 		const socket = new WebSocket(backendEndpointWS);
