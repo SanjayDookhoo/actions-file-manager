@@ -82,7 +82,7 @@ const FileExplorer = () => {
 
 		if (link) {
 			axiosClientJSON({
-				url: '/addSharedIdLink',
+				url: '/addSharedWithMe',
 				method: 'POST',
 				data: {
 					link,
