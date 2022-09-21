@@ -82,13 +82,16 @@ const Item = ({ item, getRecord }) => {
 
 	const handleOpenInNewTab = () => {
 		const tabId = activeTabId;
+		const { path } = tabsState[tabId];
+		const newPath = [...path, record.id];
 		const newTabState = update(tabsState[activeTabId], {
-			path: { $push: [record.id] },
+			path: { $set: newPath },
 			history: {
-				paths: { $push: [record.id] },
+				paths: { $push: [newPath] },
 				currentIndex: { $apply: (val) => val + 1 },
 			},
 		});
+
 		openInNewTab({
 			tabsState,
 			tabId,

@@ -1,10 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
-import FileMenuItem from '../CustomReactMenu/FileMenuItem';
-import NavigationIconAndName from '../NavigationIconAndName';
 import { FileExplorerContext } from '../FileExplorer';
 import { openInNewTab, rootNavigationMap, update } from '../utils/utils';
-import { initialTabState } from '../Tabs/constants';
+import LeftPaneButton from './LeftPaneButton';
 
 const LeftPane = () => {
 	const { tabsState, setTabsState, activeTabId } =
@@ -15,25 +12,30 @@ const LeftPane = () => {
 
 	const handleOnClick = (rootNavigation) => {
 		const newPath = [rootNavigation];
-		setTabsState(
-			update(tabsState, {
-				[activeTabId]: {
-					// adding path in a way that allows keeping track of history
-					path: { $set: newPath },
-					history: {
-						paths: { $push: [newPath] },
-						currentIndex: { $apply: (val) => val + 1 },
+		if (
+			// clicked the same item that is the current path
+			JSON.stringify(newPath) != JSON.stringify(tabsState[activeTabId].path)
+		) {
+			setTabsState(
+				update(tabsState, {
+					[activeTabId]: {
+						// adding path in a way that allows keeping track of history
+						path: { $set: newPath },
+						history: {
+							paths: { $push: [newPath] },
+							currentIndex: { $apply: (val) => val + 1 },
+						},
+						// clearing other selected files and folders
+						selectedFolders: {
+							$set: [],
+						},
+						selectedFiles: {
+							$set: [],
+						},
 					},
-					// clearing other selected files and folders
-					selectedFolders: {
-						$set: [],
-					},
-					selectedFiles: {
-						$set: [],
-					},
-				},
-			})
-		);
+				})
+			);
+		}
 	};
 
 	const leftPaneButtonProps = {
@@ -50,64 +52,3 @@ const LeftPane = () => {
 };
 
 export default LeftPane;
-
-const LeftPaneButton = ({ title, handleOnClick }) => {
-	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
-		useContext(FileExplorerContext);
-
-	const [menuProps, toggleMenu] = useMenuState();
-	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
-
-	const handleOnContextMenu = (e) => {
-		e.preventDefault();
-		setAnchorPoint({ x: e.clientX, y: e.clientY });
-		toggleMenu(true);
-	};
-
-	const handleOpenInNewTab = () => {
-		const tabId = activeTabId;
-		const newTabState = update(initialTabState, {
-			path: { $set: [title] },
-			history: {
-				paths: { $set: [title] },
-			},
-		});
-		openInNewTab({
-			tabsState,
-			tabId,
-			setActiveTabId,
-			setTabsState,
-			newTabState,
-		});
-	};
-
-	return (
-		<>
-			<button
-				onContextMenu={handleOnContextMenu}
-				onClick={() => handleOnClick(title)}
-			>
-				<NavigationIconAndName folderId={title} />
-			</button>
-
-			<ControlledMenu
-				{...menuProps}
-				anchorPoint={anchorPoint}
-				onClose={() => toggleMenu(false)}
-			>
-				<div onClick={(e) => e.stopPropagation()}>
-					<FileMenuItem
-						logo="folder"
-						description="Open in new tab"
-						onClick={handleOpenInNewTab}
-					/>
-					{title == 'Recycle bin' && (
-						<>
-							<FileMenuItem logo={false} description="Empty recycle bin" />
-						</>
-					)}
-				</div>
-			</ControlledMenu>
-		</>
-	);
-};
