@@ -74,6 +74,7 @@ const FileExplorer = () => {
 	const [sharingLinksIsOpen, setSharingLinksIsOpen] = useState(false);
 	const [newFolderIsOpen, setNewFolderIsOpen] = useState(false);
 	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
+	const [paste, setPaste] = useState(null);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -211,6 +212,8 @@ const FileExplorer = () => {
 		setNewFolderName,
 		setNewFolderIsOpen,
 		setSharingLinksIsOpen,
+		paste,
+		setPaste,
 	};
 
 	return (

@@ -21,6 +21,8 @@ const FilesOptions = ({ item }) => {
 		filtered,
 		setFiltered,
 		setSharingLinksIsOpen,
+		paste,
+		setPaste,
 	} = useContext(FileExplorerContext);
 
 	const handleCut = () => {
@@ -34,6 +36,7 @@ const FilesOptions = ({ item }) => {
 				selectedFiles,
 			},
 		});
+		setPaste('cut');
 	};
 
 	const handleCopy = () => {
@@ -47,6 +50,7 @@ const FilesOptions = ({ item }) => {
 				selectedFiles,
 			},
 		});
+		setPaste('copy');
 	};
 
 	const handlePaste = () => {
@@ -59,6 +63,7 @@ const FilesOptions = ({ item }) => {
 				folderId,
 			},
 		});
+		if (paste == 'cut') setPaste(null);
 	};
 
 	const handleRename = () => {
@@ -100,6 +105,32 @@ const FilesOptions = ({ item }) => {
 		setSharingLinksIsOpen(record);
 	};
 
+	const isActive = (title) => {
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+
+		const map = {
+			cut: () => {
+				return selectedFolders.length + selectedFiles.length != 0;
+			},
+			copy: () => {
+				return selectedFolders.length + selectedFiles.length != 0;
+			},
+			paste: () => {
+				return paste;
+			},
+			rename: () => {
+				return selectedFolders.length + selectedFiles.length == 1;
+			},
+			share: () => {
+				return selectedFolders.length + selectedFiles.length == 1;
+			},
+			delete: () => {
+				return selectedFolders.length + selectedFiles.length != 0;
+			},
+		};
+		return map[title]();
+	};
+
 	const buttonList = [
 		{
 			title: 'cut',
@@ -138,9 +169,23 @@ const FilesOptions = ({ item }) => {
 			{buttonList.map(({ title, onClick, icon }) => (
 				<Fragment key={title}>
 					{item ? (
-						<FileFocusableItem title={title} icon={icon} onClick={onClick} />
+						<>
+							{isActive(title) && (
+								<FileFocusableItem
+									title={title}
+									icon={icon}
+									onClick={onClick}
+								/>
+							)}
+						</>
 					) : (
-						<a title={title} onClick={onClick}>
+						<a
+							className={
+								isActive(title) ? '' : 'pointer-events-none text-gray-400'
+							}
+							title={title}
+							onClick={onClick}
+						>
 							<span className={buttonStyle}>{icon}</span>
 						</a>
 					)}
