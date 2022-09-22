@@ -8,14 +8,15 @@ const FileUploadDiv = ({ children, folderId, style }) => {
 	const { localStorage, setLocalStorage, tabsState, activeTabId } =
 		useContext(FileExplorerContext);
 	const [draggedOver, setDraggedOver] = useState(false);
-	const [disabled, setDisabled] = useState(false);
+	const [enabled, setEnabled] = useState(false);
 
 	useEffect(() => {
-		setDisabled(canEdit({ tabsState, activeTabId }));
-	}, [tabsState, activeTabId]);
+		const temp = canEdit({ tabsState, activeTabId });
+		setEnabled(temp);
+	}, [tabsState[activeTabId].path]);
 
 	const handleOnDragOver = (e) => {
-		if (!disabled) {
+		if (enabled) {
 			e.preventDefault();
 			e.stopPropagation(); // prevents triggering another dragover border highlight, if this FileUploadDiv is nested in another FileuploadDiv
 			setDraggedOver(true);
@@ -23,14 +24,14 @@ const FileUploadDiv = ({ children, folderId, style }) => {
 	};
 
 	const handleOnDragLeave = (e) => {
-		if (!disabled) {
+		if (enabled) {
 			e.preventDefault();
 			setDraggedOver(false);
 		}
 	};
 
 	const handleOnDrop = async (e) => {
-		if (!disabled) {
+		if (enabled) {
 			e.preventDefault();
 			e.stopPropagation(); // prevents triggering another dragover border highlight, if this FileUploadDiv is nested in another FileuploadDiv
 			setDraggedOver(false);
@@ -43,7 +44,7 @@ const FileUploadDiv = ({ children, folderId, style }) => {
 		<div
 			className={
 				'm-1 p-1 w-fit h-fit border-dashed border ' +
-				(!disabled && draggedOver ? 'border-green-500' : 'border-transparent')
+				(enabled && draggedOver ? 'border-green-500' : 'border-transparent')
 			}
 			style={style}
 			onDragOver={handleOnDragOver}
