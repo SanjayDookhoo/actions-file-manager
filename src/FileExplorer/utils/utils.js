@@ -297,3 +297,10 @@ export const openInNewTab = ({
 	setActiveTabId(uuid);
 	setTabsState(newTabsState);
 };
+
+export const canEdit = ({ tabsState, activeTabId }) => {
+	const { path } = tabsState[activeTabId];
+	if (path[0] == 'Recycle bin') return false;
+	if (path[0] == 'Shared with me') return false;
+	return true;
+};

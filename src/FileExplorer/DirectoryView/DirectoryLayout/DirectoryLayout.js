@@ -11,6 +11,7 @@ import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import {
+	canEdit,
 	createBuckets,
 	dateVariations,
 	formatBytes,
@@ -240,9 +241,11 @@ const DirectoryLayout = () => {
 							<GroupDropdown />
 						</FileSubMenu>
 						<MenuDivider />
-						<FileSubMenu logo="add" description="New">
-							<NewDropdown />
-						</FileSubMenu>
+						{canEdit({ tabsState, activeTabId }) && (
+							<FileSubMenu logo="add" description="New">
+								<NewDropdown />
+							</FileSubMenu>
+						)}
 					</div>
 				</ControlledMenu>
 			</FileUploadDiv>

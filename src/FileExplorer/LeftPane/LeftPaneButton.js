@@ -5,6 +5,7 @@ import NavigationIconAndName from '../NavigationIconAndName';
 import { FileExplorerContext } from '../FileExplorer';
 import { openInNewTab, rootNavigationMap, update } from '../utils/utils';
 import { initialTabState } from '../Tabs/constants';
+import { axiosClientJSON } from '../endpoint';
 
 const LeftPaneButton = ({ title, handleOnClick }) => {
 	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
@@ -45,6 +46,26 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 		}
 	};
 
+	const restoreAllItems = () => {
+		axiosClientJSON({
+			url: '/restore',
+			method: 'POST',
+			data: {
+				all: true,
+			},
+		});
+	};
+
+	const emptyRecycleBin = () => {
+		axiosClientJSON({
+			url: '/permanentlyDelete',
+			method: 'POST',
+			data: {
+				all: true,
+			},
+		});
+	};
+
 	return (
 		<>
 			<button
@@ -68,7 +89,16 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 					/>
 					{title == 'Recycle bin' && (
 						<>
-							<FileMenuItem logo={false} description="Empty recycle bin" />
+							<FileMenuItem
+								logo={false}
+								description="Empty recycle bin"
+								onClick={emptyRecycleBin}
+							/>
+							<FileMenuItem
+								logo={false}
+								description="Restore all items"
+								onClick={restoreAllItems}
+							/>
 						</>
 					)}
 				</div>

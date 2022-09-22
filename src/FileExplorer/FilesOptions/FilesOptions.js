@@ -61,9 +61,10 @@ const FilesOptions = ({ item }) => {
 	};
 
 	const handleDelete = async () => {
-		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
+		const url = path[0] == 'Recycle bin' ? '/permanentlyDelete' : '/remove';
 		const res = await axiosClientJSON({
-			url: '/remove',
+			url,
 			method: 'POST',
 			data: {
 				selectedFolders,
@@ -94,25 +95,31 @@ const FilesOptions = ({ item }) => {
 	};
 
 	const isActive = (title) => {
-		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
 
 		const map = {
 			cut: () => {
+				if (path[0] == 'Recycle bin' && path.length != 1) return false; // only allowed at the top level of recycle bin
 				return selectedFolders.length + selectedFiles.length != 0;
 			},
 			copy: () => {
+				if (path[0] == 'Recycle bin') return false; // not allowed at all in recycle bin folder
 				return selectedFolders.length + selectedFiles.length != 0;
 			},
 			paste: () => {
+				if (path[0] == 'Recycle bin') return false;
 				return paste;
 			},
 			rename: () => {
+				if (path[0] == 'Recycle bin') return false;
 				return selectedFolders.length + selectedFiles.length == 1;
 			},
 			share: () => {
+				if (path[0] == 'Recycle bin') return false;
 				return selectedFolders.length + selectedFiles.length == 1;
 			},
 			delete: () => {
+				if (path[0] == 'Recycle bin' && path.length != 1) return false;
 				return selectedFolders.length + selectedFiles.length != 0;
 			},
 		};

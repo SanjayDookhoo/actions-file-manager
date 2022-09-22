@@ -63,19 +63,27 @@ const Item = ({ item, getRecord }) => {
 		}
 	};
 
-	const downloadFile = () => {
-		const { id } = record;
+	const canDownload = () => {
+		const { path } = tabsState[activeTabId];
+		if (path[0] == 'Recycle bin') return false;
+		return true;
+	};
 
-		axiosClientJSON({
-			url: '/downloadFile',
-			method: 'POST',
-			data: {
-				id,
-			},
-		}).then((res) => {
-			const { URL } = res.data;
-			window.location.assign(URL);
-		});
+	const downloadFile = () => {
+		if (canDownload()) {
+			const { id } = record;
+
+			axiosClientJSON({
+				url: '/downloadFile',
+				method: 'POST',
+				data: {
+					id,
+				},
+			}).then((res) => {
+				const { URL } = res.data;
+				window.location.assign(URL);
+			});
+		}
 	};
 
 	const restore = () => {
@@ -246,16 +254,17 @@ const Item = ({ item, getRecord }) => {
 						<div className="w-64" onClick={(e) => e.stopPropagation()}>
 							<FilesOptions item={true} />
 							<MenuDivider />
-							{tabsState[activeTabId].path[0] == 'Recycle bin' && (
-								<>
-									<FileMenuItem description="Restore" onClick={restore} />
-									<FileMenuItem
-										description="Permanently Delete"
-										onClick={permanentlyDelete}
-									/>
-									<MenuDivider />
-								</>
-							)}
+							{tabsState[activeTabId].path[0] == 'Recycle bin' &&
+								tabsState[activeTabId].path.length == 1 && (
+									<>
+										<FileMenuItem description="Restore" onClick={restore} />
+										<FileMenuItem
+											description="Permanently Delete"
+											onClick={permanentlyDelete}
+										/>
+										<MenuDivider />
+									</>
+								)}
 							{record.__typename == 'Folder' ? (
 								<>
 									<FileMenuItem
@@ -267,7 +276,12 @@ const Item = ({ item, getRecord }) => {
 								</>
 							) : (
 								<>
-									<FileMenuItem description="Download" onClick={downloadFile} />
+									{canDownload() && (
+										<FileMenuItem
+											description="Download"
+											onClick={downloadFile}
+										/>
+									)}
 								</>
 							)}
 						</div>
