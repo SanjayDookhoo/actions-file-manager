@@ -6,8 +6,6 @@ import RenderIcon from './RenderIcon';
 const TilesLayout = (props) => {
 	const {
 		record,
-		handleSelectFileFolderOnClick,
-		updateCurrentFolderId,
 		renderDate,
 		renderType,
 		renderName,
@@ -24,12 +22,6 @@ const TilesLayout = (props) => {
 				className={
 					'flex items-center ' +
 					(recordIsSelected(record) ? 'bg-zinc-500 ' : '')
-				}
-				onClick={(e) => handleSelectFileFolderOnClick(e, record)}
-				onDoubleClick={
-					record.__typename == 'Folder'
-						? () => updateCurrentFolderId(record.id)
-						: () => {}
 				}
 			>
 				<RenderIcon className="w-16 h-16" {...{ record, fileExtensionsMap }} />

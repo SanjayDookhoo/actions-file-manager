@@ -6,8 +6,6 @@ import RenderIcon from './RenderIcon';
 const DetailsLayout = (props) => {
 	const {
 		record,
-		handleSelectFileFolderOnClick,
-		updateCurrentFolderId,
 		renderDate,
 		renderType,
 		renderName,
@@ -44,12 +42,6 @@ const DetailsLayout = (props) => {
 		<>
 			<div
 				className={'flex ' + (recordIsSelected(record) ? 'bg-zinc-500 ' : '')}
-				onClick={(e) => handleSelectFileFolderOnClick(e, record)}
-				onDoubleClick={
-					record.__typename == 'Folder'
-						? () => updateCurrentFolderId(record.id)
-						: () => {}
-				}
 			>
 				<RenderIcon className="w-4 h-4" {...{ record, fileExtensionsMap }} />
 				{Object.entries(detailsLayoutMeta)

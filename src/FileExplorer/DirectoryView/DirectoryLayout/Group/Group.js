@@ -101,8 +101,8 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 			{!collapsed && (
 				<div
 					className={
-						'flex w-full h-full ' +
-						(localStorage.layout == 'details' ? 'flex-col' : 'flex-wrap')
+						'flex ' +
+						(localStorage.layout == 'details' ? 'flex-col w-fit' : 'flex-wrap')
 					}
 				>
 					{itemsSorted.map((item) => (

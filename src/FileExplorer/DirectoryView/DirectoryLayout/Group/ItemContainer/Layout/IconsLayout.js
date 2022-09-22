@@ -6,8 +6,6 @@ import RenderIcon from './RenderIcon';
 const IconsLayout = (props) => {
 	const {
 		record,
-		handleSelectFileFolderOnClick,
-		updateCurrentFolderId,
 		renderDate,
 		renderType,
 		renderName,
@@ -34,12 +32,6 @@ const IconsLayout = (props) => {
 					'flex items-center ' +
 					(recordIsSelected(record) ? 'bg-zinc-500 ' : ' ') +
 					(!layout.includes('small') ? 'flex-col' : '')
-				}
-				onClick={(e) => handleSelectFileFolderOnClick(e, record)}
-				onDoubleClick={
-					record.__typename == 'Folder'
-						? () => updateCurrentFolderId(record.id)
-						: () => {}
 				}
 			>
 				{layout == 'smallIcons' && (

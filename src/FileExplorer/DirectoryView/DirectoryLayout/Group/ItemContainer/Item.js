@@ -63,7 +63,7 @@ const Item = ({ item, getRecord }) => {
 		}
 	};
 
-	const downloadFile = (record) => {
+	const downloadFile = () => {
 		const { id } = record;
 
 		axiosClientJSON({
@@ -74,7 +74,7 @@ const Item = ({ item, getRecord }) => {
 			},
 		}).then((res) => {
 			const { URL } = res.data;
-			window.open(URL, '_blank');
+			window.location.assign(URL);
 		});
 	};
 
@@ -134,6 +134,76 @@ const Item = ({ item, getRecord }) => {
 		}
 	};
 
+	const handleSelectFileFolderOnClick = (e) => {
+		const { id, __typename } = record;
+		e.stopPropagation(); // allows empty space to be clicked to clear all folders or files selected
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		let tempSelectedFolders;
+		let tempSelectedFiles;
+
+		if (__typename == 'Folder') {
+			if (!localStorage.multiselect) {
+				tempSelectedFolders = [id];
+				tempSelectedFiles = [];
+			} else {
+				tempSelectedFiles = selectedFiles;
+				if (selectedFolders.includes(id)) {
+					tempSelectedFolders = [...selectedFolders];
+					const index = tempSelectedFolders.findIndex((el) => el == id);
+					tempSelectedFolders.splice(index, 1);
+				} else {
+					tempSelectedFolders = [...selectedFolders, id];
+				}
+			}
+		} else if (__typename == 'File') {
+			if (!localStorage.multiselect) {
+				tempSelectedFiles = [id];
+				tempSelectedFolders = [];
+			} else {
+				tempSelectedFolders = selectedFolders;
+				if (selectedFiles.includes(id)) {
+					tempSelectedFiles = [...selectedFiles];
+					const index = tempSelectedFiles.findIndex((el) => el == id);
+					tempSelectedFiles.splice(index, 1);
+				} else {
+					tempSelectedFiles = [...selectedFiles, id];
+				}
+			}
+		}
+
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: tempSelectedFiles },
+					selectedFolders: { $set: tempSelectedFolders },
+				},
+			})
+		);
+	};
+
+	const updateCurrentFolderId = () => {
+		const { paths, currentIndex } = tabsState[activeTabId].history;
+		const newPath = [...tabsState[activeTabId].path, record.id];
+		let newPaths = [...paths];
+		newPaths = newPaths.splice(0, currentIndex + 1);
+		newPaths = [...newPaths, newPath];
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					// adding path in a way that allows keeping track of history
+					path: { $set: newPath },
+					history: {
+						paths: { $set: newPaths },
+						currentIndex: { $apply: (val) => val + 1 },
+					},
+					// clearing other selected files and folders
+					selectedFiles: { $set: [] },
+					selectedFolders: { $set: [] },
+				},
+			})
+		);
+	};
+
 	const layoutProps = {
 		record,
 	};
@@ -141,7 +211,16 @@ const Item = ({ item, getRecord }) => {
 	return (
 		<>
 			{record && (
-				<div onContextMenu={handleOnContextMenu} onMouseDown={onMouseDown}>
+				<div
+					onContextMenu={handleOnContextMenu}
+					onMouseDown={onMouseDown}
+					onClick={handleSelectFileFolderOnClick}
+					onDoubleClick={
+						record.__typename == 'Folder'
+							? () => updateCurrentFolderId()
+							: () => downloadFile()
+					}
+				>
 					{item.__typename == 'Folder' && (
 						<FileUploadDiv folderId={record.id}>
 							<Layout {...layoutProps} />
@@ -188,10 +267,7 @@ const Item = ({ item, getRecord }) => {
 								</>
 							) : (
 								<>
-									<FileMenuItem
-										description="Download"
-										onClick={() => downloadFile(record)}
-									/>
+									<FileMenuItem description="Download" onClick={downloadFile} />
 								</>
 							)}
 						</div>
