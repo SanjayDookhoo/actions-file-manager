@@ -43,6 +43,8 @@ const DirectoryLayout = () => {
 		setFileArguments,
 		filtered,
 		setFiltered,
+		paste,
+		handlePaste,
 	} = useContext(FileExplorerContext);
 	const [menuPropsHeader, toggleMenuHeader] = useMenuState();
 	const [anchorPointHeader, setAnchorPointHeader] = useState({ x: 0, y: 0 });
@@ -218,6 +220,16 @@ const DirectoryLayout = () => {
 					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
 					<div className="w-64">
+						{paste && (
+							<>
+								<FileFocusableItem
+									title="paste"
+									icon="content_paste"
+									onClick={handlePaste}
+								/>
+								<MenuDivider />
+							</>
+						)}
 						<FileSubMenu logo="grid_view" description="Layout">
 							<LayoutDropdown />
 						</FileSubMenu>

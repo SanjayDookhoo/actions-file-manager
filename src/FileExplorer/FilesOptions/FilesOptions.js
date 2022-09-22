@@ -23,6 +23,7 @@ const FilesOptions = ({ item }) => {
 		setSharingLinksIsOpen,
 		paste,
 		setPaste,
+		handlePaste,
 	} = useContext(FileExplorerContext);
 
 	const handleCut = () => {
@@ -51,19 +52,6 @@ const FilesOptions = ({ item }) => {
 			},
 		});
 		setPaste('copy');
-	};
-
-	const handlePaste = () => {
-		const folderId = getFolderId({ tabsState, activeTabId });
-		const res = axiosClientJSON({
-			url: '/paste',
-			method: 'POST',
-			data: {
-				userId: '123',
-				folderId,
-			},
-		});
-		if (paste == 'cut') setPaste(null);
 	};
 
 	const handleRename = () => {

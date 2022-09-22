@@ -22,7 +22,7 @@ import {
 	axiosClientJSON,
 	backendEndpointWS,
 } from './endpoint';
-import { rootNavigationMap, update } from './utils/utils';
+import { getFolderId, rootNavigationMap, update } from './utils/utils';
 import useWebSocket from 'react-use-websocket';
 import NewFolder from './NewFolder';
 import SharingLinks from './SharingLinks';
@@ -119,7 +119,7 @@ const FileExplorer = () => {
 			setFolderArguments(rootNavigationMap[currentFolder].folder);
 			setFileArguments(rootNavigationMap[currentFolder].file);
 		}
-	}, [tabsState, activeTabId]);
+	}, [tabsState[activeTabId].path]);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -221,6 +221,19 @@ const FileExplorer = () => {
 		});
 	}, [files]);
 
+	const handlePaste = () => {
+		const folderId = getFolderId({ tabsState, activeTabId });
+		const res = axiosClientJSON({
+			url: '/paste',
+			method: 'POST',
+			data: {
+				userId: '123',
+				folderId,
+			},
+		});
+		if (paste == 'cut') setPaste(null);
+	};
+
 	const value = {
 		tabsState,
 		setTabsState,
@@ -248,6 +261,7 @@ const FileExplorer = () => {
 		setPaste,
 		subscriptionLoading,
 		subscriptionError,
+		handlePaste,
 	};
 
 	return (
