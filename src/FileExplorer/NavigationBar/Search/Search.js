@@ -29,6 +29,7 @@ const Search = () => {
 	} = useContext(FileExplorerContext);
 
 	const [search, setSearch] = useState('');
+	const [searching, setSearching] = useState(false);
 	const inputRef = useRef();
 	const searchContainerRef = useRef();
 
@@ -41,7 +42,8 @@ const Search = () => {
 	useEffect(() => {
 		const folderId = getFolderId({ tabsState, activeTabId });
 		if (search) {
-			const res = axiosClientJSON({
+			setSearching(true);
+			axiosClientJSON({
 				url: '/search',
 				method: 'POST',
 				data: {
@@ -49,8 +51,7 @@ const Search = () => {
 					folderId,
 				},
 			}).then((res) => {
-				// console.log(res.data);
-
+				setSearching(false);
 				const format = {};
 
 				// seperate by depth found in folder
@@ -96,11 +97,6 @@ const Search = () => {
 	const clearText = (e) => {
 		e.stopPropagation();
 		setSearch('');
-	};
-
-	const openSearchInWindow = (e) => {
-		e.stopPropagation();
-		// TODO openSearchInWindow
 	};
 
 	useLayoutEffect(() => {
@@ -212,9 +208,6 @@ const Search = () => {
 						<span className={buttonStyle}>close</span>
 					</a>
 				)}
-				<a onClick={openSearchInWindow}>
-					<span className={buttonStyle}>search</span>
-				</a>
 			</div>
 
 			<ControlledMenu
@@ -224,26 +217,36 @@ const Search = () => {
 				onClose={() => toggleMenu(false)}
 			>
 				<div className="searchItems w-64">
-					{Object.values(searchResponse).map((value, i) => (
-						<Fragment key={value}>
-							{value.map((record) => (
-								<FileMenuItem
-									key={`${record.id}-${record.__typename}`}
-									img={
-										<RenderIcon
-											className="w-6 h-6"
-											{...{ record, fileExtensionsMap }}
+					{searching ? (
+						'Searching ...'
+					) : (
+						<>
+							{Object.values(searchResponse).map((value, i) => (
+								<Fragment key={value}>
+									{value.map((record) => (
+										<FileMenuItem
+											key={`${record.id}-${record.__typename}`}
+											img={
+												<RenderIcon
+													className="w-6 h-6"
+													{...{ record, fileExtensionsMap }}
+												/>
+											}
+											description={record.name}
+											onKeyDown={handleOnKeyDownSearchItem}
+											onClick={() => handleOnClick(record)}
+											title={title(record)}
 										/>
-									}
-									description={record.name}
-									onKeyDown={handleOnKeyDownSearchItem}
-									onClick={() => handleOnClick(record)}
-									title={title(record)}
-								/>
+									))}
+									{i != Object.values(searchResponse).length - 1 && (
+										<MenuDivider />
+									)}
+								</Fragment>
 							))}
-							{i != Object.values(searchResponse).length - 1 && <MenuDivider />}
-						</Fragment>
-					))}
+
+							{Object.values(searchResponse).length == 0 && 'No results found'}
+						</>
+					)}
 				</div>
 			</ControlledMenu>
 		</div>
