@@ -26,6 +26,7 @@ import { rootNavigationMap, update } from './utils/utils';
 import useWebSocket from 'react-use-websocket';
 import NewFolder from './NewFolder';
 import SharingLinks from './SharingLinks';
+import useSubscription from './useSubscription';
 
 export const FileExplorerContext = createContext();
 
@@ -69,12 +70,56 @@ const FileExplorer = () => {
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
-	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS);
+	const [_files, filesLoading, filesError] = useSubscription(
+		fileArguments,
+		'File'
+	);
+	const [_folders, foldersLoading, foldersError] = useSubscription(
+		folderArguments,
+		'Folder'
+	);
 
 	const [sharingLinksIsOpen, setSharingLinksIsOpen] = useState(false);
 	const [newFolderIsOpen, setNewFolderIsOpen] = useState(false);
 	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 	const [paste, setPaste] = useState(null);
+	const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+	const [subscriptionError, setSubscriptionError] = useState(false);
+
+	useEffect(() => {
+		setSubscriptionLoading(filesLoading || foldersLoading);
+	}, [filesLoading, foldersLoading]);
+
+	useEffect(() => {
+		setSubscriptionError(filesError || foldersError);
+	}, [filesError, foldersError]);
+
+	useEffect(() => {
+		const currentFolder =
+			tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
+
+		if (Number.isInteger(currentFolder)) {
+			setFolderArguments({
+				where: {
+					_and: [
+						{ parentFolderId: { _eq: currentFolder } },
+						{ deleted: { _eq: false } },
+					],
+				},
+			});
+			setFileArguments({
+				where: {
+					_and: [
+						{ folderId: { _eq: currentFolder } },
+						{ deleted: { _eq: false } },
+					],
+				},
+			});
+		} else {
+			setFolderArguments(rootNavigationMap[currentFolder].folder);
+			setFileArguments(rootNavigationMap[currentFolder].file);
+		}
+	}, [tabsState, activeTabId]);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -125,39 +170,26 @@ const FileExplorer = () => {
 	}, [window.location, files, folders]);
 
 	useEffect(() => {
-		const socketMessageFile = {
-			subscriptionOf: 'File',
-			args: fileArguments,
-		};
-		const socketMessageFolder = {
-			subscriptionOf: 'Folder',
-			args: folderArguments,
-		};
-
-		sendMessage(JSON.stringify(socketMessageFile));
-		sendMessage(JSON.stringify(socketMessageFolder));
-	}, [fileArguments, folderArguments]);
+		if (_files) {
+			setFiles(
+				_files.file.map((record) => ({
+					...record,
+					__typename: 'File',
+				}))
+			);
+		}
+	}, [_files]);
 
 	useEffect(() => {
-		if (lastMessage) {
-			const { subscriptionOf, data } = JSON.parse(lastMessage.data);
-			if (subscriptionOf == 'File') {
-				setFiles(
-					data.file.map((record) => ({
-						...record,
-						__typename: subscriptionOf,
-					}))
-				);
-			} else if (subscriptionOf == 'Folder') {
-				setFolders(
-					data.folder.map((record) => ({
-						...record,
-						__typename: subscriptionOf,
-					}))
-				);
-			}
+		if (_folders) {
+			setFolders(
+				_folders.folder.map((record) => ({
+					...record,
+					__typename: 'Folder',
+				}))
+			);
 		}
-	}, [lastMessage]);
+	}, [_folders]);
 
 	useEffect(() => {
 		const promises = [];
@@ -214,6 +246,8 @@ const FileExplorer = () => {
 		setSharingLinksIsOpen,
 		paste,
 		setPaste,
+		subscriptionLoading,
+		subscriptionError,
 	};
 
 	return (

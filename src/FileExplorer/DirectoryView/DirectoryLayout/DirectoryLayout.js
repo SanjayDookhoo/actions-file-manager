@@ -107,34 +107,17 @@ const DirectoryLayout = () => {
 		e.preventDefault();
 		setAnchorPointEmpty({ x: e.clientX, y: e.clientY });
 		toggleMenuHeaderEmpty(true);
+
+		// deselect all selected
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: [] },
+					selectedFolders: { $set: [] },
+				},
+			})
+		);
 	};
-
-	useEffect(() => {
-		const currentFolder =
-			tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
-
-		if (Number.isInteger(currentFolder)) {
-			setFolderArguments({
-				where: {
-					_and: [
-						{ parentFolderId: { _eq: currentFolder } },
-						{ deleted: { _eq: false } },
-					],
-				},
-			});
-			setFileArguments({
-				where: {
-					_and: [
-						{ folderId: { _eq: currentFolder } },
-						{ deleted: { _eq: false } },
-					],
-				},
-			});
-		} else {
-			setFolderArguments(rootNavigationMap[currentFolder].folder);
-			setFileArguments(rootNavigationMap[currentFolder].file);
-		}
-	}, [tabsState, activeTabId]);
 
 	const handleEmptySpaceOnClick = () => {
 		setTabsState(

@@ -41,6 +41,26 @@ const Item = ({ item, getRecord }) => {
 		e.stopPropagation();
 		setAnchorPoint({ x: e.clientX, y: e.clientY });
 		toggleMenuHeader(true);
+
+		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+		const { id, __typename } = item;
+
+		if (
+			!(
+				(__typename == 'Folder' && selectedFolders.includes(id)) ||
+				(__typename == 'File' && selectedFiles.includes(id))
+			)
+		) {
+			// since the item right clicked was not selected, deselect everything else and only select the item right clicked
+			setTabsState(
+				update(tabsState, {
+					[activeTabId]: {
+						selectedFiles: { $set: __typename == 'File' ? [id] : [] },
+						selectedFolders: { $set: __typename == 'Folder' ? [id] : [] },
+					},
+				})
+			);
+		}
 	};
 
 	const downloadFile = (record) => {
@@ -147,12 +167,16 @@ const Item = ({ item, getRecord }) => {
 						<div className="w-64" onClick={(e) => e.stopPropagation()}>
 							<FilesOptions item={true} />
 							<MenuDivider />
-							<FileMenuItem description="Restore" onClick={restore} />
-							<FileMenuItem
-								description="Permanently Delete"
-								onClick={permanentlyDelete}
-							/>
-							<MenuDivider />
+							{tabsState[activeTabId].path[0] == 'Recycle bin' && (
+								<>
+									<FileMenuItem description="Restore" onClick={restore} />
+									<FileMenuItem
+										description="Permanently Delete"
+										onClick={permanentlyDelete}
+									/>
+									<MenuDivider />
+								</>
+							)}
 							{record.__typename == 'Folder' ? (
 								<>
 									<FileMenuItem
@@ -160,7 +184,7 @@ const Item = ({ item, getRecord }) => {
 										onClick={handleOpenInNewTab}
 									/>
 									{/* <FileMenuItem description="Add to favorites" /> */}
-									<FileMenuItem description="Create folder with selection" />
+									{/* <FileMenuItem description="Create folder with selection" /> */}
 								</>
 							) : (
 								<>
