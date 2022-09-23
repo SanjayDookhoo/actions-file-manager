@@ -21,7 +21,7 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 		newFolderName,
 		setSharingLinksIsOpen,
 	} = useContext(FileExplorerContext);
-	const [data, setData] = useState({});
+	const [data, setData] = useState([]);
 
 	const handleClose = (e) => {
 		setSharingLinksIsOpen(false);
@@ -37,24 +37,17 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 				__typename,
 			},
 		}).then((res) => {
+			console.log(res.data);
 			setData(res.data);
 		});
 	}, [sharingLinksIsOpen]);
 
-	const copyLink = (accessType) => {
-		const temp = data.meta.sharingPermission.sharingPermissionLinks.find(
-			(record) => record.accessType == accessType
-		);
-		const actualLink = window.location.href + `?link=${temp.link}`;
+	const copyLink = (link) => {
+		const actualLink = window.location.href + `?link=${link}`;
 		navigator.clipboard.writeText(actualLink);
 	};
 
-	const refreshLink = (accessType) => {
-		const temp = data.meta.sharingPermission.sharingPermissionLinks.find(
-			(record) => record.accessType == accessType
-		);
-		const { id } = temp;
-
+	const refreshLink = (id) => {
 		axiosClientJSON({
 			url: '/refreshSharingLink',
 			method: 'POST',
@@ -64,32 +57,17 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 		}).then((res) => {
 			const { link } = res.data.returning[0];
 
-			let tempSharingPermissionLinks = [
-				...data.meta.sharingPermission.sharingPermissionLinks,
-			];
-			const index = tempSharingPermissionLinks.findIndex(
-				(record) => record.id == id
-			);
-			tempSharingPermissionLinks.splice(index, 1);
-			tempSharingPermissionLinks = [
-				...tempSharingPermissionLinks,
-				{
-					...temp,
-					link,
-				},
-			];
+			let tempData = [...data];
+			const index = tempData.findIndex((record) => record.id == id);
+			const newRecord = {
+				...tempData[index],
+				link,
+			};
+			tempData.splice(index, 1);
+			tempData = [...tempData, newRecord];
 
-			setData(
-				update(data, {
-					meta: {
-						sharingPermission: {
-							sharingPermissionLinks: {
-								$set: tempSharingPermissionLinks,
-							},
-						},
-					},
-				})
-			);
+			setData(tempData);
+			copyLink(link);
 		});
 	};
 
@@ -103,16 +81,13 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className="p-2 px-4">Share "{data.name}"</div>
-				<div>
-					<div>View Access: </div>
-					<button onClick={() => copyLink('VIEW')}>Copy Link</button>
-					<button onClick={() => refreshLink('VIEW')}>Refresh</button>
-				</div>
-				<div>
-					<div>Edit Access: </div>
-					<button onClick={() => copyLink('EDIT')}>Copy Link</button>
-					<button onClick={() => refreshLink('VIEW')}>Refresh</button>
-				</div>
+				{data.map((record) => (
+					<div>
+						<div>{record.accessType == 'EDIT' ? 'Edit' : 'View'} Access: </div>
+						<button onClick={() => copyLink(record.link)}>Copy Link</button>
+						<button onClick={() => refreshLink(record.id)}>Refresh</button>
+					</div>
+				))}
 				<div className="flex justify-end p-4">
 					<button onClick={handleClose}>Done</button>
 				</div>
