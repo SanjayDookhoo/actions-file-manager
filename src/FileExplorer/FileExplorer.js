@@ -84,12 +84,27 @@ const FileExplorer = () => {
 	const [rootUserFolderId, setRootUserFolderId] = useState(null);
 
 	useEffect(() => {
-		axiosClientJSON({
-			url: '/getRootUserFolder',
-			method: 'POST',
-		}).then((res) => {
-			setRootUserFolderId(res.data.id);
-		});
+		// if this component is placed in something that has multiple rerenders close together, this prevents creating the rootUserFolder multiple times
+		const localStoragekey = 'fileExplorer-v1-getRootUserFolder';
+		const state = window.localStorage.getItem(localStoragekey);
+		let timeout = 0;
+		if (!state) {
+			timeout = 250;
+
+			window.localStorage.setItem(localStoragekey, true);
+			setTimeout(() => {
+				window.localStorage.removeItem(localStoragekey);
+			}, timeout);
+		}
+
+		setTimeout(() => {
+			axiosClientJSON({
+				url: '/getRootUserFolder',
+				method: 'POST',
+			}).then((res) => {
+				setRootUserFolderId(res.data.id);
+			});
+		}, timeout);
 	}, []);
 
 	useEffect(() => {
