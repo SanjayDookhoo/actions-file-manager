@@ -6,6 +6,7 @@ export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
 		// TODO: upload files to backend
 		let formData = new FormData();
+		formData.append('folderId', folderId);
 		const filesPath = [];
 		// the files are not stored in a normal array
 		for (let i = 0; i < files.length; i++) {
@@ -16,12 +17,14 @@ export const uploadFiles = (files, folderId) => {
 			filesPath.push(filePath);
 		}
 		formData.append('filesPath', JSON.stringify(filesPath));
-		formData.append('folderId', folderId);
 
 		const res = axiosClientFiles({
 			url: '/upload',
 			method: 'POST',
 			data: formData,
+			headers: {
+				folderId, // added this to the headers to allow easy autheticity check since that depends on the folderId, without needing to deal with multipart form data
+			},
 		});
 		// console.log(res);
 	}

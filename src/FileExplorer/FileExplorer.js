@@ -227,7 +227,6 @@ const FileExplorer = () => {
 			url: '/paste',
 			method: 'POST',
 			data: {
-				userId: '123',
 				folderId,
 			},
 		});

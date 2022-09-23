@@ -32,7 +32,6 @@ const FilesOptions = ({ item }) => {
 			url: '/cut',
 			method: 'POST',
 			data: {
-				userId: '123',
 				selectedFolders,
 				selectedFiles,
 			},
@@ -46,7 +45,6 @@ const FilesOptions = ({ item }) => {
 			url: '/copy',
 			method: 'POST',
 			data: {
-				userId: '123',
 				selectedFolders,
 				selectedFiles,
 			},
