@@ -9,8 +9,6 @@ import {
 } from 'react';
 import { axiosClientJSON } from './endpoint';
 import { FileExplorerContext } from './FileExplorer';
-import { newFolderNameDefault } from './utils/constants';
-import { getFolderId, update } from './utils/utils';
 
 const SharingLinks = ({ sharingLinksIsOpen }) => {
 	const {

@@ -44,7 +44,7 @@ const LeftPane = () => {
 
 	return (
 		<div className="flex flex-col items-start" style={{ width: '250px' }}>
-			{Object.keys(rootNavigationMap).map((title) => (
+			{Object.keys(rootNavigationMap({})).map((title) => (
 				<LeftPaneButton key={title} title={title} {...leftPaneButtonProps} />
 			))}
 		</div>

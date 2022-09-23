@@ -26,6 +26,7 @@ const Search = () => {
 		activeTabId,
 		setActiveTabId,
 		fileExtensionsMap,
+		rootUserFolderId,
 	} = useContext(FileExplorerContext);
 
 	const [search, setSearch] = useState('');
@@ -40,7 +41,7 @@ const Search = () => {
 	const [searchResponse, setSearchResponse] = useState([]);
 
 	useEffect(() => {
-		const folderId = getFolderId({ tabsState, activeTabId });
+		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
 		if (search) {
 			setSearching(true);
 			axiosClientJSON({

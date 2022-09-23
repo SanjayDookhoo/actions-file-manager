@@ -20,6 +20,7 @@ const NewFolder = () => {
 		newFolderName,
 		setNewFolderName,
 		setNewFolderIsOpen,
+		rootUserFolderId,
 	} = useContext(FileExplorerContext);
 	const ref = useRef();
 
@@ -34,7 +35,7 @@ const NewFolder = () => {
 		setNewFolderName(newFolderNameDefault);
 		setNewFolderIsOpen(false);
 
-		const folderId = getFolderId({ tabsState, activeTabId });
+		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
 		if (newFolderName) {
 			const res = axiosClientJSON({
 				url: '/createNewFolder',

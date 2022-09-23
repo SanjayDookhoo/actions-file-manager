@@ -10,10 +10,12 @@ const useSubscription = (args, subscriptionOf) => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		setLoading(true);
-		const id = uuidv4();
-		sendMessage(JSON.stringify({ subscriptionOf, args, id }));
-		console.log({ subscriptionOf, args, id });
+		if (args) {
+			setLoading(true);
+			const id = uuidv4();
+			sendMessage(JSON.stringify({ subscriptionOf, args, id }));
+			console.log({ subscriptionOf, args, id });
+		}
 	}, [subscriptionOf, args]);
 
 	useEffect(() => {

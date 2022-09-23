@@ -29,6 +29,7 @@ const NewDropdown = () => {
 		activeTabId,
 		setActiveTabId,
 		setNewFolderIsOpen,
+		rootUserFolderId,
 	} = useContext(FileExplorerContext);
 	const fileUploadRef = useRef();
 	const folderUploadRef = useRef();
@@ -45,7 +46,7 @@ const NewDropdown = () => {
 	};
 
 	useEffect(() => {
-		const folderId = getFolderId({ tabsState, activeTabId });
+		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
 		uploadFiles(files, folderId);
 	}, [files]);
 

@@ -46,6 +46,7 @@ const DirectoryLayout = () => {
 		setFiltered,
 		paste,
 		handlePaste,
+		rootUserFolderId,
 	} = useContext(FileExplorerContext);
 	const [menuPropsHeader, toggleMenuHeader] = useMenuState();
 	const [anchorPointHeader, setAnchorPointHeader] = useState({ x: 0, y: 0 });
@@ -155,7 +156,7 @@ const DirectoryLayout = () => {
 			onContextMenu={handleOnContextMenuEmpty}
 		>
 			<FileUploadDiv
-				folderId={getFolderId({ tabsState, activeTabId })}
+				folderId={getFolderId({ tabsState, activeTabId, rootUserFolderId })}
 				style={{ width: '100%', height: '100%' }}
 			>
 				<div>

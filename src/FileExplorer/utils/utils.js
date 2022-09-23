@@ -32,11 +32,17 @@ export const uploadFiles = (files, folderId) => {
 
 export const update = _update; // does not allow vs code importing because it is not a named export, this makes it easier
 
-export const getFolderId = ({ tabsState, activeTabId }) => {
+export const getFolderId = ({ tabsState, activeTabId, rootUserFolderId }) => {
 	const path = tabsState[activeTabId].path;
 	let folderId = path[path.length - 1];
 	folderId = Number.isInteger(folderId) ? folderId : null;
-	return folderId;
+	if (Number.isInteger(folderId)) {
+		return folderId;
+	} else if (folderId == 'Shared with me') {
+		return null;
+	} else {
+		return rootUserFolderId;
+	}
 };
 
 export const createBuckets = ({
@@ -240,34 +246,41 @@ export const camelCaseToPhrase = (s) => {
 	return s;
 };
 
-export const rootNavigationMap = {
-	Home: {
-		file: {
-			where: {
-				_and: [{ folderId: { _isNull: true } }, { deleted: { _eq: false } }],
+export const rootNavigationMap = ({ rootUserFolderId }) => {
+	return {
+		Home: {
+			file: {
+				where: {
+					_and: [
+						{ folderId: { _eq: rootUserFolderId ? rootUserFolderId : 0 } },
+						{ deleted: { _eq: false } },
+					],
+				},
+			},
+			folder: {
+				where: {
+					_and: [
+						{
+							parentFolderId: { _eq: rootUserFolderId ? rootUserFolderId : 0 },
+						},
+						{ deleted: { _eq: false } },
+					],
+				},
 			},
 		},
-		folder: {
-			where: {
-				_and: [
-					{ parentFolderId: { _isNull: true } },
-					{ deleted: { _eq: false } },
-				],
+		'Shared with me': {
+			file: 'Shared with me',
+			folder: 'Shared with me',
+		},
+		'Recycle bin': {
+			file: {
+				where: { deleted: { _eq: true } },
+			},
+			folder: {
+				where: { deleted: { _eq: true } },
 			},
 		},
-	},
-	'Shared with me': {
-		file: 'Shared with me',
-		folder: 'Shared with me',
-	},
-	'Recycle bin': {
-		file: {
-			where: { deleted: { _eq: true } },
-		},
-		folder: {
-			where: { deleted: { _eq: true } },
-		},
-	},
+	};
 };
 
 export const openInNewTab = ({

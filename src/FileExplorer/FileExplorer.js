@@ -58,12 +58,8 @@ const FileExplorer = () => {
 		window.localStorage.setItem(localStorageKey, JSON.stringify(data));
 	};
 
-	const [folderArguments, setFolderArguments] = useState(
-		rootNavigationMap.Home.folder
-	);
-	const [fileArguments, setFileArguments] = useState(
-		rootNavigationMap.Home.file
-	);
+	const [folderArguments, setFolderArguments] = useState();
+	const [fileArguments, setFileArguments] = useState();
 	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
 	const [filtered, setFiltered] = useState([]);
 
@@ -85,6 +81,16 @@ const FileExplorer = () => {
 	const [paste, setPaste] = useState(null);
 	const [subscriptionLoading, setSubscriptionLoading] = useState(true);
 	const [subscriptionError, setSubscriptionError] = useState(false);
+	const [rootUserFolderId, setRootUserFolderId] = useState(null);
+
+	useEffect(() => {
+		axiosClientJSON({
+			url: '/getRootUserFolder',
+			method: 'POST',
+		}).then((res) => {
+			setRootUserFolderId(res.data.id);
+		});
+	}, []);
 
 	useEffect(() => {
 		setSubscriptionLoading(filesLoading || foldersLoading);
@@ -116,10 +122,14 @@ const FileExplorer = () => {
 				},
 			});
 		} else {
-			setFolderArguments(rootNavigationMap[currentFolder].folder);
-			setFileArguments(rootNavigationMap[currentFolder].file);
+			setFolderArguments(
+				rootNavigationMap({ rootUserFolderId })[currentFolder].folder
+			);
+			setFileArguments(
+				rootNavigationMap({ rootUserFolderId })[currentFolder].file
+			);
 		}
-	}, [tabsState[activeTabId].path]);
+	}, [tabsState[activeTabId].path, rootUserFolderId]);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -222,7 +232,7 @@ const FileExplorer = () => {
 	}, [files]);
 
 	const handlePaste = () => {
-		const folderId = getFolderId({ tabsState, activeTabId });
+		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
 		const res = axiosClientJSON({
 			url: '/paste',
 			method: 'POST',
@@ -261,6 +271,7 @@ const FileExplorer = () => {
 		subscriptionLoading,
 		subscriptionError,
 		handlePaste,
+		rootUserFolderId,
 	};
 
 	return (
