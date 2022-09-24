@@ -34,13 +34,10 @@ export const update = _update; // does not allow vs code importing because it is
 export const getFolderId = ({ tabsState, activeTabId, rootUserFolderId }) => {
 	const path = tabsState[activeTabId].path;
 	let folderId = path[path.length - 1];
-	folderId = Number.isInteger(folderId) ? folderId : null;
-	if (Number.isInteger(folderId)) {
-		return folderId;
-	} else if (folderId == 'Shared with me') {
-		return null;
-	} else {
+	if (folderId == 'Home') {
 		return rootUserFolderId;
+	} else {
+		return folderId;
 	}
 };
 
