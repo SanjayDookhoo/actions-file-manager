@@ -223,14 +223,19 @@ const FileExplorer = () => {
 
 	const handlePaste = () => {
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
-		const res = axiosClientJSON({
+		axiosClientJSON({
 			url: '/paste',
 			method: 'POST',
 			data: {
 				folderId,
 			},
-		});
-		if (paste == 'cut') setPaste(null);
+		})
+			.then((res) => {
+				if (paste == 'cut') setPaste(null);
+			})
+			.catch((err) => {
+				setPaste(null);
+			});
 	};
 
 	const value = {
