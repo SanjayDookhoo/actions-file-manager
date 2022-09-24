@@ -116,29 +116,31 @@ const FileExplorer = () => {
 	}, [filesError, foldersError]);
 
 	useEffect(() => {
-		const currentFolder =
-			tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
+		if (rootUserFolderId) {
+			const currentFolder =
+				tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
 
-		if (Number.isInteger(currentFolder)) {
-			setFolderArguments({
-				where: {
-					_and: [
-						{ parentFolderId: { _eq: currentFolder } },
-						{ deleted: { _eq: false } },
-					],
-				},
-			});
-			setFileArguments({
-				where: {
-					_and: [
-						{ folderId: { _eq: currentFolder } },
-						{ deleted: { _eq: false } },
-					],
-				},
-			});
-		} else {
-			setFolderArguments(currentFolder);
-			setFileArguments(currentFolder);
+			if (Number.isInteger(currentFolder)) {
+				setFolderArguments({
+					where: {
+						_and: [
+							{ parentFolderId: { _eq: currentFolder } },
+							{ deleted: { _eq: false } },
+						],
+					},
+				});
+				setFileArguments({
+					where: {
+						_and: [
+							{ folderId: { _eq: currentFolder } },
+							{ deleted: { _eq: false } },
+						],
+					},
+				});
+			} else {
+				setFolderArguments(currentFolder);
+				setFileArguments(currentFolder);
+			}
 		}
 	}, [tabsState[activeTabId].path, rootUserFolderId]);
 
