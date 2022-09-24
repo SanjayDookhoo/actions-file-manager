@@ -61,6 +61,16 @@ const Rename = ({ record, renderName }) => {
 		await onClose();
 	};
 
+	const handleOnFocus = async (e) => {
+		const { name, __typename } = record;
+		if (__typename == 'file') {
+			const nameSplit = name.split('.');
+			nameSplit.pop();
+			const cursorLocation = nameSplit.join('.').length;
+			e.currentTarget.setSelectionRange(cursorLocation, cursorLocation);
+		}
+	};
+
 	const handleKeyDown = async (e) => {
 		if (e.key === 'Enter') {
 			await onClose();
@@ -86,6 +96,7 @@ const Rename = ({ record, renderName }) => {
 					value={value}
 					onChange={(e) => setValue(e.target.value)}
 					onBlur={handleOnBlur}
+					onFocus={handleOnFocus}
 					onKeyDown={handleKeyDown}
 					onClick={(e) => e.stopPropagation()}
 				/>
