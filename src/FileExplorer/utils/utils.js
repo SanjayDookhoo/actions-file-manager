@@ -6,7 +6,6 @@ export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
 		// TODO: upload files to backend
 		let formData = new FormData();
-		formData.append('folderId', folderId);
 		const filesPath = [];
 		// the files are not stored in a normal array
 		for (let i = 0; i < files.length; i++) {
