@@ -80,7 +80,7 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 			>
 				<div className="p-2 px-4">Share "{data.name}"</div>
 				{data.map((record) => (
-					<div>
+					<div key={record.id}>
 						<div>{record.accessType == 'EDIT' ? 'Edit' : 'View'} Access: </div>
 						<button onClick={() => copyLink(record.link)}>Copy Link</button>
 						<button onClick={() => refreshLink(record.id)}>Refresh</button>

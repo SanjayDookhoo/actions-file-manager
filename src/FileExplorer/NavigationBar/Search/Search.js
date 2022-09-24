@@ -223,7 +223,7 @@ const Search = () => {
 					) : (
 						<>
 							{Object.values(searchResponse).map((value, i) => (
-								<Fragment key={value}>
+								<Fragment key={i}>
 									{value.map((record) => (
 										<FileMenuItem
 											key={`${record.id}-${record.__typename}`}

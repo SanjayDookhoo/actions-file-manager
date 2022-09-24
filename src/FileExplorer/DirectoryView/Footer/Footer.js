@@ -18,11 +18,14 @@ const Footer = () => {
 		} else {
 			let size = 0;
 			selectedFiles.forEach((selectedFile) => {
-				size += files.find((file) => file.id == selectedFile).size;
+				const file = files.find((file) => file.id == selectedFile);
+				if (file) {
+					size += file.size;
+				}
 			});
 			setTotalSize(formatBytes(size));
 		}
-	}, [tabsState, activeTabId]);
+	}, [tabsState, activeTabId, files]);
 
 	return (
 		<div className="flex">
