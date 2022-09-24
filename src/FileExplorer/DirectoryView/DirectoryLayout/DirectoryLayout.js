@@ -27,6 +27,7 @@ import GroupDropdown from '../DirectoryViewOptions/GroupDropdown';
 import SortDropdown from '../DirectoryViewOptions/SortDropdown';
 import LayoutDropdown from '../DirectoryViewOptions/LayoutDropdown';
 import NewDropdown from '../DirectoryViewOptions/NewDropdown';
+import FilesOptions from '../../FilesOptions/FilesOptions';
 
 const DirectoryLayout = () => {
 	const {
@@ -46,6 +47,7 @@ const DirectoryLayout = () => {
 		paste,
 		handlePaste,
 		rootUserFolderId,
+		sharedAccessType,
 	} = useContext(FileExplorerContext);
 	const [menuPropsHeader, toggleMenuHeader] = useMenuState();
 	const [anchorPointHeader, setAnchorPointHeader] = useState({ x: 0, y: 0 });
@@ -221,16 +223,7 @@ const DirectoryLayout = () => {
 					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
 					<div className="w-64">
-						{paste && (
-							<>
-								<FileFocusableItem
-									title="paste"
-									icon="content_paste"
-									onClick={handlePaste}
-								/>
-								<MenuDivider />
-							</>
-						)}
+						<FilesOptions item={true} buttonsToFilter={['paste']} />
 						<FileSubMenu logo="grid_view" description="Layout">
 							<LayoutDropdown />
 						</FileSubMenu>
@@ -241,7 +234,7 @@ const DirectoryLayout = () => {
 							<GroupDropdown />
 						</FileSubMenu>
 						<MenuDivider />
-						{canEdit({ tabsState, activeTabId }) && (
+						{canEdit({ tabsState, activeTabId, sharedAccessType }) && (
 							<FileSubMenu logo="add" description="New">
 								<NewDropdown />
 							</FileSubMenu>

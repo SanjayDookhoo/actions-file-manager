@@ -21,9 +21,9 @@ const useSubscription = (args, __typename) => {
 
 	useEffect(() => {
 		if (lastMessage) {
-			const { status, data } = JSON.parse(lastMessage.data);
+			const { status, data, accessType } = JSON.parse(lastMessage.data);
 			if (status == 200) {
-				setData(data);
+				setData({ data, accessType });
 				setError(false);
 			} else {
 				setError(true);

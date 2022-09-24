@@ -5,13 +5,18 @@ import { canEdit, uploadFiles } from '../utils/utils';
 
 // https://stackoverflow.com/questions/3590058/does-html5-allow-drag-drop-upload-of-folders-or-a-folder-tree/53058574#53058574
 const FileUploadDiv = ({ children, folderId, style }) => {
-	const { localStorage, setLocalStorage, tabsState, activeTabId } =
-		useContext(FileExplorerContext);
+	const {
+		localStorage,
+		setLocalStorage,
+		tabsState,
+		activeTabId,
+		sharedAccessType,
+	} = useContext(FileExplorerContext);
 	const [draggedOver, setDraggedOver] = useState(false);
 	const [enabled, setEnabled] = useState(false);
 
 	useEffect(() => {
-		const temp = canEdit({ tabsState, activeTabId });
+		const temp = canEdit({ tabsState, activeTabId, sharedAccessType });
 		setEnabled(temp);
 	}, [tabsState[activeTabId].path]);
 

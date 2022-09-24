@@ -5,7 +5,7 @@ import { FileExplorerContext } from '../FileExplorer';
 import { buttonStyle } from '../utils/constants';
 import { getFolderId, update } from '../utils/utils';
 
-const FilesOptions = ({ item }) => {
+const FilesOptions = ({ item, buttonsToFilter }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -24,6 +24,7 @@ const FilesOptions = ({ item }) => {
 		paste,
 		setPaste,
 		handlePaste,
+		sharedAccessType,
 	} = useContext(FileExplorerContext);
 
 	const handleCut = () => {
@@ -97,6 +98,9 @@ const FilesOptions = ({ item }) => {
 
 		const map = {
 			cut: () => {
+				if (path[0] == 'Shared with me' && path.length == 1) return false;
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
 				if (path[0] == 'Recycle bin' && path.length != 1) return false; // only allowed at the top level of recycle bin
 				return selectedFolders.length + selectedFiles.length != 0;
 			},
@@ -105,18 +109,27 @@ const FilesOptions = ({ item }) => {
 				return selectedFolders.length + selectedFiles.length != 0;
 			},
 			paste: () => {
+				if (path[0] == 'Shared with me' && path.length == 1) return false;
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
 				if (path[0] == 'Recycle bin') return false;
 				return paste;
 			},
 			rename: () => {
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
 				if (path[0] == 'Recycle bin') return false;
 				return selectedFolders.length + selectedFiles.length == 1;
 			},
 			share: () => {
+				if (path[0] == 'Shared with me') return false;
 				if (path[0] == 'Recycle bin') return false;
 				return selectedFolders.length + selectedFiles.length == 1;
 			},
 			delete: () => {
+				if (path[0] == 'Shared with me' && path.length == 1) return false;
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
 				if (path[0] == 'Recycle bin' && path.length != 1) return false;
 				return selectedFolders.length + selectedFiles.length != 0;
 			},
@@ -159,31 +172,35 @@ const FilesOptions = ({ item }) => {
 
 	return (
 		<>
-			{buttonList.map(({ title, onClick, icon }) => (
-				<Fragment key={title}>
-					{item ? (
-						<>
-							{isActive(title) && (
-								<FileFocusableItem
-									title={title}
-									icon={icon}
-									onClick={onClick}
-								/>
-							)}
-						</>
-					) : (
-						<a
-							className={
-								isActive(title) ? '' : 'pointer-events-none text-gray-400'
-							}
-							title={title}
-							onClick={onClick}
-						>
-							<span className={buttonStyle}>{icon}</span>
-						</a>
-					)}
-				</Fragment>
-			))}
+			{buttonList
+				.filter(({ title }) =>
+					buttonsToFilter ? buttonsToFilter.includes(title) : true
+				)
+				.map(({ title, onClick, icon }) => (
+					<Fragment key={title}>
+						{item ? (
+							<>
+								{isActive(title) && (
+									<FileFocusableItem
+										title={title}
+										icon={icon}
+										onClick={onClick}
+									/>
+								)}
+							</>
+						) : (
+							<a
+								className={
+									isActive(title) ? '' : 'pointer-events-none text-gray-400'
+								}
+								title={title}
+								onClick={onClick}
+							>
+								<span className={buttonStyle}>{icon}</span>
+							</a>
+						)}
+					</Fragment>
+				))}
 		</>
 	);
 };

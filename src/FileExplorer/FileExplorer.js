@@ -82,6 +82,7 @@ const FileExplorer = () => {
 	const [subscriptionLoading, setSubscriptionLoading] = useState(true);
 	const [subscriptionError, setSubscriptionError] = useState(false);
 	const [rootUserFolderId, setRootUserFolderId] = useState(null);
+	const [sharedAccessType, setSharedAccessType] = useState(null);
 
 	useEffect(() => {
 		// if this component is placed in something that has multiple rerenders close together, this prevents creating the rootUserFolder multiple times
@@ -171,23 +172,27 @@ const FileExplorer = () => {
 
 	useEffect(() => {
 		if (_files) {
+			const { data, accessType } = _files;
 			setFiles(
-				_files.file.map((record) => ({
+				data.file.map((record) => ({
 					...record,
 					__typename: 'file',
 				}))
 			);
+			setSharedAccessType(accessType);
 		}
 	}, [_files]);
 
 	useEffect(() => {
 		if (_folders) {
+			const { data, accessType } = _folders;
 			setFolders(
-				_folders.folder.map((record) => ({
+				data.folder.map((record) => ({
 					...record,
 					__typename: 'folder',
 				}))
 			);
+			setSharedAccessType(accessType);
 		}
 	}, [_folders]);
 
@@ -262,6 +267,7 @@ const FileExplorer = () => {
 		subscriptionError,
 		handlePaste,
 		rootUserFolderId,
+		sharedAccessType,
 	};
 
 	return (

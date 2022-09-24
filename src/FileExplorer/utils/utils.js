@@ -278,10 +278,11 @@ export const openInNewTab = ({
 	setTabsState(newTabsState);
 };
 
-export const canEdit = ({ tabsState, activeTabId }) => {
+export const canEdit = ({ tabsState, activeTabId, sharedAccessType }) => {
 	const { path } = tabsState[activeTabId];
 	if (path[0] == 'Recycle bin') return false;
-	if (path[0] == 'Shared with me') return false;
+	if (path[0] == 'Shared with me' && path.length == 1) return false;
+	if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW') return false;
 	return true;
 };
 

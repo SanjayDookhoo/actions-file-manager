@@ -22,8 +22,13 @@ import { FileExplorerContext } from '../../FileExplorer';
 import { canEdit } from '../../utils/utils';
 
 const DirectoryViewOptions = () => {
-	const { localStorage, setLocalStorage, tabsState, activeTabId } =
-		useContext(FileExplorerContext);
+	const {
+		localStorage,
+		setLocalStorage,
+		tabsState,
+		activeTabId,
+		sharedAccessType,
+	} = useContext(FileExplorerContext);
 
 	// hot keys needed to be placed here because the menu does not mount originally until first opened
 	useHotkeys('ctrl+shift+1', () =>
@@ -45,7 +50,7 @@ const DirectoryViewOptions = () => {
 	return (
 		<div className="w-full flex justify-between">
 			<div className="flex">
-				{canEdit({ tabsState, activeTabId }) && (
+				{canEdit({ tabsState, activeTabId, sharedAccessType }) && (
 					<Menu
 						menuButton={
 							<a className="flex items-center" title="cut">
