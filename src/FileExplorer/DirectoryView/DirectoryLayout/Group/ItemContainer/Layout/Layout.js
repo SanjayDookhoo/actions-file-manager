@@ -1,5 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
-import { formatBytes, update } from '../../../../../utils/utils';
+import {
+	capitalizeFirstLetter,
+	formatBytes,
+	update,
+} from '../../../../../utils/utils';
 import { FileExplorerContext } from '../../../../../FileExplorer';
 import DetailsLayout from './DetailsLayout';
 import TilesLayout from './TilesLayout';
@@ -23,7 +27,7 @@ const Layout = ({ record }) => {
 	};
 
 	const renderType = (record) => {
-		if (record.__typename == 'Folder') {
+		if (record.__typename == 'folder') {
 			return 'File folder';
 		} else {
 			const ext = (record.name ?? '').split('.').pop();
@@ -34,7 +38,7 @@ const Layout = ({ record }) => {
 
 	const renderName = (record) => {
 		const { name = '', __typename } = record;
-		if (__typename == 'Folder') {
+		if (__typename == 'folder') {
 			return name;
 		}
 		const nameSplit = name.split('.');
@@ -52,7 +56,7 @@ const Layout = ({ record }) => {
 	};
 
 	const renderSize = (record) => {
-		if (record.__typename == 'Folder') {
+		if (record.__typename == 'folder') {
 			return '';
 		} else {
 			return formatBytes(record.size);
@@ -64,7 +68,9 @@ const Layout = ({ record }) => {
 		if (!__typename) {
 			return false;
 		} else {
-			return tabsState[activeTabId][`selected${__typename}s`].includes(id);
+			return tabsState[activeTabId][
+				`selected${capitalizeFirstLetter(__typename)}s`
+			].includes(id);
 		}
 	};
 

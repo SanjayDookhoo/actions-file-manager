@@ -47,16 +47,16 @@ const Item = ({ item, getRecord }) => {
 
 		if (
 			!(
-				(__typename == 'Folder' && selectedFolders.includes(id)) ||
-				(__typename == 'File' && selectedFiles.includes(id))
+				(__typename == 'folder' && selectedFolders.includes(id)) ||
+				(__typename == 'file' && selectedFiles.includes(id))
 			)
 		) {
 			// since the item right clicked was not selected, deselect everything else and only select the item right clicked
 			setTabsState(
 				update(tabsState, {
 					[activeTabId]: {
-						selectedFiles: { $set: __typename == 'File' ? [id] : [] },
-						selectedFolders: { $set: __typename == 'Folder' ? [id] : [] },
+						selectedFiles: { $set: __typename == 'file' ? [id] : [] },
+						selectedFolders: { $set: __typename == 'folder' ? [id] : [] },
 					},
 				})
 			);
@@ -136,7 +136,7 @@ const Item = ({ item, getRecord }) => {
 		if (e.button == 1) {
 			e.preventDefault();
 
-			if (item.__typename == 'Folder') {
+			if (item.__typename == 'folder') {
 				handleOpenInNewTab();
 			}
 		}
@@ -149,7 +149,7 @@ const Item = ({ item, getRecord }) => {
 		let tempSelectedFolders;
 		let tempSelectedFiles;
 
-		if (__typename == 'Folder') {
+		if (__typename == 'folder') {
 			if (!localStorage.multiselect) {
 				tempSelectedFolders = [id];
 				tempSelectedFiles = [];
@@ -163,7 +163,7 @@ const Item = ({ item, getRecord }) => {
 					tempSelectedFolders = [...selectedFolders, id];
 				}
 			}
-		} else if (__typename == 'File') {
+		} else if (__typename == 'file') {
 			if (!localStorage.multiselect) {
 				tempSelectedFiles = [id];
 				tempSelectedFolders = [];
@@ -224,18 +224,18 @@ const Item = ({ item, getRecord }) => {
 					onMouseDown={onMouseDown}
 					onClick={handleSelectFileFolderOnClick}
 					onDoubleClick={
-						record.__typename == 'Folder'
+						record.__typename == 'folder'
 							? () => updateCurrentFolderId()
 							: () => downloadFile()
 					}
 				>
-					{item.__typename == 'Folder' && (
+					{item.__typename == 'folder' && (
 						<FileUploadDiv folderId={record.id}>
 							<Layout {...layoutProps} />
 						</FileUploadDiv>
 					)}
 
-					{item.__typename == 'File' && (
+					{item.__typename == 'file' && (
 						<div
 							// similar class to what FileUploadDiv uses, without the hover over with files effect
 							className={
@@ -265,7 +265,7 @@ const Item = ({ item, getRecord }) => {
 										<MenuDivider />
 									</>
 								)}
-							{record.__typename == 'Folder' ? (
+							{record.__typename == 'folder' ? (
 								<>
 									<FileMenuItem
 										description="Open in new tab"

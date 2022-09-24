@@ -11,7 +11,7 @@ const RenderIcon = ({ record, className, style }) => {
 
 	return (
 		<div className={className} style={style}>
-			{record.__typename == 'Folder' ? (
+			{record.__typename == 'folder' ? (
 				<img src={folder} className={className} style={style} />
 			) : (
 				<img

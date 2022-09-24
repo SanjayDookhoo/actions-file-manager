@@ -145,10 +145,10 @@ const Search = () => {
 					[activeTabId]: {
 						// clearing other selected files and folders
 						selectedFolders: {
-							$set: record.__typename == 'Folder' ? [record.id] : [],
+							$set: record.__typename == 'folder' ? [record.id] : [],
 						},
 						selectedFiles: {
-							$set: record.__typename == 'File' ? [record.id] : [],
+							$set: record.__typename == 'file' ? [record.id] : [],
 						},
 					},
 				})
@@ -170,10 +170,10 @@ const Search = () => {
 						},
 						// clearing other selected files and folders
 						selectedFolders: {
-							$set: record.__typename == 'Folder' ? [record.id] : [],
+							$set: record.__typename == 'folder' ? [record.id] : [],
 						},
 						selectedFiles: {
-							$set: record.__typename == 'File' ? [record.id] : [],
+							$set: record.__typename == 'file' ? [record.id] : [],
 						},
 					},
 				})

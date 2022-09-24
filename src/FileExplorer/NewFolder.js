@@ -42,7 +42,7 @@ const NewFolder = () => {
 				method: 'POST',
 				data: {
 					name: newFolderName,
-					parentFolderId: folderId,
+					folderId,
 				},
 			});
 		}

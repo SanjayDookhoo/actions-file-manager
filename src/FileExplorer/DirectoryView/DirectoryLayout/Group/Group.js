@@ -54,11 +54,11 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 				const aExt = recordA.name.split('.').pop();
 				const bExt = recordB.name.split('.').pop();
 				let a =
-					_a.__typename == 'Folder'
+					_a.__typename == 'folder'
 						? 'File folder'
 						: fileExtensionsMap?.[aExt]?.fullName;
 				let b =
-					_b.__typename == 'Folder'
+					_b.__typename == 'folder'
 						? 'File folder'
 						: fileExtensionsMap?.[bExt]?.fullName;
 				a = a ? a : aExt.toUpperCase() + ' File';
@@ -80,7 +80,7 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 	const getRecord = (item) => {
 		const { id, __typename } = item;
 		let record;
-		if (__typename == 'Folder')
+		if (__typename == 'folder')
 			record = folders.find((folder) => folder.id == id);
 		else record = files.find((file) => file.id == id);
 		return record;

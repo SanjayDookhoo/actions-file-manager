@@ -136,7 +136,7 @@ export const createBuckets = ({
 
 		// name
 		let name;
-		if (__typename == 'File') {
+		if (__typename == 'file') {
 			name = file.name;
 		} else {
 			name = folder.name;
@@ -154,7 +154,7 @@ export const createBuckets = ({
 		}
 
 		// type
-		if (__typename == 'File') {
+		if (__typename == 'file') {
 			const { name } = file;
 			const fileType = name.split('.').pop();
 			const fileTypeFullName = fileExtensionsMap[fileType]?.fullName;
@@ -171,7 +171,7 @@ export const createBuckets = ({
 		// a week is treated as beginning on sunday and ending on saturday
 		dateVariations.forEach((currDateVariation) => {
 			let _date;
-			if (__typename == 'File') {
+			if (__typename == 'file') {
 				_date = file.meta[currDateVariation];
 			} else {
 				_date = folder.meta[currDateVariation];
@@ -197,7 +197,7 @@ export const createBuckets = ({
 		});
 
 		// size
-		if (__typename == 'File') {
+		if (__typename == 'file') {
 			const k = 1024;
 			const { size } = file;
 
@@ -283,4 +283,8 @@ export const canEdit = ({ tabsState, activeTabId }) => {
 	if (path[0] == 'Recycle bin') return false;
 	if (path[0] == 'Shared with me') return false;
 	return true;
+};
+
+export const capitalizeFirstLetter = (string) => {
+	return string.charAt(0).toUpperCase() + string.slice(1);
 };

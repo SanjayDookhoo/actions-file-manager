@@ -3,7 +3,7 @@ import { backendEndpointWS } from './endpoint';
 import useWebSocket from 'react-use-websocket';
 import { v4 as uuidv4 } from 'uuid';
 
-const useSubscription = (args, subscriptionOf) => {
+const useSubscription = (args, __typename) => {
 	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS);
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
@@ -14,10 +14,10 @@ const useSubscription = (args, subscriptionOf) => {
 			setLoading(true);
 			const id = uuidv4();
 			const token = window.localStorage.getItem('token');
-			sendMessage(JSON.stringify({ subscriptionOf, args, id, token }));
-			console.log({ subscriptionOf, args, id });
+			sendMessage(JSON.stringify({ __typename, args, id, token }));
+			console.log({ __typename, args, id });
 		}
-	}, [subscriptionOf, args]);
+	}, [__typename, args]);
 
 	useEffect(() => {
 		if (lastMessage) {

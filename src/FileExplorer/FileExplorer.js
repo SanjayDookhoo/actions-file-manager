@@ -68,11 +68,11 @@ const FileExplorer = () => {
 
 	const [_files, filesLoading, filesError] = useSubscription(
 		fileArguments,
-		'File'
+		'file'
 	);
 	const [_folders, foldersLoading, foldersError] = useSubscription(
 		folderArguments,
-		'Folder'
+		'folder'
 	);
 
 	const [sharingLinksIsOpen, setSharingLinksIsOpen] = useState(false);
@@ -174,7 +174,7 @@ const FileExplorer = () => {
 			setFiles(
 				_files.file.map((record) => ({
 					...record,
-					__typename: 'File',
+					__typename: 'file',
 				}))
 			);
 		}
@@ -185,7 +185,7 @@ const FileExplorer = () => {
 			setFolders(
 				_folders.folder.map((record) => ({
 					...record,
-					__typename: 'Folder',
+					__typename: 'folder',
 				}))
 			);
 		}
