@@ -246,42 +246,7 @@ export const camelCaseToPhrase = (s) => {
 	return s;
 };
 
-export const rootNavigationMap = ({ rootUserFolderId }) => {
-	return {
-		Home: {
-			file: {
-				where: {
-					_and: [
-						{ folderId: { _eq: rootUserFolderId ? rootUserFolderId : 0 } },
-						{ deleted: { _eq: false } },
-					],
-				},
-			},
-			folder: {
-				where: {
-					_and: [
-						{
-							parentFolderId: { _eq: rootUserFolderId ? rootUserFolderId : 0 },
-						},
-						{ deleted: { _eq: false } },
-					],
-				},
-			},
-		},
-		'Shared with me': {
-			file: 'Shared with me',
-			folder: 'Shared with me',
-		},
-		'Recycle bin': {
-			file: {
-				where: { deleted: { _eq: true } },
-			},
-			folder: {
-				where: { deleted: { _eq: true } },
-			},
-		},
-	};
-};
+export const rootNavigationArray = ['Home', 'Shared with me', 'Recycle bin'];
 
 export const openInNewTab = ({
 	tabsState,

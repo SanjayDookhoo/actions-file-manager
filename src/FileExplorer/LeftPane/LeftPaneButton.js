@@ -3,7 +3,7 @@ import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import NavigationIconAndName from '../NavigationIconAndName';
 import { FileExplorerContext } from '../FileExplorer';
-import { openInNewTab, rootNavigationMap, update } from '../utils/utils';
+import { openInNewTab, update } from '../utils/utils';
 import { initialTabState } from '../Tabs/constants';
 import { axiosClientJSON } from '../endpoint';
 

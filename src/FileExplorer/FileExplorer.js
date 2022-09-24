@@ -22,7 +22,7 @@ import {
 	axiosClientJSON,
 	backendEndpointWS,
 } from './endpoint';
-import { getFolderId, rootNavigationMap, update } from './utils/utils';
+import { getFolderId, update } from './utils/utils';
 import useWebSocket from 'react-use-websocket';
 import NewFolder from './NewFolder';
 import SharingLinks from './SharingLinks';
@@ -137,12 +137,8 @@ const FileExplorer = () => {
 				},
 			});
 		} else {
-			setFolderArguments(
-				rootNavigationMap({ rootUserFolderId })[currentFolder].folder
-			);
-			setFileArguments(
-				rootNavigationMap({ rootUserFolderId })[currentFolder].file
-			);
+			setFolderArguments(currentFolder);
+			setFileArguments(currentFolder);
 		}
 	}, [tabsState[activeTabId].path, rootUserFolderId]);
 

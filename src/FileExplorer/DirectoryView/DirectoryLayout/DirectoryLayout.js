@@ -16,7 +16,6 @@ import {
 	dateVariations,
 	formatBytes,
 	getFolderId,
-	rootNavigationMap,
 	update,
 } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';

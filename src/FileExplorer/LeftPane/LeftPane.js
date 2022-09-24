@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { FileExplorerContext } from '../FileExplorer';
-import { openInNewTab, rootNavigationMap, update } from '../utils/utils';
+import { openInNewTab, rootNavigationArray, update } from '../utils/utils';
 import LeftPaneButton from './LeftPaneButton';
 
 const LeftPane = () => {
@@ -44,7 +44,7 @@ const LeftPane = () => {
 
 	return (
 		<div className="flex flex-col items-start" style={{ width: '250px' }}>
-			{Object.keys(rootNavigationMap({})).map((title) => (
+			{rootNavigationArray.map((title) => (
 				<LeftPaneButton key={title} title={title} {...leftPaneButtonProps} />
 			))}
 		</div>

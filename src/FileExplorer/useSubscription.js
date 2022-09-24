@@ -13,7 +13,8 @@ const useSubscription = (args, subscriptionOf) => {
 		if (args) {
 			setLoading(true);
 			const id = uuidv4();
-			sendMessage(JSON.stringify({ subscriptionOf, args, id }));
+			const token = window.localStorage.getItem('token');
+			sendMessage(JSON.stringify({ subscriptionOf, args, id, token }));
 			console.log({ subscriptionOf, args, id });
 		}
 	}, [subscriptionOf, args]);
