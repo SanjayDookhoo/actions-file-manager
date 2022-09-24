@@ -4,7 +4,9 @@ import useWebSocket from 'react-use-websocket';
 import { v4 as uuidv4 } from 'uuid';
 
 const useSubscription = (folderId, __typename) => {
-	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS);
+	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS, {
+		shouldReconnect: (closeEvent) => true,
+	});
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
