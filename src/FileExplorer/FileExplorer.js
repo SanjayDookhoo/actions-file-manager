@@ -58,20 +58,16 @@ const FileExplorer = () => {
 		window.localStorage.setItem(localStorageKey, JSON.stringify(data));
 	};
 
-	const [folderArguments, setFolderArguments] = useState();
-	const [fileArguments, setFileArguments] = useState();
+	const [folderId, setFolderId] = useState();
 	const [fileExtensionsMap, setFileExtensionsMap] = useState({});
 	const [filtered, setFiltered] = useState([]);
 
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
-	const [_files, filesLoading, filesError] = useSubscription(
-		fileArguments,
-		'file'
-	);
+	const [_files, filesLoading, filesError] = useSubscription(folderId, 'file');
 	const [_folders, foldersLoading, foldersError] = useSubscription(
-		folderArguments,
+		folderId,
 		'folder'
 	);
 
@@ -114,11 +110,10 @@ const FileExplorer = () => {
 
 	useEffect(() => {
 		if (rootUserFolderId) {
-			const currentFolder =
+			const currentFolderId =
 				tabsState[activeTabId]?.path[tabsState[activeTabId].path.length - 1];
 
-			setFolderArguments(currentFolder);
-			setFileArguments(currentFolder);
+			setFolderId(currentFolderId);
 		}
 	}, [tabsState[activeTabId].path, rootUserFolderId]);
 
@@ -250,8 +245,6 @@ const FileExplorer = () => {
 		setClosedTabs,
 		localStorage,
 		setLocalStorage,
-		setFolderArguments,
-		setFileArguments,
 		folders,
 		files,
 		fileExtensionsMap,
