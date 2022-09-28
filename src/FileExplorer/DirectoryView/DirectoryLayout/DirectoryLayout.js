@@ -30,6 +30,7 @@ import SortDropdown from '../DirectoryViewOptions/SortDropdown';
 import LayoutDropdown from '../DirectoryViewOptions/LayoutDropdown';
 import NewDropdown from '../DirectoryViewOptions/NewDropdown';
 import FilesOptions from '../../FilesOptions/FilesOptions';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const DirectoryLayout = () => {
 	const {
@@ -165,6 +166,46 @@ const DirectoryLayout = () => {
 		});
 	};
 
+	const handleOnDragEnd = (result) => {
+		if (!result.destination) {
+			return;
+		}
+
+		const keys = Object.entries(detailsLayoutMeta)
+			.filter(([key, meta]) => meta.visible)
+			.sort((_a, _b) => {
+				const a = _a[1].order;
+				const b = _b[1].order;
+				return a - b;
+			})
+			.map(([key, meta]) => key);
+		const tempDetailsLayoutMeta = { ...detailsLayoutMeta };
+		const destIndex = result.destination.index;
+		const srcIndex = result.source.index;
+
+		if (destIndex > srcIndex) {
+			for (let i = srcIndex + 1; i <= destIndex; i++) {
+				tempDetailsLayoutMeta[keys[i]].order--;
+			}
+			tempDetailsLayoutMeta[keys[srcIndex]].order =
+				tempDetailsLayoutMeta[keys[destIndex]].order + 1;
+		} else if (destIndex < srcIndex) {
+			for (let i = destIndex; i < srcIndex; i++) {
+				tempDetailsLayoutMeta[keys[i]].order++;
+			}
+			tempDetailsLayoutMeta[keys[srcIndex]].order =
+				tempDetailsLayoutMeta[keys[destIndex]].order - 1;
+		}
+
+		setLocalStorage(
+			update(localStorage, {
+				detailsLayoutMeta: {
+					$set: tempDetailsLayoutMeta,
+				},
+			})
+		);
+	};
+
 	const groupProps = {
 		files,
 		folders,
@@ -183,31 +224,60 @@ const DirectoryLayout = () => {
 			>
 				<div>
 					{layout == 'details' && (
-						<div className="flex">
-							{Object.entries(detailsLayoutMeta)
-								.filter(([key, meta]) => meta.visible)
-								.sort((_a, _b) => {
-									const a = _a[1].order;
-									const b = _b[1].order;
-									return a - b;
-								})
-								.map(([key, meta]) => (
-									<div
-										key={key}
-										className="flex justify-between items-center"
-										style={{ width: meta.width }}
-										onClick={() => handleMenuHeaderClick(key)}
-										onContextMenu={handleOnContextMenuHeader}
-									>
-										{camelCaseToPhrase(key)}
-										{sortBy == key && sortOrder == 1 && (
-											<span className={buttonStyle}>expand_less</span>
-										)}
-										{sortBy == key && sortOrder == -1 && (
-											<span className={buttonStyle}>expand_more</span>
-										)}
-									</div>
-								))}
+						<div>
+							<DragDropContext onDragEnd={handleOnDragEnd}>
+								<Droppable droppableId="droppable" direction="horizontal">
+									{(provided, snapshot) => (
+										<div
+											ref={provided.innerRef}
+											{...provided.droppableProps}
+											className="flex pl-6"
+										>
+											{/*pl compensates for the logo */}
+											{Object.entries(detailsLayoutMeta)
+												.filter(([key, meta]) => meta.visible)
+												.sort((_a, _b) => {
+													const a = _a[1].order;
+													const b = _b[1].order;
+													return a - b;
+												})
+												.map(([key, meta], index) => (
+													<Draggable key={key} draggableId={key} index={index}>
+														{(provided, snapshot) => (
+															<div
+																ref={provided.innerRef}
+																{...provided.draggableProps}
+																{...provided.dragHandleProps}
+																className="flex items-center"
+															>
+																<div
+																	className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2"
+																	style={{ width: meta.width }}
+																	onClick={() => handleMenuHeaderClick(key)}
+																	onContextMenu={handleOnContextMenuHeader}
+																>
+																	{camelCaseToPhrase(key)}
+																	{sortBy == key && sortOrder == 1 && (
+																		<span className={buttonStyle}>
+																			expand_less
+																		</span>
+																	)}
+																	{sortBy == key && sortOrder == -1 && (
+																		<span className={buttonStyle}>
+																			expand_more
+																		</span>
+																	)}
+																</div>
+															</div>
+														)}
+													</Draggable>
+												))}
+
+											{provided.placeholder}
+										</div>
+									)}
+								</Droppable>
+							</DragDropContext>
 
 							<ControlledMenu
 								{...menuPropsHeader}
@@ -215,11 +285,11 @@ const DirectoryLayout = () => {
 								onClose={() => toggleMenuHeader(false)}
 							>
 								<div className="w-64">
-									<FileMenuItem
+									{/* <FileMenuItem
 										controlledStatePadding={true}
 										description="Size all columns to fit"
 									/>
-									<MenuDivider />
+									<MenuDivider /> */}
 									{Object.entries(localStorage.detailsLayoutMeta).map(
 										([key, meta]) => (
 											<FileMenuItem
@@ -227,7 +297,7 @@ const DirectoryLayout = () => {
 												type="checkbox"
 												checked={meta.visible}
 												onClick={(e) => setDetailsLayoutMeta(e, key)}
-												description={key}
+												description={camelCaseToPhrase(key)}
 											/>
 										)
 									)}

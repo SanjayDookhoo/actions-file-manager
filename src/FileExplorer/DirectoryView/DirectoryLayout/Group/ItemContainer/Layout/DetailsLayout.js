@@ -41,9 +41,11 @@ const DetailsLayout = (props) => {
 	return (
 		<>
 			<div
-				className={'flex ' + (recordIsSelected(record) ? 'bg-zinc-500 ' : '')}
+				className={
+					'flex items-center' + (recordIsSelected(record) ? 'bg-zinc-500 ' : '')
+				}
 			>
-				<RenderIcon className="w-4 h-4" {...{ record, fileExtensionsMap }} />
+				<RenderIcon className="w-6 h-6" {...{ record, fileExtensionsMap }} />
 				{Object.entries(detailsLayoutMeta)
 					.filter(([key, meta]) => meta.visible)
 					.sort((_a, _b) => {
@@ -52,7 +54,11 @@ const DetailsLayout = (props) => {
 						return a - b;
 					})
 					.map(([key, meta]) => (
-						<div key={key} style={{ width: meta.width }}>
+						<div
+							key={key}
+							className="text-ellipsis overflow-hidden whitespace-nowrap px-2"
+							style={{ width: meta.width }}
+						>
 							{columnDetails(key)}
 						</div>
 					))}

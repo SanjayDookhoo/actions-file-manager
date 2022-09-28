@@ -23,7 +23,7 @@ const Layout = ({ record }) => {
 	const renderDate = (record, dateField) => {
 		const date = record.meta?.[dateField];
 		if (!date) return '';
-		return new Date(date).toGMTString();
+		return new Date(date).toLocaleString('en-US');
 	};
 
 	const renderType = (record) => {
