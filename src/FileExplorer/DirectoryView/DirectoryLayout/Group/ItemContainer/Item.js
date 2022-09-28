@@ -239,7 +239,7 @@ const Item = ({ item, getRecord }) => {
 						<div
 							// similar class to what FileUploadDiv uses, without the hover over with files effect
 							className={
-								'm-1 p-1 w-fit h-fit border-dashed border border-transparent'
+								'p-1 w-fit h-fit border-dashed border border-transparent'
 							}
 						>
 							<Layout {...layoutProps} />

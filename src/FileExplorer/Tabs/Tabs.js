@@ -126,8 +126,12 @@ const Tabs = () => {
 			setTabWidth(tempTabWidth);
 			setScrollable(tempTabWidth && tempTabWidth < tabMinWidth);
 		};
-		new ResizeObserver(handleResizeObserver).observe(tabsContainer);
-	}, []);
+		const observer = new ResizeObserver(handleResizeObserver);
+		observer.observe(tabsContainer);
+		return () => {
+			observer.unobserve(tabsContainer);
+		};
+	}, [tabsState]);
 
 	const handleOnContextMenu = (e) => {
 		e.preventDefault();
@@ -163,10 +167,6 @@ const Tabs = () => {
 
 		setTabsState(tempTabsState);
 	};
-
-	useEffect(() => {
-		console.log(scrollable);
-	}, [scrollable]);
 
 	const tabProps = {
 		tabWidth,
