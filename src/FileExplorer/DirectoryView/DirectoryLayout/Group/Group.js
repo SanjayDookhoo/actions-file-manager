@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { dateVariations } from '../../../utils/utils';
+import { dateVariations, update } from '../../../utils/utils';
 import { FileExplorerContext } from '../../../FileExplorer';
 import Item from './ItemContainer/Item';
+import { buttonStyle } from '../../../utils/constants';
 
 const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 	const {
@@ -72,9 +73,28 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 		setItemsSorted(tempItemsSorted);
 	}, [items, sortBy, sortOrder, fileExtensionsMap]);
 
-	const handleOnClick = (e) => {
+	const handleCollapsibleClick = (e) => {
 		e.stopPropagation();
 		setCollapsed(!collapsed);
+	};
+
+	const handleGroupSelectAll = (e) => {
+		e.stopPropagation();
+		const selectedFiles = itemsSorted
+			.filter((item) => item.__typename == 'file')
+			.map((item) => item.id);
+		const selectedFolders = itemsSorted
+			.filter((item) => item.__typename == 'folder')
+			.map((item) => item.id);
+
+		setTabsState(
+			update(tabsState, {
+				[activeTabId]: {
+					selectedFiles: { $set: selectedFiles },
+					selectedFolders: { $set: selectedFolders },
+				},
+			})
+		);
 	};
 
 	const getRecord = (item) => {
@@ -94,8 +114,16 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 	return (
 		<>
 			{groupName != 'noneGrouping' && (
-				<div onClick={handleOnClick}>
-					{groupName} ({items.length})
+				<div className="flex items-center test" onClick={handleGroupSelectAll}>
+					<div onClick={handleCollapsibleClick}>
+						<span className={buttonStyle}>
+							{collapsed ? 'expand_more' : 'expand_less'}
+						</span>
+					</div>
+					<div>
+						{groupName} ({items.length})
+					</div>
+					<div className="mx-3 group-separator"></div>
 				</div>
 			)}
 			{!collapsed && (

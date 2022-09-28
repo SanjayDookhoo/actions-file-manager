@@ -36,24 +36,18 @@ input:focus {
 	-webkit-box-orient: vertical;
 }
 
-/* manually placed these values, the css file from the package applies too much undesired changes to my code with respect to the menu */
-/* .szh-menu__item--type-radio.szh-menu__item--checked:before {
-	content: '●';
-}
-.szh-menu__item--type-radio:before {
-	@apply w-10 inline-block pl-3;
-	content: '○';
-	font-size: 0.8rem;
-	bottom: 2px;
+.group-separator {
 	position: relative;
+	flex-grow: 1;
 }
-.szh-menu__item--type-checkbox.szh-menu__item--checked:before {
-	@apply w-10 inline-block px-3;
-	content: '✓';
+
+.group-separator:before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 0;
+	border-top: 1px solid black;
+	background: black;
+	width: 100%;
+	transform: translateY(-50%);
 }
-.szh-menu__item--type-checkbox.szh-menu__item--checked {
-	@apply pl-0;
-}
-.szh-menu__item--type-checkbox {
-	@apply pl-10;
-} */
