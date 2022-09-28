@@ -11,7 +11,7 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import { update } from '../../utils/utils';
+import { setLocalStorageFolderSpecific, update } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
 import FileMenuItemGroup from './FileMenuItemGroup';
 
@@ -26,42 +26,33 @@ const SortDropdown = () => {
 	} = useContext(FileExplorerContext);
 
 	const { path } = tabsState[activeTabId];
-	const {
-		sortOrder = 'ascending',
-		sortBy = 'name',
-		groupOrder = 'ascending',
-		groupBy = 'none',
-	} = localStorage.folderSpecific?.[path] ?? {};
+	const folderSpecific = localStorage.folderSpecific?.[path] ?? {};
+	const { sortOrder = 1, sortBy = 'name' } = folderSpecific;
 
-	const setLocalStorageFolderSpecific = (obj) => {
-		setLocalStorage(
-			update(localStorage, {
-				folderSpecific: {
-					$merge: {
-						[path]: obj,
-					},
-				},
-			})
-		);
+	const params = {
+		prev: folderSpecific,
+		localStorage,
+		setLocalStorage,
+		path,
 	};
 
 	const setSortOrder = (val) => {
-		const sortOrder = val;
+		const curr = {
+			sortOrder: val,
+		};
 		setLocalStorageFolderSpecific({
-			sortOrder,
-			sortBy,
-			groupOrder,
-			groupBy,
+			curr,
+			...params,
 		});
 	};
 
 	const setSortBy = (val) => {
-		const sortBy = val;
+		const curr = {
+			sortBy: val,
+		};
 		setLocalStorageFolderSpecific({
-			sortOrder,
-			sortBy,
-			groupOrder,
-			groupBy,
+			curr,
+			...params,
 		});
 	};
 
@@ -77,12 +68,8 @@ const SortDropdown = () => {
 				value={sortOrder}
 				onRadioChange={(e) => setSortOrder(e.value)}
 			>
-				<FileMenuItem description="Ascending" type="radio" value="ascending" />
-				<FileMenuItem
-					description="Descending"
-					type="radio"
-					value="descending"
-				/>
+				<FileMenuItem description="Ascending" type="radio" value={1} />
+				<FileMenuItem description="Descending" type="radio" value={-1} />
 			</MenuRadioGroup>
 		</>
 	);

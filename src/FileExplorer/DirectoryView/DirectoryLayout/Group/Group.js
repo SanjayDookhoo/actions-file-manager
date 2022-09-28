@@ -15,9 +15,9 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 	} = useContext(FileExplorerContext);
 	const { path } = tabsState[activeTabId];
 	const {
-		sortOrder = 'ascending',
+		sortOrder = 1,
 		sortBy = 'name',
-		groupOrder = 'ascending',
+		groupOrder = 1,
 		groupBy = 'none',
 	} = localStorage.folderSpecific?.[path] ?? {};
 	const [collapsed, setCollapsed] = useState(false);
@@ -39,17 +39,17 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 				const a = recordA[sortBy];
 				const b = recordB[sortBy];
 				const compare = a.localeCompare(b);
-				return compare * (sortOrder == 'ascending' ? 1 : -1);
+				return compare * sortOrder;
 			} else if (dateVariations.includes(sortBy)) {
 				const a = recordA.meta[sortBy];
 				const b = recordB.meta[sortBy];
 				const compare = new Date(a) - new Date(b);
-				return compare * (sortOrder == 'ascending' ? 1 : -1);
+				return compare * sortOrder;
 			} else if (sortBy == 'size') {
 				const a = recordA[sortBy];
 				const b = recordB[sortBy];
 				const compare = a - b;
-				return compare * (sortOrder == 'ascending' ? 1 : -1);
+				return compare * sortOrder;
 			} else if (sortBy == 'type') {
 				const aExt = recordA.name.split('.').pop();
 				const bExt = recordB.name.split('.').pop();
@@ -64,7 +64,7 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 				a = a ? a : aExt.toUpperCase() + ' File';
 				b = b ? b : bExt.toUpperCase() + ' File';
 				const compare = a.localeCompare(b);
-				return compare * (sortOrder == 'ascending' ? 1 : -1);
+				return compare * sortOrder;
 			}
 		};
 

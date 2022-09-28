@@ -11,11 +11,13 @@ import { buttonStyle } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import {
+	camelCaseToPhrase,
 	canEdit,
 	createBuckets,
 	dateVariations,
 	formatBytes,
 	getFolderId,
+	setLocalStorageFolderSpecific,
 	update,
 } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
@@ -66,12 +68,13 @@ const DirectoryLayout = () => {
 	const [groupBuckets, setGroupBuckets] = useState({});
 
 	const { path } = tabsState[activeTabId];
+	const folderSpecific = localStorage.folderSpecific?.[path] ?? {};
 	const {
-		sortOrder = 'ascending',
+		sortOrder = 1,
 		sortBy = 'name',
-		groupOrder = 'ascending',
+		groupOrder = 1,
 		groupBy = 'none',
-	} = localStorage.folderSpecific?.[path] ?? {};
+	} = folderSpecific;
 	const { detailsLayoutMeta, layout } = localStorage;
 
 	useEffect(() => {
@@ -144,6 +147,24 @@ const DirectoryLayout = () => {
 		);
 	};
 
+	const handleMenuHeaderClick = (key) => {
+		console.log({ key });
+		const params = {
+			prev: folderSpecific,
+			localStorage,
+			setLocalStorage,
+			path,
+		};
+
+		const curr = {
+			sortBy: key,
+		};
+		setLocalStorageFolderSpecific({
+			curr,
+			...params,
+		});
+	};
+
 	const groupProps = {
 		files,
 		folders,
@@ -173,10 +194,18 @@ const DirectoryLayout = () => {
 								.map(([key, meta]) => (
 									<div
 										key={key}
+										className="flex justify-between items-center"
 										style={{ width: meta.width }}
+										onClick={() => handleMenuHeaderClick(key)}
 										onContextMenu={handleOnContextMenuHeader}
 									>
-										{key}
+										{camelCaseToPhrase(key)}
+										{sortBy == key && sortOrder == 1 && (
+											<span className={buttonStyle}>expand_less</span>
+										)}
+										{sortBy == key && sortOrder == -1 && (
+											<span className={buttonStyle}>expand_more</span>
+										)}
 									</div>
 								))}
 

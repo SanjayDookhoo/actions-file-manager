@@ -11,7 +11,7 @@ import {
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import { update } from '../../utils/utils';
+import { setLocalStorageFolderSpecific, update } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
 import FileMenuItemGroup from './FileMenuItemGroup';
 
@@ -26,42 +26,33 @@ const GroupDropdown = () => {
 	} = useContext(FileExplorerContext);
 
 	const { path } = tabsState[activeTabId];
-	const {
-		sortOrder = 'ascending',
-		sortBy = 'name',
-		groupOrder = 'ascending',
-		groupBy = 'none',
-	} = localStorage.folderSpecific?.[path] ?? {};
+	const folderSpecific = localStorage.folderSpecific?.[path] ?? {};
+	const { groupOrder = 1, groupBy = 'none' } = folderSpecific;
 
-	const setLocalStorageFolderSpecific = (obj) => {
-		setLocalStorage(
-			update(localStorage, {
-				folderSpecific: {
-					$merge: {
-						[path]: obj,
-					},
-				},
-			})
-		);
+	const params = {
+		prev: folderSpecific,
+		localStorage,
+		setLocalStorage,
+		path,
 	};
 
 	const setGroupOrder = (val) => {
-		const groupOrder = val;
+		const curr = {
+			groupOrder: val,
+		};
 		setLocalStorageFolderSpecific({
-			sortOrder,
-			sortBy,
-			groupOrder,
-			groupBy,
+			curr,
+			...params,
 		});
 	};
 
 	const setGroupBy = (val) => {
-		const groupBy = val;
+		const curr = {
+			groupBy: val,
+		};
 		setLocalStorageFolderSpecific({
-			sortOrder,
-			sortBy,
-			groupOrder,
-			groupBy,
+			curr,
+			...params,
 		});
 	};
 
@@ -83,16 +74,8 @@ const GroupDropdown = () => {
 						value={groupOrder}
 						onRadioChange={(e) => setGroupOrder(e.value)}
 					>
-						<FileMenuItem
-							description="Ascending"
-							type="radio"
-							value="ascending"
-						/>
-						<FileMenuItem
-							description="Descending"
-							type="radio"
-							value="descending"
-						/>
+						<FileMenuItem description="Ascending" type="radio" value={1} />
+						<FileMenuItem description="Descending" type="radio" value={-1} />
 					</MenuRadioGroup>
 				</>
 			)}

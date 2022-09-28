@@ -286,3 +286,45 @@ export const canEdit = ({ tabsState, activeTabId, sharedAccessType }) => {
 export const capitalizeFirstLetter = (string) => {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+const defaultSortOrGroupOrder = (column) => {
+	if (dateVariations.includes(column)) return -1; // default ordering for dates is descending
+	return 1;
+};
+
+export const setLocalStorageFolderSpecific = ({
+	prev,
+	curr,
+	localStorage,
+	setLocalStorage,
+	path,
+}) => {
+	const obj = { ...prev };
+	const { sortBy, sortOrder, groupBy, groupOrder } = obj;
+	const [key, value] = Object.entries(curr)[0];
+
+	if (key == 'groupBy' && groupBy == value) {
+		obj.groupOrder = groupOrder * -1;
+	} else if (key == 'groupBy' && groupBy != value) {
+		obj.groupBy = value;
+		obj.groupOrder = defaultSortOrGroupOrder(value);
+	} else if (key == 'sortBy' && sortBy == value) {
+		obj.sortOrder = sortOrder * -1;
+	} else if (key == 'sortBy' && sortBy != value) {
+		obj.sortBy = value;
+		obj.sortOrder = defaultSortOrGroupOrder(value);
+	} else {
+		// no special conditions met
+		obj[key] = value;
+	}
+
+	setLocalStorage(
+		update(localStorage, {
+			folderSpecific: {
+				$merge: {
+					[path]: obj,
+				},
+			},
+		})
+	);
+};
