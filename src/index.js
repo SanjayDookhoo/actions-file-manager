@@ -8,9 +8,10 @@ import reactToWebcomponent from 'react-to-webcomponent';
 // normal development beginning
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>
+	// https://github.com/atlassian/react-beautiful-dnd/issues/2396#issuecomment-1131658703
+	// <React.StrictMode>
+	<App />
+	// </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

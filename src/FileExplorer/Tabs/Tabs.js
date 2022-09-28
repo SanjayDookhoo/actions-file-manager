@@ -13,6 +13,7 @@ import VerticalFlyoutMenu from './VerticalFlyoutMenu';
 import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import { FileExplorerContext } from '../FileExplorer';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const Tabs = () => {
 	const {
@@ -134,6 +135,39 @@ const Tabs = () => {
 		toggleMenu(true);
 	};
 
+	const handleOnDragEnd = (result) => {
+		if (!result.destination) {
+			return;
+		}
+
+		const keys = Object.keys(tabsState).sort(
+			(a, b) => tabsState[a].order - tabsState[b].order
+		);
+		const tempTabsState = { ...tabsState };
+		const destIndex = result.destination.index;
+		const srcIndex = result.source.index;
+
+		if (destIndex > srcIndex) {
+			for (let i = srcIndex + 1; i <= destIndex; i++) {
+				tempTabsState[keys[i]].order--;
+			}
+			tempTabsState[keys[srcIndex]].order =
+				tempTabsState[keys[destIndex]].order + 1;
+		} else if (destIndex < srcIndex) {
+			for (let i = destIndex; i < srcIndex; i++) {
+				tempTabsState[keys[i]].order++;
+			}
+			tempTabsState[keys[srcIndex]].order =
+				tempTabsState[keys[destIndex]].order - 1;
+		}
+
+		setTabsState(tempTabsState);
+	};
+
+	useEffect(() => {
+		console.log(scrollable);
+	}, [scrollable]);
+
 	const tabProps = {
 		tabWidth,
 		addNewTab,
@@ -143,7 +177,7 @@ const Tabs = () => {
 	return (
 		<div
 			ref={tabsContainerRef}
-			className="flex justify-start"
+			className="flex justify-start w-full"
 			onContextMenu={handleOnContextMenu}
 		>
 			{scrollable && (
@@ -155,15 +189,37 @@ const Tabs = () => {
 					<span className={buttonStyle}>chevron_left</span>
 				</a>
 			)}
-			<div
-				ref={scrollableTabsRef}
-				className="flex overflow-x-auto scrollable-tabs"
-			>
-				{Object.keys(tabsState)
-					.sort((a, b) => tabsState[a].order - tabsState[b].order)
-					.map((tabId) => (
-						<Tab key={tabId} {...tabProps} tabId={tabId} />
-					))}
+			<div className="overflow-hidden" ref={scrollableTabsRef}>
+				<DragDropContext onDragEnd={handleOnDragEnd}>
+					<Droppable droppableId="droppable" direction="horizontal">
+						{(provided, snapshot) => (
+							<div
+								// ref={scrollableTabsRef}
+								ref={provided.innerRef}
+								{...provided.droppableProps}
+								className="flex overflow-x-auto scrollable-tabs"
+							>
+								{Object.keys(tabsState)
+									.sort((a, b) => tabsState[a].order - tabsState[b].order)
+									.map((tabId, index) => (
+										// <Tab key={tabId} {...tabProps} tabId={tabId} />
+										<Draggable key={tabId} draggableId={tabId} index={index}>
+											{(provided, snapshot) => (
+												<div
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+												>
+													<Tab key={tabId} {...tabProps} tabId={tabId} />
+												</div>
+											)}
+										</Draggable>
+									))}
+								{provided.placeholder}
+							</div>
+						)}
+					</Droppable>
+				</DragDropContext>
 			</div>
 			{scrollable && (
 				<a
