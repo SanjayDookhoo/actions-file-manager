@@ -78,6 +78,51 @@ const DirectoryLayout = () => {
 	} = folderSpecific;
 	const { detailsLayoutMeta, layout } = localStorage;
 
+	const [mouseX, setMouseX] = useState();
+	const [dragging, setDragging] = useState(false);
+
+	useEffect(() => {
+		if (dragging) {
+			const { x, key, originalWidth } = dragging;
+			const dx = mouseX - x;
+			const width = originalWidth + dx + 'px';
+
+			setLocalStorage(
+				update(localStorage, {
+					detailsLayoutMeta: { [key]: { width: { $set: width } } },
+				})
+			);
+		}
+	}, [mouseX, dragging]);
+
+	const handleMouseDown = (e, key) => {
+		setDragging({
+			key,
+			x: e.clientX,
+			originalWidth: parseInt(detailsLayoutMeta[key].width),
+		});
+	};
+
+	useEffect(() => {
+		const handleSetMouseX = (e) => {
+			setMouseX(e.x);
+		};
+		document.addEventListener('mousemove', handleSetMouseX, false);
+		return () => {
+			document.removeEventListener('mousemove', handleSetMouseX, false);
+		};
+	}, []);
+
+	useEffect(() => {
+		const handleSetDragging = (e) => {
+			setDragging(false);
+		};
+		document.addEventListener('mouseup', handleSetDragging, false);
+		return () => {
+			document.removeEventListener('mouseup', handleSetDragging, false);
+		};
+	}, []);
+
 	useEffect(() => {
 		if (groupBy != 'none' && groupBuckets[groupBy]) {
 			let orderedKeys = Object.keys(groupBuckets[groupBy]);
@@ -247,26 +292,34 @@ const DirectoryLayout = () => {
 															<div
 																ref={provided.innerRef}
 																{...provided.draggableProps}
-																{...provided.dragHandleProps}
 																className="flex items-center"
 															>
+																{/* dragHandleProps designates the draggable area https://stackoverflow.com/a/61360662/4224964 */}
+																<div {...provided.dragHandleProps}>
+																	<div
+																		className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2"
+																		style={{ width: meta.width }}
+																		onClick={() => handleMenuHeaderClick(key)}
+																		onContextMenu={handleOnContextMenuHeader}
+																	>
+																		{camelCaseToPhrase(key)}
+																		{sortBy == key && sortOrder == 1 && (
+																			<span className={buttonStyle}>
+																				expand_less
+																			</span>
+																		)}
+																		{sortBy == key && sortOrder == -1 && (
+																			<span className={buttonStyle}>
+																				expand_more
+																			</span>
+																		)}
+																	</div>
+																</div>
 																<div
-																	className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2"
-																	style={{ width: meta.width }}
-																	onClick={() => handleMenuHeaderClick(key)}
-																	onContextMenu={handleOnContextMenuHeader}
+																	className="drag h-full w-0.5 hover:w-2 bg-white select-none cursor-col-resize"
+																	onMouseDown={(e) => handleMouseDown(e, key)}
 																>
-																	{camelCaseToPhrase(key)}
-																	{sortBy == key && sortOrder == 1 && (
-																		<span className={buttonStyle}>
-																			expand_less
-																		</span>
-																	)}
-																	{sortBy == key && sortOrder == -1 && (
-																		<span className={buttonStyle}>
-																			expand_more
-																		</span>
-																	)}
+																	&nbsp;
 																</div>
 															</div>
 														)}
