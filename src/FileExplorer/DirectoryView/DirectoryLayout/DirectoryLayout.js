@@ -316,10 +316,12 @@ const DirectoryLayout = () => {
 																	</div>
 																</div>
 																<div
-																	className="drag h-full w-0.5 hover:w-2 bg-white select-none cursor-col-resize"
+																	className="border-2 border-transparent hover:border-white select-none cursor-col-resize"
 																	onMouseDown={(e) => handleMouseDown(e, key)}
 																>
-																	&nbsp;
+																	<div className="drag h-full w-0.5 bg-white ">
+																		&nbsp;
+																	</div>
 																</div>
 															</div>
 														)}

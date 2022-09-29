@@ -9,12 +9,12 @@ export const initialLocalStorageState = {
 	layout: 'details',
 	detailsLayoutMeta: {
 		name: {
-			width: '150px',
+			width: '210px',
 			order: 1,
 			visible: true,
 		},
 		modified: {
-			width: '150px',
+			width: '210px',
 			order: 2,
 			visible: true,
 		},
@@ -29,12 +29,12 @@ export const initialLocalStorageState = {
 			visible: true,
 		},
 		created: {
-			width: '150px',
+			width: '210px',
 			order: 5,
 			visible: false,
 		},
 		lastAccessed: {
-			width: '150px',
+			width: '210px',
 			order: 6,
 			visible: false,
 		},

@@ -56,7 +56,7 @@ const DetailsLayout = (props) => {
 					.map(([key, meta]) => (
 						<div
 							key={key}
-							className="text-ellipsis overflow-hidden whitespace-nowrap px-2"
+							className="text-ellipsis overflow-hidden whitespace-nowrap px-2 m-0.5" // m-0.5 accounts for the drag bar to resize
 							style={{ width: meta.width }}
 						>
 							{columnDetails(key)}
