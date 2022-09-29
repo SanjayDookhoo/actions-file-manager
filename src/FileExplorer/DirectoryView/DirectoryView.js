@@ -11,7 +11,7 @@ const DirectoryView = () => {
 		useContext(FileExplorerContext);
 
 	return (
-		<div className="flex-grow h-full flex flex-col">
+		<div className="flex-grow h-full flex flex-col overflow-auto">
 			<DirectoryViewOptions />
 			<div className="w-full flex justify-between flex-grow">
 				{!subscriptionLoading && <DirectoryLayout />}
