@@ -42,7 +42,8 @@ const DetailsLayout = (props) => {
 		<>
 			<div
 				className={
-					'flex items-center' + (recordIsSelected(record) ? 'bg-zinc-500 ' : '')
+					'flex items-center ' +
+					(recordIsSelected(record) ? 'bg-zinc-500 ' : '')
 				}
 			>
 				<RenderIcon className="w-6 h-6" {...{ record, fileExtensionsMap }} />

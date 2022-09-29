@@ -13,7 +13,7 @@ const DirectoryView = () => {
 	return (
 		<div className="flex-grow h-full flex flex-col overflow-auto">
 			<DirectoryViewOptions />
-			<div className="w-full flex justify-between flex-grow">
+			<div className="w-full flex justify-between flex-grow basis-0 min-h-0 overflow-auto">
 				{!subscriptionLoading && <DirectoryLayout />}
 				{/* {localStorage.showDetailsPane && <DetailsPane />} */}
 			</div>

@@ -265,11 +265,11 @@ const DirectoryLayout = () => {
 		>
 			<FileUploadDiv
 				folderId={getFolderId({ tabsState, activeTabId, rootUserFolderId })}
-				style={{ width: '100%', height: '100%' }}
+				style={{ width: '100%', minHeight: '100%' }}
 			>
 				<div>
 					{layout == 'details' && (
-						<div>
+						<div className="sticky top-0 bg-gray-500">
 							<DragDropContext onDragEnd={handleOnDragEnd}>
 								<Droppable droppableId="droppable" direction="horizontal">
 									{(provided, snapshot) => (

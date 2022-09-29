@@ -6,11 +6,15 @@ import reportWebVitals from './reportWebVitals';
 import reactToWebcomponent from 'react-to-webcomponent';
 
 // normal development beginning
+const props = {
+	height: '100vh',
+	width: '100%',
+};
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	// https://github.com/atlassian/react-beautiful-dnd/issues/2396#issuecomment-1131658703
 	// <React.StrictMode>
-	<App />
+	<App {...props} />
 	// </React.StrictMode>
 );
 

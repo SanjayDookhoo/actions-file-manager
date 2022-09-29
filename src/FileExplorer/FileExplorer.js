@@ -32,7 +32,7 @@ export const FileExplorerContext = createContext();
 
 const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 
-const FileExplorer = () => {
+const FileExplorer = ({ height, width }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
 		[initialTabId]: { ...initialTabState, order: 0 },
@@ -275,7 +275,8 @@ const FileExplorer = () => {
 				<SharingLinks sharingLinksIsOpen={sharingLinksIsOpen} />
 			)}
 			<div
-				className="fileExplorer w-full h-screen flex flex-col bg-zinc-700"
+				className="fileExplorer flex flex-col bg-zinc-700"
+				style={{ height, width }}
 				ref={fileExplorerRef}
 				onContextMenu={(e) => e.preventDefault()}
 			>

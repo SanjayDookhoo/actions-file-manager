@@ -1,10 +1,10 @@
 import { createContext, useState } from 'react';
 import FileExplorer from './FileExplorer/FileExplorer';
 
-const App = () => {
+const App = (props) => {
 	return (
 		<div className="App text-white">
-			<FileExplorer />
+			<FileExplorer {...props} />
 		</div>
 	);
 };
