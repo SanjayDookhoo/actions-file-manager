@@ -6,9 +6,10 @@ import { FileExplorerContext } from '../FileExplorer';
 import { openInNewTab, update } from '../utils/utils';
 import { initialTabState } from '../Tabs/constants';
 import { axiosClientJSON } from '../endpoint';
+import DeleteRestoreConfirmation from '../DeleteRestoreConfirmation';
 
 const LeftPaneButton = ({ title, handleOnClick }) => {
-	const { tabsState, setTabsState, activeTabId, setActiveTabId } =
+	const { tabsState, setTabsState, activeTabId, setActiveTabId, setModal } =
 		useContext(FileExplorerContext);
 
 	const [menuProps, toggleMenu] = useMenuState();
@@ -47,21 +48,33 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 	};
 
 	const restoreAllItems = () => {
-		axiosClientJSON({
-			url: '/restore',
-			method: 'POST',
-			data: {
-				all: true,
+		setModal({
+			isOpen: true,
+			component: DeleteRestoreConfirmation,
+			componentProps: {
+				type: 'restore',
+				data: {
+					all: true,
+				},
+				setTabsState,
+				tabsState,
+				activeTabId,
 			},
 		});
 	};
 
 	const emptyRecycleBin = () => {
-		axiosClientJSON({
-			url: '/permanentlyDelete',
-			method: 'POST',
-			data: {
-				all: true,
+		setModal({
+			isOpen: true,
+			component: DeleteRestoreConfirmation,
+			componentProps: {
+				type: 'permanentlyDelete',
+				data: {
+					all: true,
+				},
+				setTabsState,
+				tabsState,
+				activeTabId,
 			},
 		});
 	};

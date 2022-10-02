@@ -9,6 +9,7 @@ import { axiosClientJSON } from '../../../../endpoint';
 import { FileExplorerContext } from '../../../../FileExplorer';
 import { openInNewTab, update } from '../../../../utils/utils';
 import FilesOptions from '../../../../FilesOptions/FilesOptions';
+import DeleteRestoreConfirmation from '../../../../DeleteRestoreConfirmation';
 
 const Item = ({ item, getRecord }) => {
 	const {
@@ -26,6 +27,7 @@ const Item = ({ item, getRecord }) => {
 		filtered,
 		setFiltered,
 		setSharingLinksIsOpen,
+		setModal,
 	} = useContext(FileExplorerContext);
 
 	const [record, setRecord] = useState({});
@@ -88,24 +90,36 @@ const Item = ({ item, getRecord }) => {
 
 	const restore = () => {
 		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
-		axiosClientJSON({
-			url: '/restore',
-			method: 'POST',
-			data: {
-				selectedFolders,
-				selectedFiles,
+		setModal({
+			isOpen: true,
+			component: DeleteRestoreConfirmation,
+			componentProps: {
+				type: 'restore',
+				data: {
+					selectedFolders,
+					selectedFiles,
+				},
+				setTabsState,
+				tabsState,
+				activeTabId,
 			},
 		});
 	};
 
 	const permanentlyDelete = () => {
 		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
-		axiosClientJSON({
-			url: '/permanentlyDelete',
-			method: 'POST',
-			data: {
-				selectedFolders,
-				selectedFiles,
+		setModal({
+			isOpen: true,
+			component: DeleteRestoreConfirmation,
+			componentProps: {
+				type: 'permanentlyDelete',
+				data: {
+					selectedFolders,
+					selectedFiles,
+				},
+				setTabsState,
+				tabsState,
+				activeTabId,
 			},
 		});
 	};

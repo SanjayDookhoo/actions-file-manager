@@ -1,5 +1,6 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import FileFocusableItem from '../CustomReactMenu/FileFocusableItem';
+import DeleteRestoreConfirmation from '../DeleteRestoreConfirmation';
 import { axiosClientJSON } from '../endpoint';
 import { FileExplorerContext } from '../FileExplorer';
 import SharingLinks from '../SharingLinks';
@@ -63,23 +64,40 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 
 	const handleDelete = async () => {
 		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
-		const url = path[0] == 'Recycle bin' ? '/permanentlyDelete' : '/remove';
-		const res = await axiosClientJSON({
-			url,
-			method: 'POST',
-			data: {
-				selectedFolders,
-				selectedFiles,
-			},
-		});
-		setTabsState(
-			update(tabsState, {
-				[activeTabId]: {
-					selectedFiles: { $set: [] },
-					selectedFolders: { $set: [] },
+		if (path[0] == 'Recycle bin') {
+			setModal({
+				isOpen: true,
+				component: DeleteRestoreConfirmation,
+				componentProps: {
+					type: 'permanentlyDelete',
+					data: {
+						selectedFolders,
+						selectedFiles,
+					},
+					setTabsState,
+					tabsState,
+					activeTabId,
 				},
-			})
-		);
+			});
+		} else {
+			axiosClientJSON({
+				url: '/remove',
+				method: 'POST',
+				data: {
+					selectedFolders,
+					selectedFiles,
+				},
+			}).then((res) => {
+				setTabsState(
+					update(tabsState, {
+						[activeTabId]: {
+							selectedFiles: { $set: [] },
+							selectedFolders: { $set: [] },
+						},
+					})
+				);
+			});
+		}
 	};
 
 	const handleShare = () => {
