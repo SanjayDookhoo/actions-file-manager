@@ -14,11 +14,14 @@ import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import { FileExplorerContext } from '../FileExplorer';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { isMacOs, shortcutGenerate, shortcutHint } from '../utils/utils';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const Tabs = () => {
 	const {
 		tabsState,
 		setTabsState,
+		activeTabId,
 		setActiveTabId,
 		newTabOrder,
 		setNewtabOrder,
@@ -34,6 +37,44 @@ const Tabs = () => {
 
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+
+	useHotkeys(shortcutGenerate('ctrl+alt+t'), () => addNewTab(), {}, [
+		tabsState,
+		newTabOrder,
+	]);
+	useHotkeys(
+		shortcutGenerate('ctrl+alt+w'),
+		() => closeTab(activeTabId),
+		{
+			enabled: Object.keys(tabsState).length != 1,
+		},
+		[tabsState, closedTabs, activeTabId]
+	);
+	useHotkeys(
+		shortcutGenerate('ctrl+alt+shift+t'),
+		() => reopenClosedTab(),
+		{
+			enabled: Object.keys(closedTabs).length != 0,
+		},
+		[tabsState, closedTabs, newTabOrder]
+	);
+
+	const closeTab = (tabId) => {
+		setClosedTabs({ [tabId]: tabsState[tabId], ...closedTabs });
+		let tempTabsState = { ...tabsState };
+		const tempTabsStateKeys = Object.keys(tempTabsState);
+		const index = tempTabsStateKeys.findIndex((el) => el == tabId);
+		delete tempTabsState[tabId];
+		setTabsState(tempTabsState);
+		if (activeTabId == tabId) {
+			// if the current active tab is the one being closed AND is the last tab
+			if (tempTabsStateKeys[tempTabsStateKeys.length - 1] == tabId) {
+				setActiveTabId(tempTabsStateKeys[index - 1]);
+			} else {
+				setActiveTabId(tempTabsStateKeys[index + 1]);
+			}
+		}
+	};
 
 	const getMaxScrollLeft = (element) => {
 		return element.scrollWidth - element.clientWidth;
@@ -84,7 +125,8 @@ const Tabs = () => {
 			}
 		}
 	};
-	const addNewTab = (e) => {
+	const addNewTab = () => {
+		console.log(tabsState);
 		const tabId = uuidv4();
 		setTabsState({
 			...tabsState,
@@ -110,6 +152,7 @@ const Tabs = () => {
 
 	const verticalFlyoutMenuProps = {
 		addNewTab,
+		closeTab,
 	};
 
 	const unclickableButtonStyle = 'text-gray-100 cursor-auto ';
@@ -172,6 +215,7 @@ const Tabs = () => {
 		tabWidth,
 		addNewTab,
 		reopenClosedTab,
+		closeTab,
 	};
 
 	return (
@@ -230,7 +274,11 @@ const Tabs = () => {
 					<span className={buttonStyle}>chevron_right</span>
 				</a>
 			)}
-			<a className="" onClick={addNewTab} title="New tab (Ctrl+T)">
+			<a
+				className=""
+				onClick={addNewTab}
+				title={`New tab${shortcutHint(' (Ctrl+Alt+T)')}`}
+			>
 				<span className={buttonStyle}>add</span>
 			</a>
 			<VerticalFlyoutMenu {...verticalFlyoutMenuProps} />
@@ -240,11 +288,18 @@ const Tabs = () => {
 				anchorPoint={anchorPoint}
 				onClose={() => toggleMenu(false)}
 			>
-				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
+				<FileMenuItem
+					logo="folder"
+					description="New tab"
+					shortcutHint={shortcutHint(`Ctrl+Alt+T`)}
+					onClick={addNewTab}
+				/>
 				<FileMenuItem
 					logo={false}
 					description="Reopen closed tab"
+					shortcutHint={shortcutHint(`Ctrl+Alt+Shift+T`)}
 					onClick={reopenClosedTab}
+					disabled={Object.keys(closedTabs).length == 0}
 				/>
 			</ControlledMenu>
 		</div>

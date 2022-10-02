@@ -328,3 +328,43 @@ export const setLocalStorageFolderSpecific = ({
 		})
 	);
 };
+
+export const isMobile = () => {
+	const { userAgent } = window.navigator;
+	if (userAgent.match(/Windows Phone/i)) {
+		return true;
+	}
+	// some mobile IE browser
+	if (userAgent.match(/iemobile/i)) {
+		return true;
+	}
+	if (userAgent.match(/android/i)) {
+		return true;
+	}
+	if (userAgent.match(/iphone/i)) {
+		return true;
+	}
+	return false;
+};
+
+export const isMacOs = () => {
+	return window.navigator.userAgent.toLowerCase().includes('mac');
+};
+
+export const shortcutHint = (hint) => {
+	if (isMobile()) return '';
+	if (isMacOs()) {
+		return hint.replaceAll('Ctrl', 'Cmd').replaceAll('Alt', 'Option');
+	}
+	return hint;
+};
+
+export const shortcutGenerate = (shortcut) => {
+	const macShortcut = shortcut
+		.replaceAll('ctrl', 'command')
+		.replaceAll('alt', 'option');
+	if (macShortcut != shortcut) {
+		return shortcut + ', ' + macShortcut;
+	}
+	return shortcut;
+};

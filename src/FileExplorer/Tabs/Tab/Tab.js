@@ -6,13 +6,20 @@ import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
 import NavigationIconAndName from '../../NavigationIconAndName';
 import { buttonStyle } from '../../utils/constants';
-import { openInNewTab } from '../../utils/utils';
+import { isMacOs, openInNewTab, shortcutHint } from '../../utils/utils';
 import { tabMaxWidth, tabMinWidth } from '../constants';
 
 const icon = 'folder';
 
 const Tab = (props) => {
-	const { tabWidth, tabId, inContextMenu, addNewTab, reopenClosedTab } = props;
+	const {
+		tabWidth,
+		tabId,
+		inContextMenu,
+		addNewTab,
+		reopenClosedTab,
+		closeTab,
+	} = props;
 	const {
 		tabsState,
 		setTabsState,
@@ -44,20 +51,7 @@ const Tab = (props) => {
 
 	const handleClose = (e) => {
 		e.stopPropagation(); // used in context menu
-		setClosedTabs({ [tabId]: tabsState[tabId], ...closedTabs });
-		let tempTabsState = { ...tabsState };
-		const tempTabsStateKeys = Object.keys(tempTabsState);
-		const index = tempTabsStateKeys.findIndex((el) => el == tabId);
-		delete tempTabsState[tabId];
-		setTabsState(tempTabsState);
-		if (activeTabId == tabId) {
-			// if the current active tab is the one being closed AND is the last tab
-			if (tempTabsStateKeys[tempTabsStateKeys.length - 1] == tabId) {
-				setActiveTabId(tempTabsStateKeys[index - 1]);
-			} else {
-				setActiveTabId(tempTabsStateKeys[index + 1]);
-			}
-		}
+		closeTab(tabId);
 	};
 
 	const onMouseDown = (e) => {
@@ -193,7 +187,11 @@ const Tab = (props) => {
 					<NavigationIconAndName folderId={folderId} />
 				</div>
 				{Object.keys(tabsState).length != 1 && (
-					<a className="" onClick={handleClose}>
+					<a
+						className=""
+						title={`Close tab (Ctrl+Alt+W)`}
+						onClick={handleClose}
+					>
 						<span className={buttonStyle}>close</span>
 					</a>
 				)}
@@ -206,10 +204,15 @@ const Tab = (props) => {
 				onClose={() => toggleMenu(false)}
 				onClick={(e) => e.stopPropagation()} // prevents propagation of clicks, because the div it is nested in is also using an onClick
 			>
-				<FileMenuItem logo="folder" description="New Tab" onClick={addNewTab} />
 				<FileMenuItem
 					logo="folder"
-					description="Duplicate Tab"
+					description="New tab"
+					shortcutHint={shortcutHint(`Ctrl+Alt+T`)}
+					onClick={addNewTab}
+				/>
+				<FileMenuItem
+					logo="folder"
+					description="Duplicate tab"
 					onClick={duplicateTab}
 				/>
 				<FileMenuItem
@@ -233,6 +236,7 @@ const Tab = (props) => {
 				<FileMenuItem
 					logo={false}
 					description="Reopen closed tab"
+					shortcutHint={shortcutHint(`Ctrl+Alt+Shift+T`)}
 					onClick={reopenClosedTab}
 					disabled={Object.keys(closedTabs).length == 0}
 				/>

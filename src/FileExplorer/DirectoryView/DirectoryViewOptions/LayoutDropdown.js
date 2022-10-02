@@ -12,7 +12,7 @@ import {
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { FileExplorerContext } from '../../FileExplorer';
-import { camelCaseToPhrase } from '../../utils/utils';
+import { camelCaseToPhrase, isMacOs, shortcutHint } from '../../utils/utils';
 
 const LayoutDropdown = () => {
 	const { localStorage, setLocalStorage } = useContext(FileExplorerContext);
@@ -31,7 +31,7 @@ const LayoutDropdown = () => {
 						description={camelCaseToPhrase(layoutOption)}
 						type="radio"
 						value={layoutOption}
-						shortcutHint={`Ctrl+Shift+${i + 1}`}
+						shortcutHint={shortcutHint(`Ctrl+Shift+${i + 1}`)}
 					/>
 				))}
 			</MenuRadioGroup>

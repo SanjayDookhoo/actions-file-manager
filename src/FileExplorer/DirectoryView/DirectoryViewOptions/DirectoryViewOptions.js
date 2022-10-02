@@ -19,7 +19,7 @@ import GroupDropdown from './GroupDropdown';
 import FilterContext from './FilterContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FileExplorerContext } from '../../FileExplorer';
-import { canEdit } from '../../utils/utils';
+import { canEdit, shortcutGenerate } from '../../utils/utils';
 
 const DirectoryViewOptions = () => {
 	const {
@@ -31,19 +31,19 @@ const DirectoryViewOptions = () => {
 	} = useContext(FileExplorerContext);
 
 	// hot keys needed to be placed here because the menu does not mount originally until first opened
-	useHotkeys('ctrl+shift+1', () =>
+	useHotkeys(shortcutGenerate('ctrl+shift+1'), () =>
 		setLocalStorage({ ...localStorage, layout: layoutOptions[0] })
 	);
-	useHotkeys('ctrl+shift+2', () =>
+	useHotkeys(shortcutGenerate('ctrl+shift+2'), () =>
 		setLocalStorage({ ...localStorage, layout: layoutOptions[1] })
 	);
-	useHotkeys('ctrl+shift+3', () =>
+	useHotkeys(shortcutGenerate('ctrl+shift+3'), () =>
 		setLocalStorage({ ...localStorage, layout: layoutOptions[2] })
 	);
-	useHotkeys('ctrl+shift+4', () =>
+	useHotkeys(shortcutGenerate('ctrl+shift+4'), () =>
 		setLocalStorage({ ...localStorage, layout: layoutOptions[3] })
 	);
-	useHotkeys('ctrl+shift+5', () =>
+	useHotkeys(shortcutGenerate('ctrl+shift+5'), () =>
 		setLocalStorage({ ...localStorage, layout: layoutOptions[4] })
 	);
 
