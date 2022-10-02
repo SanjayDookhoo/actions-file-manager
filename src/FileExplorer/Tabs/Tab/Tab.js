@@ -86,6 +86,34 @@ const Tab = (props) => {
 		});
 	};
 
+	const canCloseTabsLeft = () => {
+		const tempTabsState = { ...tabsState };
+		const currTab = tempTabsState[tabId];
+		const { order } = currTab;
+
+		return (
+			Object.keys(tempTabsState).filter(
+				(key) => tempTabsState[key].order < order
+			).length != 0
+		);
+	};
+
+	const canCloseTabsRight = () => {
+		const tempTabsState = { ...tabsState };
+		const currTab = tempTabsState[tabId];
+		const { order } = currTab;
+
+		return (
+			Object.keys(tempTabsState).filter(
+				(key) => tempTabsState[key].order > order
+			).length != 0
+		);
+	};
+
+	const canCloseTabsOther = () => {
+		return canCloseTabsLeft() || canCloseTabsRight();
+	};
+
 	const closeTabsLeft = ({ data }) => {
 		const { tempTabsState, order } = data;
 
@@ -188,21 +216,25 @@ const Tab = (props) => {
 					logo={false}
 					description="Close tabs to the left"
 					onClick={() => closeTabs('left')}
+					disabled={!canCloseTabsLeft()}
 				/>
 				<FileMenuItem
 					logo={false}
 					description="Close tabs to the right"
 					onClick={() => closeTabs('right')}
+					disabled={!canCloseTabsRight()}
 				/>
 				<FileMenuItem
 					logo={false}
 					description="Close other tabs"
 					onClick={() => closeTabs('other')}
+					disabled={!canCloseTabsOther()}
 				/>
 				<FileMenuItem
 					logo={false}
 					description="Reopen closed tab"
 					onClick={reopenClosedTab}
+					disabled={Object.keys(closedTabs).length == 0}
 				/>
 			</ControlledMenu>
 		</div>

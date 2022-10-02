@@ -40,7 +40,7 @@ const FileExplorer = ({ height, width }) => {
 	});
 	const [activeTabId, setActiveTabId] = useState(initialTabId);
 	const [newTabOrder, setNewtabOrder] = useState(1);
-	const [closedTabs, setClosedTabs] = useState([]);
+	const [closedTabs, setClosedTabs] = useState({});
 	const fileExplorerRef = useRef();
 	const [localStorage, _setLocalStorage] = useState(() => {
 		const data = window.localStorage.getItem(localStorageKey);
