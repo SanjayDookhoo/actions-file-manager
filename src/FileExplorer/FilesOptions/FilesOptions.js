@@ -2,6 +2,7 @@ import { Fragment, useContext, useEffect, useState } from 'react';
 import FileFocusableItem from '../CustomReactMenu/FileFocusableItem';
 import { axiosClientJSON } from '../endpoint';
 import { FileExplorerContext } from '../FileExplorer';
+import SharingLinks from '../SharingLinks';
 import { buttonStyle } from '../utils/constants';
 import { getFolderId, update } from '../utils/utils';
 
@@ -25,6 +26,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		setPaste,
 		handlePaste,
 		sharedAccessType,
+		setModal,
 	} = useContext(FileExplorerContext);
 
 	const handleCut = () => {
@@ -90,7 +92,11 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		} else {
 			record = files.find((file) => file.id == selectedFiles[0]);
 		}
-		setSharingLinksIsOpen(record);
+		setModal({
+			isOpen: true,
+			component: SharingLinks,
+			componentProps: record,
+		});
 	};
 
 	const isActive = (title) => {

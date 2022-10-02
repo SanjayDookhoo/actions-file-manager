@@ -21,6 +21,7 @@ import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { axiosClientJSON } from '../../endpoint';
 import { getFolderId, uploadFiles } from '../../utils/utils';
 import { FileExplorerContext } from '../../FileExplorer';
+import NewFolder from '../../NewFolder';
 
 const NewDropdown = () => {
 	const {
@@ -30,6 +31,7 @@ const NewDropdown = () => {
 		setActiveTabId,
 		setNewFolderIsOpen,
 		rootUserFolderId,
+		setModal,
 	} = useContext(FileExplorerContext);
 	const fileUploadRef = useRef();
 	const folderUploadRef = useRef();
@@ -55,7 +57,10 @@ const NewDropdown = () => {
 	};
 
 	const handleNewFolderOnClick = (e) => {
-		setNewFolderIsOpen(true);
+		setModal({
+			isOpen: true,
+			component: NewFolder,
+		});
 	};
 
 	return (

@@ -17,33 +17,30 @@ const NewFolder = () => {
 		setTabsState,
 		activeTabId,
 		setActiveTabId,
-		newFolderName,
-		setNewFolderName,
 		setNewFolderIsOpen,
 		rootUserFolderId,
+		modal,
+		setModal,
 	} = useContext(FileExplorerContext);
 	const ref = useRef();
+	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 
 	const handleCancel = (e) => {
-		// e.stopPropagation();
-		setNewFolderName(newFolderNameDefault);
-		setNewFolderIsOpen(false);
+		setModal(null);
 	};
 
 	const handleCreate = (e) => {
-		// e.stopPropagation();
-		setNewFolderName(newFolderNameDefault);
-		setNewFolderIsOpen(false);
-
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
 		if (newFolderName) {
-			const res = axiosClientJSON({
+			axiosClientJSON({
 				url: '/createNewFolder',
 				method: 'POST',
 				data: {
 					name: newFolderName,
 					folderId,
 				},
+			}).then((res) => {
+				setModal(null);
 			});
 		}
 	};

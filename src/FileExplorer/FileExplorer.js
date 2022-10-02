@@ -27,6 +27,7 @@ import useWebSocket from 'react-use-websocket';
 import NewFolder from './NewFolder';
 import SharingLinks from './SharingLinks';
 import useSubscription from './useSubscription';
+import Modal from './Modal';
 
 export const FileExplorerContext = createContext();
 
@@ -71,14 +72,12 @@ const FileExplorer = ({ height, width }) => {
 		'folder'
 	);
 
-	const [sharingLinksIsOpen, setSharingLinksIsOpen] = useState(false);
-	const [newFolderIsOpen, setNewFolderIsOpen] = useState(false);
-	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 	const [paste, setPaste] = useState(null);
 	const [subscriptionLoading, setSubscriptionLoading] = useState(true);
 	const [subscriptionError, setSubscriptionError] = useState(false);
 	const [rootUserFolderId, setRootUserFolderId] = useState(null);
 	const [sharedAccessType, setSharedAccessType] = useState(null);
+	const [modal, setModal] = useState(null);
 
 	useEffect(() => {
 		// if this component is placed in something that has multiple rerenders close together, this prevents creating the rootUserFolder multiple times
@@ -255,10 +254,6 @@ const FileExplorer = ({ height, width }) => {
 		fileExtensionsMap,
 		filtered,
 		setFiltered,
-		newFolderName,
-		setNewFolderName,
-		setNewFolderIsOpen,
-		setSharingLinksIsOpen,
 		paste,
 		setPaste,
 		subscriptionLoading,
@@ -266,14 +261,13 @@ const FileExplorer = ({ height, width }) => {
 		handlePaste,
 		rootUserFolderId,
 		sharedAccessType,
+		modal,
+		setModal,
 	};
 
 	return (
 		<FileExplorerContext.Provider value={value}>
-			{newFolderIsOpen && <NewFolder />}
-			{sharingLinksIsOpen && (
-				<SharingLinks sharingLinksIsOpen={sharingLinksIsOpen} />
-			)}
+			<Modal modal={modal} setModal={setModal} />
 			<div
 				className="fileExplorer flex flex-col bg-zinc-700"
 				style={{ height, width }}

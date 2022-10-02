@@ -353,6 +353,7 @@ const DirectoryLayout = () => {
 												checked={meta.visible}
 												onClick={(e) => setDetailsLayoutMeta(e, key)}
 												description={camelCaseToPhrase(key)}
+												disabled={key == 'name' ? true : false}
 											/>
 										)
 									)}

@@ -10,23 +10,15 @@ import {
 import { axiosClientJSON } from './endpoint';
 import { FileExplorerContext } from './FileExplorer';
 
-const SharingLinks = ({ sharingLinksIsOpen }) => {
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		newFolderName,
-		setSharingLinksIsOpen,
-	} = useContext(FileExplorerContext);
+const SharingLinks = ({ id, __typename }) => {
+	const { setModal } = useContext(FileExplorerContext);
 	const [data, setData] = useState([]);
 
 	const handleClose = (e) => {
-		setSharingLinksIsOpen(false);
+		setModal(null);
 	};
 
 	useEffect(() => {
-		const { id, __typename } = sharingLinksIsOpen;
 		axiosClientJSON({
 			url: '/getSharingLinks',
 			method: 'POST',
@@ -38,7 +30,7 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 			console.log(res.data);
 			setData(res.data);
 		});
-	}, [sharingLinksIsOpen]);
+	}, [id, __typename]);
 
 	const copyLink = (link) => {
 		const actualLink = window.location.href + `?link=${link}`;
@@ -79,13 +71,17 @@ const SharingLinks = ({ sharingLinksIsOpen }) => {
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className="p-2 px-4">Share "{data.name}"</div>
-				{data.map((record) => (
-					<div key={record.id}>
-						<div>{record.accessType == 'EDIT' ? 'Edit' : 'View'} Access: </div>
-						<button onClick={() => copyLink(record.link)}>Copy Link</button>
-						<button onClick={() => refreshLink(record.id)}>Refresh</button>
-					</div>
-				))}
+				{data
+					.sort((a, b) => b.accessType.localeCompare(a.accessType)) // keeps it in order after a link is refreshed, since the order the info is retrieved in from the database, default, is last updated
+					.map((record) => (
+						<div key={record.id}>
+							<div>
+								{record.accessType == 'EDIT' ? 'Edit' : 'View'} Access:{' '}
+							</div>
+							<button onClick={() => copyLink(record.link)}>Copy Link</button>
+							<button onClick={() => refreshLink(record.id)}>Refresh</button>
+						</div>
+					))}
 				<div className="flex justify-end p-4">
 					<button onClick={handleClose}>Done</button>
 				</div>
