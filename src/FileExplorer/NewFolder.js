@@ -56,25 +56,20 @@ const NewFolder = () => {
 	}, []);
 
 	return (
-		<div
-			className="absolute left-0 top-0 w-full h-full flex justify-center items-center z-10"
-			onClick={handleCancel}
-		>
-			<div className="w-64 h-44 bg-gray-500 rounded-lg flex flex-col">
-				<div className="p-2 px-4">New Folder</div>
-				<input
-					className="text-black m-4 p-2 rounded "
-					ref={ref}
-					type="text"
-					value={newFolderName}
-					onChange={(e) => setNewFolderName(e.target.value)}
-					onKeyDown={handleKeyDown}
-					onClick={(e) => e.stopPropagation()}
-				/>
-				<div className="flex justify-end p-4">
-					<button onClick={handleCancel}>Cancel</button>
-					<button onClick={handleCreate}>Create</button>
-				</div>
+		<div className="w-64 h-44 bg-gray-500 rounded-lg flex flex-col">
+			<div className="p-2 px-4">New Folder</div>
+			<input
+				className="text-black m-4 p-2 rounded "
+				ref={ref}
+				type="text"
+				value={newFolderName}
+				onChange={(e) => setNewFolderName(e.target.value)}
+				onKeyDown={handleKeyDown}
+				onClick={(e) => e.stopPropagation()}
+			/>
+			<div className="flex justify-end p-4">
+				<button onClick={handleCancel}>Cancel</button>
+				<button onClick={handleCreate}>Create</button>
 			</div>
 		</div>
 	);
