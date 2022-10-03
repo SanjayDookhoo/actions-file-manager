@@ -351,7 +351,7 @@ export const isMacOs = () => {
 	return window.navigator.userAgent.toLowerCase().includes('mac');
 };
 
-export const shortcutHint = (hint) => {
+export const shortcutHintGenerate = (hint) => {
 	if (isMobile()) return '';
 	if (isMacOs()) {
 		return hint.replaceAll('Ctrl', 'Cmd').replaceAll('Alt', 'Option');
@@ -359,7 +359,7 @@ export const shortcutHint = (hint) => {
 	return hint;
 };
 
-export const shortcutGenerate = (shortcut) => {
+export const shortcutHotkeyGenerate = (shortcut) => {
 	const macShortcut = shortcut
 		.replaceAll('ctrl', 'command')
 		.replaceAll('alt', 'option');

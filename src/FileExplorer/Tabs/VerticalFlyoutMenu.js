@@ -10,7 +10,7 @@ import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
 import Tab from './Tab/Tab';
 import { Menu, MenuItem, FocusableItem } from '@szhsin/react-menu';
 import { FileExplorerContext } from '../FileExplorer';
-import { isMacOs, shortcutHint } from '../utils/utils';
+import { isMacOs, shortcutHintGenerate } from '../utils/utils';
 
 const VerticalFlyoutMenu = (props) => {
 	const { addNewTab, closeTab } = props;
@@ -43,7 +43,7 @@ const VerticalFlyoutMenu = (props) => {
 					<a
 						className="w-full flex justify-center items-center bg-gray-300 rounded-lg"
 						onClick={handleAddNewTabFromContextMenu}
-						title={`New tab${shortcutHint(' (Ctrl+Alt+T)')}`}
+						title={`New tab${shortcutHintGenerate(' (Ctrl+Alt+T)')}`}
 					>
 						<span className={buttonStyle + 'm-0'}>add</span>
 						New Tab

@@ -5,7 +5,13 @@ import { axiosClientJSON } from '../endpoint';
 import { FileExplorerContext } from '../FileExplorer';
 import SharingLinks from '../SharingLinks';
 import { buttonStyle } from '../utils/constants';
-import { getFolderId, update } from '../utils/utils';
+import {
+	getFolderId,
+	shortcutHotkeyGenerate,
+	shortcutHintGenerate,
+	update,
+} from '../utils/utils';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const FilesOptions = ({ item, buttonsToFilter }) => {
 	const {
@@ -28,7 +34,95 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		handlePaste,
 		sharedAccessType,
 		setModal,
+		rootUserFolderId,
 	} = useContext(FileExplorerContext);
+
+	const isActive = (title) => {
+		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
+
+		const map = {
+			Cut: () => {
+				if (path[0] == 'Shared with me' && path.length == 1) return false;
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
+				if (path[0] == 'Recycle bin' && path.length != 1) return false; // only allowed at the top level of recycle bin
+				return selectedFolders.length + selectedFiles.length != 0;
+			},
+			Copy: () => {
+				if (path[0] == 'Recycle bin') return false; // not allowed at all in recycle bin folder
+				return selectedFolders.length + selectedFiles.length != 0;
+			},
+			Paste: () => {
+				if (path[0] == 'Shared with me' && path.length == 1) return false;
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
+				if (path[0] == 'Recycle bin') return false;
+				return paste;
+			},
+			Rename: () => {
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
+				if (path[0] == 'Recycle bin') return false;
+				return selectedFolders.length + selectedFiles.length == 1;
+			},
+			Share: () => {
+				if (path[0] == 'Shared with me') return false;
+				if (path[0] == 'Recycle bin') return false;
+				return selectedFolders.length + selectedFiles.length == 1;
+			},
+			Delete: () => {
+				if (path[0] == 'Shared with me' && path.length == 1) return false;
+				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+					return false;
+				if (path[0] == 'Recycle bin' && path.length != 1) return false;
+				return selectedFolders.length + selectedFiles.length != 0;
+			},
+		};
+		return map[title]();
+	};
+
+	// enabled: !item, check is necessary so only one instance of this shortcut is created, because this component is reused
+	useHotkeys(
+		shortcutHotkeyGenerate('f2'),
+		() => handleRename(),
+		{
+			enabled: !item && isActive('Rename'),
+		},
+		[tabsState, activeTabId]
+	);
+	useHotkeys(
+		shortcutHotkeyGenerate('ctrl+x'),
+		() => handleCut(),
+		{
+			enabled: !item && isActive('Cut'),
+		},
+		[tabsState, activeTabId]
+	);
+	useHotkeys(
+		shortcutHotkeyGenerate('ctrl+c'),
+		() => handleCopy(),
+		{
+			enabled: !item && isActive('Copy'),
+		},
+		[tabsState, activeTabId]
+	);
+	useHotkeys(
+		shortcutHotkeyGenerate('ctrl+v'),
+		() => handlePaste(),
+		{
+			enabled: !item && isActive('Paste'),
+		},
+		[tabsState, activeTabId, rootUserFolderId]
+	);
+	// key combination: "del, delete" both works for a single key press in windows, causing handleDelete to execute twice, using "delete" for both windows and mac
+	useHotkeys(
+		shortcutHotkeyGenerate('delete'),
+		() => handleDelete(),
+		{
+			enabled: !item && isActive('Delete'),
+		},
+		[tabsState, activeTabId]
+	);
 
 	const handleCut = () => {
 		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
@@ -117,78 +211,39 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		});
 	};
 
-	const isActive = (title) => {
-		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
-
-		const map = {
-			cut: () => {
-				if (path[0] == 'Shared with me' && path.length == 1) return false;
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
-					return false;
-				if (path[0] == 'Recycle bin' && path.length != 1) return false; // only allowed at the top level of recycle bin
-				return selectedFolders.length + selectedFiles.length != 0;
-			},
-			copy: () => {
-				if (path[0] == 'Recycle bin') return false; // not allowed at all in recycle bin folder
-				return selectedFolders.length + selectedFiles.length != 0;
-			},
-			paste: () => {
-				if (path[0] == 'Shared with me' && path.length == 1) return false;
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
-					return false;
-				if (path[0] == 'Recycle bin') return false;
-				return paste;
-			},
-			rename: () => {
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
-					return false;
-				if (path[0] == 'Recycle bin') return false;
-				return selectedFolders.length + selectedFiles.length == 1;
-			},
-			share: () => {
-				if (path[0] == 'Shared with me') return false;
-				if (path[0] == 'Recycle bin') return false;
-				return selectedFolders.length + selectedFiles.length == 1;
-			},
-			delete: () => {
-				if (path[0] == 'Shared with me' && path.length == 1) return false;
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
-					return false;
-				if (path[0] == 'Recycle bin' && path.length != 1) return false;
-				return selectedFolders.length + selectedFiles.length != 0;
-			},
-		};
-		return map[title]();
-	};
-
 	const buttonList = [
 		{
-			title: 'cut',
+			title: 'Cut',
+			shortcutHint: 'Ctrl+X',
 			onClick: handleCut,
 			icon: 'cut',
 		},
 		{
-			title: 'copy',
+			title: 'Copy',
+			shortcutHint: 'Ctrl+C',
 			onClick: handleCopy,
 			icon: 'content_copy',
 		},
 		{
-			title: 'paste',
+			title: 'Paste',
+			shortcutHint: 'Ctrl+V',
 			onClick: handlePaste,
 			icon: 'content_paste',
 		},
 		{
-			title: 'rename',
+			title: 'Rename',
+			shortcutHint: 'F2',
 			onClick: handleRename,
 			icon: 'drive_file_rename_outline',
 		},
 		{
-			title: 'share',
+			title: 'Share',
 			onClick: handleShare,
 			icon: 'share',
 		},
 		{
-			title: 'delete',
+			title: 'Delete',
+			// shortcutHint: 'Del',
 			onClick: handleDelete,
 			icon: 'delete',
 		},
@@ -200,13 +255,18 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 				.filter(({ title }) =>
 					buttonsToFilter ? buttonsToFilter.includes(title) : true
 				)
-				.map(({ title, onClick, icon }) => (
+				.map(({ title, onClick, icon, shortcutHint }) => (
 					<Fragment key={title}>
 						{item ? (
 							<>
 								{isActive(title) && (
 									<FileFocusableItem
-										title={title}
+										title={
+											title +
+											(shortcutHint
+												? shortcutHintGenerate(` (${shortcutHint})`)
+												: '')
+										}
 										icon={icon}
 										onClick={onClick}
 									/>
@@ -217,7 +277,12 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 								className={
 									isActive(title) ? '' : 'pointer-events-none text-gray-400'
 								}
-								title={title}
+								title={
+									title +
+									(shortcutHint
+										? shortcutHintGenerate(` (${shortcutHint})`)
+										: '')
+								}
 								onClick={onClick}
 							>
 								<span className={buttonStyle}>{icon}</span>

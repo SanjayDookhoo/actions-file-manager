@@ -14,7 +14,11 @@ import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import { FileExplorerContext } from '../FileExplorer';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { isMacOs, shortcutGenerate, shortcutHint } from '../utils/utils';
+import {
+	isMacOs,
+	shortcutHotkeyGenerate,
+	shortcutHintGenerate,
+} from '../utils/utils';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const Tabs = () => {
@@ -38,12 +42,12 @@ const Tabs = () => {
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 
-	useHotkeys(shortcutGenerate('ctrl+alt+t'), () => addNewTab(), {}, [
+	useHotkeys(shortcutHotkeyGenerate('ctrl+alt+t'), () => addNewTab(), {}, [
 		tabsState,
 		newTabOrder,
 	]);
 	useHotkeys(
-		shortcutGenerate('ctrl+alt+w'),
+		shortcutHotkeyGenerate('ctrl+alt+w'),
 		() => closeTab(activeTabId),
 		{
 			enabled: Object.keys(tabsState).length != 1,
@@ -51,7 +55,7 @@ const Tabs = () => {
 		[tabsState, closedTabs, activeTabId]
 	);
 	useHotkeys(
-		shortcutGenerate('ctrl+alt+shift+t'),
+		shortcutHotkeyGenerate('ctrl+alt+shift+t'),
 		() => reopenClosedTab(),
 		{
 			enabled: Object.keys(closedTabs).length != 0,
@@ -277,7 +281,7 @@ const Tabs = () => {
 			<a
 				className=""
 				onClick={addNewTab}
-				title={`New tab${shortcutHint(' (Ctrl+Alt+T)')}`}
+				title={`New tab${shortcutHintGenerate(' (Ctrl+Alt+T)')}`}
 			>
 				<span className={buttonStyle}>add</span>
 			</a>
@@ -291,13 +295,13 @@ const Tabs = () => {
 				<FileMenuItem
 					logo="folder"
 					description="New tab"
-					shortcutHint={shortcutHint(`Ctrl+Alt+T`)}
+					shortcutHint={shortcutHintGenerate(`Ctrl+Alt+T`)}
 					onClick={addNewTab}
 				/>
 				<FileMenuItem
 					logo={false}
 					description="Reopen closed tab"
-					shortcutHint={shortcutHint(`Ctrl+Alt+Shift+T`)}
+					shortcutHint={shortcutHintGenerate(`Ctrl+Alt+Shift+T`)}
 					onClick={reopenClosedTab}
 					disabled={Object.keys(closedTabs).length == 0}
 				/>

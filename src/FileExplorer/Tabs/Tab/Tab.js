@@ -6,7 +6,7 @@ import { FileExplorerContext } from '../../FileExplorer';
 import FolderName from '../../FolderName';
 import NavigationIconAndName from '../../NavigationIconAndName';
 import { buttonStyle } from '../../utils/constants';
-import { isMacOs, openInNewTab, shortcutHint } from '../../utils/utils';
+import { isMacOs, openInNewTab, shortcutHintGenerate } from '../../utils/utils';
 import { tabMaxWidth, tabMinWidth } from '../constants';
 
 const icon = 'folder';
@@ -207,7 +207,7 @@ const Tab = (props) => {
 				<FileMenuItem
 					logo="folder"
 					description="New tab"
-					shortcutHint={shortcutHint(`Ctrl+Alt+T`)}
+					shortcutHint={shortcutHintGenerate(`Ctrl+Alt+T`)}
 					onClick={addNewTab}
 				/>
 				<FileMenuItem
@@ -236,7 +236,7 @@ const Tab = (props) => {
 				<FileMenuItem
 					logo={false}
 					description="Reopen closed tab"
-					shortcutHint={shortcutHint(`Ctrl+Alt+Shift+T`)}
+					shortcutHint={shortcutHintGenerate(`Ctrl+Alt+Shift+T`)}
 					onClick={reopenClosedTab}
 					disabled={Object.keys(closedTabs).length == 0}
 				/>
