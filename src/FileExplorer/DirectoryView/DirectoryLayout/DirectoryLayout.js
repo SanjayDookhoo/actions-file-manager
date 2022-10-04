@@ -285,7 +285,7 @@ const DirectoryLayout = () => {
 						groupIndex,
 						itemIndex: newItemIndex,
 					});
-				} else if (groupIndex + 1 <= itemGroups.length) {
+				} else if (groupIndex + 1 < itemGroups.length) {
 					const newGroupIndex = groupIndex + 1;
 					setNewGroupItemFocus({
 						groupIndex: newGroupIndex,
@@ -332,7 +332,7 @@ const DirectoryLayout = () => {
 						groupIndex,
 						itemIndex: newItemIndex,
 					});
-				} else if (groupIndex + 1 <= itemGroups.length) {
+				} else if (groupIndex + 1 < itemGroups.length) {
 					const newGroupIndex = groupIndex + 1;
 					setNewGroupItemFocus({
 						groupIndex: newGroupIndex,
@@ -347,7 +347,7 @@ const DirectoryLayout = () => {
 						groupIndex,
 						itemIndex: newItemIndex,
 					});
-				} else if (groupIndex + 1 <= itemGroups.length) {
+				} else if (groupIndex + 1 < itemGroups.length) {
 					const newGroupIndex = groupIndex + 1;
 					setNewGroupItemFocus({
 						groupIndex: newGroupIndex,

@@ -173,15 +173,27 @@ const Item = ({
 		}
 	};
 
-	const handleSelectFileFolderOnClick = (e) => {
+	const handleSelectFileFolderOnClick = (
+		e,
+		multiselect = localStorage.multiselect
+	) => {
 		const { id, __typename } = record;
-		e.stopPropagation(); // allows empty space to be clicked to clear all folders or files selected
+		if (e) {
+			// allows empty space to be clicked to clear all folders or files selected
+			e.stopPropagation();
+
+			// if clicked by mouse event, changes the focus to allow keyboard events to work
+			setNewGroupItemFocus({
+				groupIndex,
+				itemIndex,
+			});
+		}
 		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
 		let tempSelectedFolders;
 		let tempSelectedFiles;
 
 		if (__typename == 'folder') {
-			if (!localStorage.multiselect) {
+			if (!multiselect) {
 				tempSelectedFolders = [id];
 				tempSelectedFiles = [];
 			} else {
@@ -195,7 +207,7 @@ const Item = ({
 				}
 			}
 		} else if (__typename == 'file') {
-			if (!localStorage.multiselect) {
+			if (!multiselect) {
 				tempSelectedFiles = [id];
 				tempSelectedFolders = [];
 			} else {
@@ -218,6 +230,7 @@ const Item = ({
 				},
 			})
 		);
+		itemRef.current.focus();
 	};
 
 	const updateCurrentFolderId = () => {
@@ -258,16 +271,18 @@ const Item = ({
 		}
 	}, [record, itemIndex]);
 
+	// on arrow keydown, the item focused and highlighted changes
 	useLayoutEffect(() => {
 		if (
 			record &&
 			itemIndex == newGroupItemFocus?.itemIndex &&
 			groupIndex == newGroupItemFocus?.groupIndex
 		) {
-			itemRef.current.focus();
+			handleSelectFileFolderOnClick(null, false);
 		}
 	}, [record, newGroupItemFocus, itemIndex, groupIndex]);
 
+	// if a new folder has been entered, and no item has been selected yet, sets the initial focus to be the first item
 	useLayoutEffect(() => {
 		if (
 			record &&
@@ -283,6 +298,7 @@ const Item = ({
 		}
 	}, [record, keydown, itemIndex, groupIndex, newGroupItemFocus]);
 
+	// if first first item, then this facilitates knowing when the first arrow key is pressed
 	useEffect(() => {
 		if (itemIndex == 0 && groupIndex == 0) {
 			const fileExplorer = document.getElementById('file-explorer');
@@ -314,7 +330,6 @@ const Item = ({
 					? () => updateCurrentFolderId()
 					: () => downloadFile();
 			temp();
-			setNewGroupItemFocus(null);
 		}
 		handleOnKeyDown({ e, groupIndex, itemIndex });
 	};
@@ -327,6 +342,7 @@ const Item = ({
 		<>
 			{record && (
 				<div
+					className="outline-none"
 					tabIndex={-1}
 					ref={itemRef}
 					onContextMenu={handleOnContextMenu}

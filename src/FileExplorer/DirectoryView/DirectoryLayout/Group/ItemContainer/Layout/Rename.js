@@ -73,6 +73,7 @@ const Rename = ({ record, renderName }) => {
 
 	const handleKeyDown = async (e) => {
 		if (e.key === 'Enter') {
+			e.stopPropagation();
 			await onClose();
 		}
 	};
