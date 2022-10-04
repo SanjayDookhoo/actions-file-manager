@@ -1,9 +1,12 @@
 import { axiosClientFiles } from '../endpoint';
 import _update from 'immutability-helper';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-toastify';
 
 export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
+		let toastId = null;
+
 		// TODO: upload files to backend
 		let formData = new FormData();
 		const filesPath = [];
@@ -17,15 +20,30 @@ export const uploadFiles = (files, folderId) => {
 		}
 		formData.append('filesPath', JSON.stringify(filesPath));
 
-		const res = axiosClientFiles({
+		axiosClientFiles({
 			url: '/upload',
 			method: 'POST',
 			data: formData,
 			headers: {
 				folderId, // added this to the headers to allow easy autheticity check since that depends on the folderId, without needing to deal with multipart form data
 			},
+			onUploadProgress: (p) => {
+				const progress = p.loaded / p.total;
+				console.log({ progress });
+
+				// check if we already displayed a toast
+				if (toastId === null) {
+					toastId = toast('Upload in Progress', {
+						progress,
+						hideProgressBar: false,
+					});
+				} else {
+					toast.update(toastId, { progress });
+				}
+			},
+		}).then((res) => {
+			toast.dismiss(toastId); // .done wasnt working for some reason
 		});
-		// console.log(res);
 	}
 };
 

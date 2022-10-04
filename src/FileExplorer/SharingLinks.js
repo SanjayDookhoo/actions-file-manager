@@ -10,6 +10,7 @@ import {
 import { axiosClientJSON } from './endpoint';
 import { FileExplorerContext } from './FileExplorer';
 import { buttonStyle } from './utils/constants';
+import { toast } from 'react-toastify';
 
 const SharingLinks = ({ id, __typename }) => {
 	const { setModal } = useContext(FileExplorerContext);
@@ -37,10 +38,12 @@ const SharingLinks = ({ id, __typename }) => {
 	const copyLink = (link) => {
 		const actualLink = window.location.href + `?link=${link}`;
 		navigator.clipboard.writeText(actualLink);
+
+		toast.success('Copied link');
 	};
 
 	const confirmedRefreshLink = (id) => {
-		axiosClientJSON({
+		const res = axiosClientJSON({
 			url: '/refreshSharingLink',
 			method: 'POST',
 			data: {
@@ -61,6 +64,12 @@ const SharingLinks = ({ id, __typename }) => {
 			setData(tempData);
 			copyLink(link);
 			setConfirmRefreshId(null);
+		});
+
+		toast.promise(res, {
+			pending: `Refreshing link`,
+			success: `Refreshed link (Copied to clipboard)`,
+			error: `Failed to refresh link`,
 		});
 	};
 

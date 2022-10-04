@@ -8,6 +8,7 @@ import {
 import { axiosClientJSON } from '../../../../../endpoint';
 import { FileExplorerContext } from '../../../../../FileExplorer';
 import { update } from '../../../../../utils/utils';
+import { toast } from 'react-toastify';
 
 const Rename = ({ record, renderName }) => {
 	const {
@@ -44,8 +45,8 @@ const Rename = ({ record, renderName }) => {
 			update(tabsState, { [activeTabId]: { renaming: { $set: false } } })
 		);
 
-		const { id, __typename } = record;
-		axiosClientJSON({
+		const { name, id, __typename } = record;
+		const res = axiosClientJSON({
 			url: '/rename',
 			method: 'POST',
 			data: {
@@ -53,6 +54,11 @@ const Rename = ({ record, renderName }) => {
 				id,
 				__typename,
 			},
+		});
+		toast.promise(res, {
+			pending: `"${name}" renaming to "${value}"`,
+			success: `"${name}" renamed to "${value}"`,
+			error: `"${name}" failed to rename to "${value}"`,
 		});
 	};
 

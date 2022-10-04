@@ -12,6 +12,7 @@ import {
 	update,
 } from '../utils/utils';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { toast } from 'react-toastify';
 
 const FilesOptions = ({ item, buttonsToFilter }) => {
 	const {
@@ -134,6 +135,13 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 				selectedFiles,
 			},
 		});
+		const count = selectedFiles.length + selectedFolders.length;
+		const str = `${count} Item${count != 1 ? 's' : ''}`;
+		toast.promise(res, {
+			pending: `${str} cutting to clipboard`,
+			success: `${str} cut to clipboard`,
+			error: `${str} failed to cut to clipboard`,
+		});
 		setPaste('cut');
 	};
 
@@ -146,6 +154,13 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 				selectedFolders,
 				selectedFiles,
 			},
+		});
+		const count = selectedFiles.length + selectedFolders.length;
+		const str = `${count} Item${count != 1 ? 's' : ''}`;
+		toast.promise(res, {
+			pending: `${str} copying to clipboard`,
+			success: `${str} copied to clipboard`,
+			error: `${str} failed to copy to clipboard`,
 		});
 		setPaste('copy');
 	};
@@ -174,7 +189,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 				},
 			});
 		} else {
-			axiosClientJSON({
+			const res = axiosClientJSON({
 				url: '/remove',
 				method: 'POST',
 				data: {
@@ -190,6 +205,15 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 						},
 					})
 				);
+			});
+
+			const count = selectedFiles.length + selectedFolders.length;
+			const str = `${count} item${count != 1 ? 's' : ''}`;
+
+			toast.promise(res, {
+				pending: `Moving ${str} to recycle bin`,
+				success: `Moved ${str} to recycle bin`,
+				error: `Failed to move ${str} to recycle bin`,
 			});
 		}
 	};

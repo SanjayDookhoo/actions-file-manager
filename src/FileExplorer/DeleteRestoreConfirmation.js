@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { axiosClientJSON } from './endpoint';
 import { update } from './utils/utils';
+import { toast } from 'react-toastify';
 
 const DeleteRestoreConfirmation = ({
 	type,
@@ -31,7 +32,7 @@ const DeleteRestoreConfirmation = ({
 	}, [data]);
 
 	const handleConfirm = () => {
-		axiosClientJSON({
+		const res = axiosClientJSON({
 			url: `/${type}`,
 			method: 'POST',
 			data,
@@ -51,6 +52,29 @@ const DeleteRestoreConfirmation = ({
 				);
 			}
 		});
+
+		const { all, selectedFiles, selectedFolders } = data;
+		const operationPending =
+			type == 'restore' ? 'Restoring' : 'Permanently deleting';
+		const operationSuccess =
+			type == 'restore' ? 'Restored' : 'Permanently deleted';
+		const operationError = type == 'restore' ? 'restore' : 'permanently delete';
+
+		if (all) {
+			toast.promise(res, {
+				pending: `${operationPending} all`,
+				success: `${operationSuccess} all`,
+				error: `${operationError} all`,
+			});
+		} else {
+			const count = selectedFiles.length + selectedFolders.length;
+			const str = `${count} item${count != 1 ? 's' : ''}`;
+			toast.promise(res, {
+				pending: `${operationPending} ${str}`,
+				success: `${operationSuccess} ${str}`,
+				error: `${operationError} ${str}`,
+			});
+		}
 	};
 
 	return (

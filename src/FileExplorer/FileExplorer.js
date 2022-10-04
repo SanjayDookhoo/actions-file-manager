@@ -28,6 +28,8 @@ import NewFolder from './NewFolder';
 import SharingLinks from './SharingLinks';
 import useSubscription from './useSubscription';
 import Modal from './Modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const FileExplorerContext = createContext();
 
@@ -226,7 +228,7 @@ const FileExplorer = ({ height, width }) => {
 
 	const handlePaste = () => {
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
-		axiosClientJSON({
+		const res = axiosClientJSON({
 			url: '/paste',
 			method: 'POST',
 			data: {
@@ -239,6 +241,16 @@ const FileExplorer = ({ height, width }) => {
 			.catch((err) => {
 				setPaste(null);
 			});
+
+		const operationPending = paste == 'cut' ? 'Moving' : 'Copying';
+		const operationSuccess = paste == 'cut' ? 'Moved' : 'Copied';
+		const operationError = paste == 'cut' ? 'move' : 'copy';
+
+		toast.promise(res, {
+			pending: `${operationPending} item/s`,
+			success: `${operationSuccess} item/s`,
+			error: `Failed to ${operationError} item/s`,
+		});
 	};
 
 	const value = {
@@ -271,6 +283,17 @@ const FileExplorer = ({ height, width }) => {
 
 	return (
 		<FileExplorerContext.Provider value={value}>
+			<ToastContainer
+				position="top-right"
+				autoClose={1000}
+				hideProgressBar
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<Modal modal={modal} setModal={setModal} />
 			<div
 				tabIndex={-1}
