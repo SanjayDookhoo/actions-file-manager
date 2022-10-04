@@ -45,7 +45,7 @@ const Item = ({
 		setModal,
 	} = useContext(FileExplorerContext);
 
-	const [record, setRecord] = useState({});
+	const [record, setRecord] = useState(null);
 	const [menuProps, toggleMenuHeader] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const itemRef = useRef();
@@ -173,65 +173,73 @@ const Item = ({
 		}
 	};
 
-	const handleSelectFileFolderOnClick = (
-		e,
-		multiselect = localStorage.multiselect
-	) => {
-		const { id, __typename } = record;
-		if (e) {
-			// allows empty space to be clicked to clear all folders or files selected
-			e.stopPropagation();
+	const handleSelectFileFolderOnClick = (e) => {
+		// allows empty space to be clicked to clear all folders or files selected
+		e.stopPropagation();
 
-			// if clicked by mouse event, changes the focus to allow keyboard events to work
-			setNewGroupItemFocus({
-				groupIndex,
-				itemIndex,
-			});
-		}
-		const { selectedFolders, selectedFiles } = tabsState[activeTabId];
-		let tempSelectedFolders;
-		let tempSelectedFiles;
-
-		if (__typename == 'folder') {
-			if (!multiselect) {
-				tempSelectedFolders = [id];
-				tempSelectedFiles = [];
-			} else {
-				tempSelectedFiles = selectedFiles;
-				if (selectedFolders.includes(id)) {
-					tempSelectedFolders = [...selectedFolders];
-					const index = tempSelectedFolders.findIndex((el) => el == id);
-					tempSelectedFolders.splice(index, 1);
-				} else {
-					tempSelectedFolders = [...selectedFolders, id];
-				}
-			}
-		} else if (__typename == 'file') {
-			if (!multiselect) {
-				tempSelectedFiles = [id];
-				tempSelectedFolders = [];
-			} else {
-				tempSelectedFolders = selectedFolders;
-				if (selectedFiles.includes(id)) {
-					tempSelectedFiles = [...selectedFiles];
-					const index = tempSelectedFiles.findIndex((el) => el == id);
-					tempSelectedFiles.splice(index, 1);
-				} else {
-					tempSelectedFiles = [...selectedFiles, id];
-				}
-			}
-		}
-
-		setTabsState(
-			update(tabsState, {
-				[activeTabId]: {
-					selectedFiles: { $set: tempSelectedFiles },
-					selectedFolders: { $set: tempSelectedFolders },
-				},
-			})
-		);
-		itemRef.current.focus();
+		// if clicked by mouse event, changes the focus to allow keyboard events to work
+		setNewGroupItemFocus({
+			groupIndex,
+			itemIndex,
+			event: 'mouse',
+		});
 	};
+
+	// on arrow keydown, the item focused and highlighted changes
+	useLayoutEffect(() => {
+		if (
+			record &&
+			itemIndex == newGroupItemFocus?.itemIndex &&
+			groupIndex == newGroupItemFocus?.groupIndex
+		) {
+			const multiselect =
+				newGroupItemFocus.event == 'mouse' ? localStorage.multiselect : false;
+			const { id, __typename } = record;
+			const { selectedFolders, selectedFiles } = tabsState[activeTabId];
+			let tempSelectedFolders;
+			let tempSelectedFiles;
+
+			if (__typename == 'folder') {
+				if (!multiselect) {
+					tempSelectedFolders = [id];
+					tempSelectedFiles = [];
+				} else {
+					tempSelectedFiles = selectedFiles;
+					if (selectedFolders.includes(id)) {
+						tempSelectedFolders = [...selectedFolders];
+						const index = tempSelectedFolders.findIndex((el) => el == id);
+						tempSelectedFolders.splice(index, 1);
+					} else {
+						tempSelectedFolders = [...selectedFolders, id];
+					}
+				}
+			} else if (__typename == 'file') {
+				if (!multiselect) {
+					tempSelectedFiles = [id];
+					tempSelectedFolders = [];
+				} else {
+					tempSelectedFolders = selectedFolders;
+					if (selectedFiles.includes(id)) {
+						tempSelectedFiles = [...selectedFiles];
+						const index = tempSelectedFiles.findIndex((el) => el == id);
+						tempSelectedFiles.splice(index, 1);
+					} else {
+						tempSelectedFiles = [...selectedFiles, id];
+					}
+				}
+			}
+
+			setTabsState(
+				update(tabsState, {
+					[activeTabId]: {
+						selectedFiles: { $set: tempSelectedFiles },
+						selectedFolders: { $set: tempSelectedFolders },
+					},
+				})
+			);
+			itemRef.current.focus();
+		}
+	}, [record, newGroupItemFocus, itemIndex, groupIndex]);
 
 	const updateCurrentFolderId = () => {
 		const { paths, currentIndex } = tabsState[activeTabId].history;
@@ -270,17 +278,6 @@ const Item = ({
 			};
 		}
 	}, [record, itemIndex]);
-
-	// on arrow keydown, the item focused and highlighted changes
-	useLayoutEffect(() => {
-		if (
-			record &&
-			itemIndex == newGroupItemFocus?.itemIndex &&
-			groupIndex == newGroupItemFocus?.groupIndex
-		) {
-			handleSelectFileFolderOnClick(null, false);
-		}
-	}, [record, newGroupItemFocus, itemIndex, groupIndex]);
 
 	// if a new folder has been entered, and no item has been selected yet, sets the initial focus to be the first item
 	useLayoutEffect(() => {

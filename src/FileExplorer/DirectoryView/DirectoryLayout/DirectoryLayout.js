@@ -257,6 +257,7 @@ const DirectoryLayout = () => {
 	};
 
 	const handleOnKeyDown = ({ e, groupIndex, itemIndex }) => {
+		let obj;
 		const { keyCode } = e;
 
 		const itemGroups = Object.values(filteredGrouped);
@@ -266,31 +267,31 @@ const DirectoryLayout = () => {
 				// up
 				const newItemIndex = itemIndex - 1;
 				if (newItemIndex >= 0) {
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex,
 						itemIndex: newItemIndex,
-					});
+					};
 				} else if (groupIndex - 1 >= 0) {
 					const newGroupIndex = groupIndex - 1;
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex: newGroupIndex,
 						itemIndex: itemGroups[newGroupIndex].length - 1,
-					});
+					};
 				}
 			} else if (keyCode == 40) {
 				// down
 				const newItemIndex = itemIndex + 1;
 				if (newItemIndex < itemGroups[groupIndex].length) {
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex,
 						itemIndex: newItemIndex,
-					});
+					};
 				} else if (groupIndex + 1 < itemGroups.length) {
 					const newGroupIndex = groupIndex + 1;
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex: newGroupIndex,
 						itemIndex: 0,
-					});
+					};
 				}
 			}
 		} else {
@@ -298,64 +299,69 @@ const DirectoryLayout = () => {
 				// left
 				const newItemIndex = itemIndex - 1;
 				if (newItemIndex >= 0) {
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex,
 						itemIndex: newItemIndex,
-					});
+					};
 				} else if (groupIndex - 1 >= 0) {
 					const newGroupIndex = groupIndex - 1;
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex: newGroupIndex,
 						itemIndex: itemGroups[newGroupIndex].length - 1,
-					});
+					};
 				}
 			} else if (keyCode == 38) {
 				// up
 				const newItemIndex = itemIndex - itemsPerRow;
 				if (newItemIndex >= 0) {
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex,
 						itemIndex: newItemIndex,
-					});
+					};
 				} else if (groupIndex - 1 >= 0) {
 					const newGroupIndex = groupIndex - 1;
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex: newGroupIndex,
 						itemIndex: itemGroups[newGroupIndex].length - 1,
-					});
+					};
 				}
 			} else if (keyCode == 39) {
 				// right
 				const newItemIndex = itemIndex + 1;
 				if (newItemIndex < itemGroups[groupIndex].length) {
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex,
 						itemIndex: newItemIndex,
-					});
+					};
 				} else if (groupIndex + 1 < itemGroups.length) {
 					const newGroupIndex = groupIndex + 1;
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex: newGroupIndex,
 						itemIndex: 0,
-					});
+					};
 				}
 			} else if (keyCode == 40) {
 				// down
 				const newItemIndex = itemIndex + itemsPerRow;
 				if (newItemIndex < itemGroups[groupIndex].length) {
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex,
 						itemIndex: newItemIndex,
-					});
+					};
 				} else if (groupIndex + 1 < itemGroups.length) {
 					const newGroupIndex = groupIndex + 1;
-					setNewGroupItemFocus({
+					obj = {
 						groupIndex: newGroupIndex,
 						itemIndex: 0,
-					});
+					};
 				}
 			}
 		}
+
+		setNewGroupItemFocus({
+			...obj,
+			event: 'keyboard',
+		});
 	};
 
 	useEffect(() => {
