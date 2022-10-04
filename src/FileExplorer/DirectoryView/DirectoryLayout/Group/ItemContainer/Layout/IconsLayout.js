@@ -40,7 +40,7 @@ const IconsLayout = (props) => {
 							className="w-4 h-4"
 							{...{ record, fileExtensionsMap }}
 						/>
-						<div className="w-32">
+						<div className="w-32 pl-2">
 							<div
 								className="text-ellipsis overflow-hidden whitespace-nowrap"
 								style={{ lineHeight: '21px' }}
@@ -57,7 +57,7 @@ const IconsLayout = (props) => {
 							className="w-16 h-16"
 							{...{ record, fileExtensionsMap }}
 						/>
-						<div className="w-32">
+						<div className="w-32 pl-2">
 							<div
 								className="text-ellipsis overflow-hidden ellipsis-3-line text-center"
 								style={{ lineHeight: '21px' }}
@@ -74,7 +74,7 @@ const IconsLayout = (props) => {
 							className="w-32 h-32"
 							{...{ record, fileExtensionsMap }}
 						/>
-						<div className="w-32">
+						<div className="w-32 pl-2">
 							<div
 								className="text-ellipsis overflow-hidden ellipsis-4-line text-center"
 								style={{ lineHeight: '21px' }}

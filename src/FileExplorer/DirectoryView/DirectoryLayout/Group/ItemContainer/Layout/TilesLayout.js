@@ -25,7 +25,7 @@ const TilesLayout = (props) => {
 				}
 			>
 				<RenderIcon className="w-16 h-16" {...{ record, fileExtensionsMap }} />
-				<div className="w-32 h-16 flex flex-col justify-center">
+				<div className="pl-2 w-32 h-16 flex flex-col justify-center">
 					{record.__typename == 'folder' ? (
 						<div
 							className="text-ellipsis overflow-hidden ellipsis-3-line"
