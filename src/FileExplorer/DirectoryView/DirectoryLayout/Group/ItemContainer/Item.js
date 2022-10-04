@@ -1,5 +1,11 @@
 import { ControlledMenu, MenuDivider, useMenuState } from '@szhsin/react-menu';
-import { useContext, useEffect, useState } from 'react';
+import {
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import FileFocusableItem from '../../../../CustomReactMenu/FileFocusableItem';
 import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
@@ -11,7 +17,16 @@ import { openInNewTab, update } from '../../../../utils/utils';
 import FilesOptions from '../../../../FilesOptions/FilesOptions';
 import DeleteRestoreConfirmation from '../../../../DeleteRestoreConfirmation';
 
-const Item = ({ item, getRecord }) => {
+const Item = ({
+	item,
+	groupIndex,
+	itemIndex,
+	setItemWidth,
+	getRecord,
+	handleOnKeyDown,
+	newGroupItemFocus,
+	setNewGroupItemFocus,
+}) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -33,6 +48,8 @@ const Item = ({ item, getRecord }) => {
 	const [record, setRecord] = useState({});
 	const [menuProps, toggleMenuHeader] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+	const itemRef = useRef();
+	const [keydown, setKeydown] = useState(0);
 
 	useEffect(() => {
 		setRecord(getRecord(item));
@@ -226,6 +243,82 @@ const Item = ({ item, getRecord }) => {
 		);
 	};
 
+	useLayoutEffect(() => {
+		if (record && itemIndex == 0) {
+			const item = itemRef.current;
+			const handleResizeObserver = () => {
+				const width = item.offsetWidth;
+				setItemWidth(width);
+			};
+			const observer = new ResizeObserver(handleResizeObserver);
+			observer.observe(item);
+			return () => {
+				observer.unobserve(item);
+			};
+		}
+	}, [record, itemIndex]);
+
+	useLayoutEffect(() => {
+		if (
+			record &&
+			itemIndex == newGroupItemFocus?.itemIndex &&
+			groupIndex == newGroupItemFocus?.groupIndex
+		) {
+			itemRef.current.focus();
+		}
+	}, [record, newGroupItemFocus, itemIndex, groupIndex]);
+
+	useLayoutEffect(() => {
+		if (
+			record &&
+			itemIndex == 0 &&
+			groupIndex == 0 &&
+			!newGroupItemFocus &&
+			keydown != 0
+		) {
+			setNewGroupItemFocus({
+				groupIndex,
+				itemIndex,
+			});
+		}
+	}, [record, keydown, itemIndex, groupIndex, newGroupItemFocus]);
+
+	useEffect(() => {
+		if (itemIndex == 0 && groupIndex == 0) {
+			const fileExplorer = document.getElementById('file-explorer');
+
+			const handleKeydown = (e) => {
+				const { keyCode } = e;
+				if ([37, 38, 39, 40].includes(keyCode)) {
+					setKeydown(Math.random());
+				}
+			};
+
+			fileExplorer.addEventListener('keydown', handleKeydown);
+
+			return () => {
+				fileExplorer.removeEventListener('keydown', handleKeydown);
+			};
+		}
+	}, [record, itemIndex, groupIndex]);
+
+	const _handleOnKeyDown = (e) => {
+		const { keyCode } = e;
+		if (
+			itemIndex == newGroupItemFocus?.itemIndex &&
+			groupIndex == newGroupItemFocus?.groupIndex &&
+			keyCode == 13
+		) {
+			const temp =
+				record.__typename == 'folder'
+					? () => updateCurrentFolderId()
+					: () => downloadFile();
+			temp();
+			setNewGroupItemFocus(null);
+		}
+		handleOnKeyDown({ e, groupIndex, itemIndex });
+	};
+
 	const layoutProps = {
 		record,
 	};
@@ -234,6 +327,8 @@ const Item = ({ item, getRecord }) => {
 		<>
 			{record && (
 				<div
+					tabIndex={-1}
+					ref={itemRef}
 					onContextMenu={handleOnContextMenu}
 					onMouseDown={onMouseDown}
 					onClick={handleSelectFileFolderOnClick}
@@ -242,6 +337,7 @@ const Item = ({ item, getRecord }) => {
 							? () => updateCurrentFolderId()
 							: () => downloadFile()
 					}
+					onKeyDown={_handleOnKeyDown}
 				>
 					{item.__typename == 'folder' && (
 						<FileUploadDiv folderId={record.id}>

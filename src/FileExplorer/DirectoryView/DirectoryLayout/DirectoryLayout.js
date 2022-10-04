@@ -81,6 +81,11 @@ const DirectoryLayout = () => {
 	const [mouseX, setMouseX] = useState();
 	const [dragging, setDragging] = useState(false);
 
+	const [flexContainerWidth, setFlexContainerWidth] = useState(0);
+	const [itemWidth, setItemWidth] = useState(0);
+	const [itemsPerRow, setItemsPerRow] = useState(0);
+	const [newGroupItemFocus, setNewGroupItemFocus] = useState(null);
+
 	useEffect(() => {
 		if (dragging) {
 			const { x, key, originalWidth } = dragging;
@@ -251,10 +256,121 @@ const DirectoryLayout = () => {
 		);
 	};
 
+	const handleOnKeyDown = ({ e, groupIndex, itemIndex }) => {
+		const { keyCode } = e;
+
+		const itemGroups = Object.values(filteredGrouped);
+
+		if (localStorage.layout == 'details') {
+			if (keyCode == 38) {
+				// up
+				const newItemIndex = itemIndex - 1;
+				if (newItemIndex >= 0) {
+					setNewGroupItemFocus({
+						groupIndex,
+						itemIndex: newItemIndex,
+					});
+				} else if (groupIndex - 1 >= 0) {
+					const newGroupIndex = groupIndex - 1;
+					setNewGroupItemFocus({
+						groupIndex: newGroupIndex,
+						itemIndex: itemGroups[newGroupIndex].length - 1,
+					});
+				}
+			} else if (keyCode == 40) {
+				// down
+				const newItemIndex = itemIndex + 1;
+				if (newItemIndex < itemGroups[groupIndex].length) {
+					setNewGroupItemFocus({
+						groupIndex,
+						itemIndex: newItemIndex,
+					});
+				} else if (groupIndex + 1 <= itemGroups.length) {
+					const newGroupIndex = groupIndex + 1;
+					setNewGroupItemFocus({
+						groupIndex: newGroupIndex,
+						itemIndex: 0,
+					});
+				}
+			}
+		} else {
+			if (keyCode == 37) {
+				// left
+				const newItemIndex = itemIndex - 1;
+				if (newItemIndex >= 0) {
+					setNewGroupItemFocus({
+						groupIndex,
+						itemIndex: newItemIndex,
+					});
+				} else if (groupIndex - 1 >= 0) {
+					const newGroupIndex = groupIndex - 1;
+					setNewGroupItemFocus({
+						groupIndex: newGroupIndex,
+						itemIndex: itemGroups[newGroupIndex].length - 1,
+					});
+				}
+			} else if (keyCode == 38) {
+				// up
+				const newItemIndex = itemIndex - itemsPerRow;
+				if (newItemIndex >= 0) {
+					setNewGroupItemFocus({
+						groupIndex,
+						itemIndex: newItemIndex,
+					});
+				} else if (groupIndex - 1 >= 0) {
+					const newGroupIndex = groupIndex - 1;
+					setNewGroupItemFocus({
+						groupIndex: newGroupIndex,
+						itemIndex: itemGroups[newGroupIndex].length - 1,
+					});
+				}
+			} else if (keyCode == 39) {
+				// right
+				const newItemIndex = itemIndex + 1;
+				if (newItemIndex < itemGroups[groupIndex].length) {
+					setNewGroupItemFocus({
+						groupIndex,
+						itemIndex: newItemIndex,
+					});
+				} else if (groupIndex + 1 <= itemGroups.length) {
+					const newGroupIndex = groupIndex + 1;
+					setNewGroupItemFocus({
+						groupIndex: newGroupIndex,
+						itemIndex: 0,
+					});
+				}
+			} else if (keyCode == 40) {
+				// down
+				const newItemIndex = itemIndex + itemsPerRow;
+				if (newItemIndex < itemGroups[groupIndex].length) {
+					setNewGroupItemFocus({
+						groupIndex,
+						itemIndex: newItemIndex,
+					});
+				} else if (groupIndex + 1 <= itemGroups.length) {
+					const newGroupIndex = groupIndex + 1;
+					setNewGroupItemFocus({
+						groupIndex: newGroupIndex,
+						itemIndex: 0,
+					});
+				}
+			}
+		}
+	};
+
+	useEffect(() => {
+		setItemsPerRow(Math.floor(flexContainerWidth / itemWidth));
+	}, [itemWidth, flexContainerWidth]);
+
 	const groupProps = {
 		files,
 		folders,
 		fileExtensionsMap,
+		handleOnKeyDown,
+		setFlexContainerWidth,
+		setItemWidth,
+		newGroupItemFocus,
+		setNewGroupItemFocus,
 	};
 
 	return (
@@ -365,6 +481,7 @@ const DirectoryLayout = () => {
 					{Object.entries(filteredGrouped).map(([groupName, items], i) => (
 						<Group
 							key={i}
+							groupIndex={i}
 							groupName={groupName}
 							items={items}
 							{...groupProps}

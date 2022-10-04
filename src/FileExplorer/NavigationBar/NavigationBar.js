@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { FileExplorerContext } from '../FileExplorer';
 import { buttonStyle } from '../utils/constants';
-import { update } from '../utils/utils';
+import { shortcutHotkeyGenerate, update } from '../utils/utils';
 import FolderPath from './FolderPath/FolderPath';
 import Search from './Search/Search';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const NavigationBar = () => {
 	const { tabsState, setTabsState, activeTabId } =
@@ -13,7 +14,6 @@ const NavigationBar = () => {
 		const { paths, currentIndex } = tabsState[activeTabId].history;
 		const index = currentIndex + num;
 		let path = paths[index];
-		console.log(path);
 		setTabsState(
 			update(tabsState, {
 				[activeTabId]: {
@@ -43,6 +43,13 @@ const NavigationBar = () => {
 		const { paths, currentIndex } = tabsState[activeTabId].history;
 		return currentIndex == paths.length - 1;
 	};
+
+	useHotkeys(
+		shortcutHotkeyGenerate('backspace'),
+		() => handleForwardBack(-1),
+		{ enabled: !disabledBack() },
+		[tabsState, activeTabId]
+	);
 
 	const disabledClasses = 'text-gray-600 pointer-events-none';
 

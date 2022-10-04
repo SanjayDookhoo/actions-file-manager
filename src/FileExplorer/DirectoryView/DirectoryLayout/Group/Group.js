@@ -1,10 +1,24 @@
-import { useContext, useEffect, useState } from 'react';
+import {
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import { dateVariations, update } from '../../../utils/utils';
 import { FileExplorerContext } from '../../../FileExplorer';
 import Item from './ItemContainer/Item';
 import { buttonStyle } from '../../../utils/constants';
 
-const Group = ({ groupName, items, files, folders, ...otherProps }) => {
+const Group = ({
+	groupIndex,
+	groupName,
+	items,
+	files,
+	folders,
+	setFlexContainerWidth,
+	...otherProps
+}) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -23,6 +37,8 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 	} = localStorage.folderSpecific?.[path] ?? {};
 	const [collapsed, setCollapsed] = useState(false);
 	const [itemsSorted, setItemsSorted] = useState([]);
+
+	const flexContainerRef = useRef();
 
 	useEffect(() => {
 		const handleSort = (_a, _b) => {
@@ -106,6 +122,21 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 		return record;
 	};
 
+	useLayoutEffect(() => {
+		if (groupIndex == 0) {
+			const flexContainer = flexContainerRef.current;
+			const handleResizeObserver = () => {
+				const width = flexContainer.offsetWidth;
+				setFlexContainerWidth(width);
+			};
+			const observer = new ResizeObserver(handleResizeObserver);
+			observer.observe(flexContainer);
+			return () => {
+				observer.unobserve(flexContainer);
+			};
+		}
+	}, [groupIndex]);
+
 	const itemProps = {
 		getRecord,
 		...otherProps,
@@ -132,11 +163,14 @@ const Group = ({ groupName, items, files, folders, ...otherProps }) => {
 						'flex ' +
 						(localStorage.layout == 'details' ? 'flex-col w-fit' : 'flex-wrap')
 					}
+					ref={flexContainerRef}
 				>
-					{itemsSorted.map((item) => (
+					{itemsSorted.map((item, index) => (
 						<Item
 							key={`${item.__typename}-${item.id}`}
 							item={item}
+							itemIndex={index}
+							groupIndex={groupIndex}
 							{...itemProps}
 						/>
 					))}

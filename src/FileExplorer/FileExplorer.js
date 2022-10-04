@@ -79,6 +79,10 @@ const FileExplorer = ({ height, width }) => {
 	const [sharedAccessType, setSharedAccessType] = useState(null);
 	const [modal, setModal] = useState(null);
 
+	useLayoutEffect(() => {
+		fileExplorerRef.current.focus();
+	}, [folderId]);
+
 	useEffect(() => {
 		// if this component is placed in something that has multiple rerenders close together, this prevents creating the rootUserFolder multiple times
 		const localStoragekey = 'fileExplorer-v1-getRootUserFolder';
@@ -269,9 +273,11 @@ const FileExplorer = ({ height, width }) => {
 		<FileExplorerContext.Provider value={value}>
 			<Modal modal={modal} setModal={setModal} />
 			<div
+				tabIndex={-1}
 				className="fileExplorer flex flex-col bg-zinc-700"
 				style={{ height, width }}
 				ref={fileExplorerRef}
+				id="file-explorer"
 				onContextMenu={(e) => e.preventDefault()}
 			>
 				<Tabs />
