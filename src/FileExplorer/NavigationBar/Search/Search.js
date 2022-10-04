@@ -16,8 +16,9 @@ import {
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { axiosClientJSON } from '../../endpoint';
 import { FileExplorerContext } from '../../FileExplorer';
-import { getFolderId, update } from '../../utils/utils';
+import { getFolderId, shortcutHotkeyGenerate, update } from '../../utils/utils';
 import RenderIcon from '../../DirectoryView/DirectoryLayout/Group/ItemContainer/Layout/RenderIcon';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const Search = () => {
 	const {
@@ -39,6 +40,11 @@ const Search = () => {
 	const [captureFocus, setCaptureFocus] = useState(false);
 
 	const [searchResponse, setSearchResponse] = useState([]);
+
+	useHotkeys(shortcutHotkeyGenerate('ctrl+f'), (e) => {
+		e.preventDefault();
+		inputRef.current.focus();
+	});
 
 	useEffect(() => {
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
