@@ -62,7 +62,7 @@ const IconsLayout = (props) => {
 								className="text-ellipsis overflow-hidden ellipsis-3-line text-center"
 								style={{ lineHeight: '21px' }}
 							>
-								{renderName(record)}
+								<Rename record={record} renderName={renderName} />
 							</div>
 						</div>
 					</>
@@ -79,7 +79,7 @@ const IconsLayout = (props) => {
 								className="text-ellipsis overflow-hidden ellipsis-4-line text-center"
 								style={{ lineHeight: '21px' }}
 							>
-								{renderName(record)}
+								<Rename record={record} renderName={renderName} />
 							</div>
 						</div>
 					</>
