@@ -7,7 +7,7 @@ import {
 	useMenuState,
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import { buttonStyle } from '../../utils/constants';
+import { buttonStyle, imageTypes } from '../../utils/constants';
 import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import {
@@ -66,6 +66,7 @@ const DirectoryLayout = () => {
 	 * ]
 	 */
 	const [filteredGrouped, setFilteredGrouped] = useState({});
+	const [filteredGroupedSorted, setFilteredGroupedSorted] = useState({});
 	const [groupBuckets, setGroupBuckets] = useState({});
 
 	const { path } = tabsState[activeTabId];
@@ -85,6 +86,90 @@ const DirectoryLayout = () => {
 	const [itemWidth, setItemWidth] = useState(0);
 	const [itemsPerRow, setItemsPerRow] = useState(0);
 	const [newGroupItemFocus, setNewGroupItemFocus] = useState(null);
+	const [imageGalleryOrdered, setImageGalleryOrdered] = useState([]);
+
+	useEffect(() => {
+		let images = [];
+		Object.values(filteredGroupedSorted).forEach((groups) => {
+			const imagesTemp = groups.filter((item) => {
+				const { id, __typename } = item;
+				if (__typename == 'folder') return false;
+				const record = files.find((file) => file.id == id);
+				const ext = (record.name ?? '').split('.').pop();
+				if (imageTypes.includes(ext)) return true;
+				return false;
+			});
+			images = [...images, ...imagesTemp];
+		});
+		console.log({ images });
+		setImageGalleryOrdered(images);
+	}, [filteredGroupedSorted]);
+
+	const getRecord = (item) => {
+		const { id, __typename } = item;
+		let record;
+		if (__typename == 'folder')
+			record = folders.find((folder) => folder.id == id);
+		else record = files.find((file) => file.id == id);
+		return record;
+	};
+
+	useEffect(() => {
+		const tempFilteredGroupedSorted = {};
+
+		Object.entries(filteredGrouped).forEach(([key, groups]) => {
+			tempFilteredGroupedSorted[key] = sortGroups(groups);
+		});
+		setFilteredGroupedSorted(tempFilteredGroupedSorted);
+	}, [filteredGrouped, sortOrder, sortBy]);
+
+	const sortGroups = (groups) => {
+		const handleSort = (_a, _b) => {
+			if (!fileExtensionsMap) {
+				return true;
+			}
+			const recordA = getRecord(_a);
+			const recordB = getRecord(_b);
+
+			if (!recordA || !recordB) {
+				return 1;
+			}
+
+			if (sortBy == 'name') {
+				const a = recordA[sortBy];
+				const b = recordB[sortBy];
+				const compare = a.localeCompare(b);
+				return compare * sortOrder;
+			} else if (dateVariations.includes(sortBy)) {
+				const a = recordA.meta[sortBy];
+				const b = recordB.meta[sortBy];
+				const compare = new Date(a) - new Date(b);
+				return compare * sortOrder;
+			} else if (sortBy == 'size') {
+				const a = recordA[sortBy];
+				const b = recordB[sortBy];
+				const compare = a - b;
+				return compare * sortOrder;
+			} else if (sortBy == 'type') {
+				const aExt = recordA.name.split('.').pop();
+				const bExt = recordB.name.split('.').pop();
+				let a =
+					_a.__typename == 'folder'
+						? 'File folder'
+						: fileExtensionsMap?.[aExt]?.fullName;
+				let b =
+					_b.__typename == 'folder'
+						? 'File folder'
+						: fileExtensionsMap?.[bExt]?.fullName;
+				a = a ? a : aExt.toUpperCase() + ' File';
+				b = b ? b : bExt.toUpperCase() + ' File';
+				const compare = a.localeCompare(b);
+				return compare * sortOrder;
+			}
+		};
+
+		return [...groups].sort(handleSort);
+	};
 
 	useEffect(() => {
 		if (dragging) {
@@ -131,7 +216,7 @@ const DirectoryLayout = () => {
 	useEffect(() => {
 		if (groupBy != 'none' && groupBuckets[groupBy]) {
 			let orderedKeys = Object.keys(groupBuckets[groupBy]);
-			if (sortOrder == 'descending') orderedKeys = [...orderedKeys].reverse();
+			if (groupOrder == -1) orderedKeys = [...orderedKeys].reverse();
 			const tempFilteredGroup = {};
 
 			orderedKeys.forEach((key) => {
@@ -260,7 +345,7 @@ const DirectoryLayout = () => {
 		let obj;
 		const { keyCode } = e;
 
-		const itemGroups = Object.values(filteredGrouped);
+		const itemGroups = Object.values(filteredGroupedSorted);
 
 		if (localStorage.layout == 'details') {
 			if (keyCode == 38) {
@@ -377,6 +462,8 @@ const DirectoryLayout = () => {
 		setItemWidth,
 		newGroupItemFocus,
 		setNewGroupItemFocus,
+		imageGalleryOrdered,
+		getRecord,
 	};
 
 	return (
@@ -484,15 +571,17 @@ const DirectoryLayout = () => {
 						</div>
 					)}
 
-					{Object.entries(filteredGrouped).map(([groupName, items], i) => (
-						<Group
-							key={i}
-							groupIndex={i}
-							groupName={groupName}
-							items={items}
-							{...groupProps}
-						/>
-					))}
+					{Object.entries(filteredGroupedSorted).map(
+						([groupName, items], i) => (
+							<Group
+								key={i}
+								groupIndex={i}
+								groupName={groupName}
+								items={items}
+								{...groupProps}
+							/>
+						)
+					)}
 				</div>
 
 				<ControlledMenu

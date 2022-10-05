@@ -16,6 +16,14 @@ import { FileExplorerContext } from '../../../../FileExplorer';
 import { openInNewTab, update } from '../../../../utils/utils';
 import FilesOptions from '../../../../FilesOptions/FilesOptions';
 import DeleteRestoreConfirmation from '../../../../DeleteRestoreConfirmation';
+import {
+	audioTypes,
+	imageTypes,
+	videoTypes,
+} from '../../../../utils/constants';
+import Video from '../../../../Video';
+import Audio from '../../../../Audio';
+import Gallery from '../../../../Gallery';
 
 const Item = ({
 	item,
@@ -26,6 +34,7 @@ const Item = ({
 	handleOnKeyDown,
 	newGroupItemFocus,
 	setNewGroupItemFocus,
+	imageGalleryOrdered,
 }) => {
 	const {
 		tabsState,
@@ -315,6 +324,51 @@ const Item = ({
 		}
 	}, [record, itemIndex, groupIndex]);
 
+	const handleFileDoubleClick = async () => {
+		const ext = (record.name ?? '').split('.').pop();
+		const res = await axiosClientJSON({
+			url: '/downloadFile',
+			method: 'POST',
+			data: {
+				id: record.id,
+			},
+		});
+		const { URL } = res.data;
+
+		if (videoTypes.includes(ext)) {
+			console.log('video');
+			setModal({
+				isOpen: true,
+				component: Video,
+				componentProps: { URL, ext },
+			});
+		} else if (audioTypes.includes(ext)) {
+			console.log('audio');
+			setModal({
+				isOpen: true,
+				component: Audio,
+				componentProps: { URL, ext },
+			});
+		} else if (imageTypes.includes(ext)) {
+			console.log('image');
+			setModal({
+				isOpen: true,
+				component: Gallery,
+				componentProps: { imageGalleryOrdered, record },
+			});
+		} else {
+			window.location.assign(URL);
+		}
+	};
+
+	const handleDoubleClick = () => {
+		if (record.__typename == 'folder') {
+			updateCurrentFolderId();
+		} else {
+			handleFileDoubleClick();
+		}
+	};
+
 	const _handleOnKeyDown = (e) => {
 		const { keyCode } = e;
 		if (
@@ -322,11 +376,7 @@ const Item = ({
 			groupIndex == newGroupItemFocus?.groupIndex &&
 			keyCode == 13
 		) {
-			const temp =
-				record.__typename == 'folder'
-					? () => updateCurrentFolderId()
-					: () => downloadFile();
-			temp();
+			handleDoubleClick();
 		}
 		handleOnKeyDown({ e, groupIndex, itemIndex });
 	};
@@ -345,11 +395,7 @@ const Item = ({
 					onContextMenu={handleOnContextMenu}
 					onMouseDown={onMouseDown}
 					onClick={handleSelectFileFolderOnClick}
-					onDoubleClick={
-						record.__typename == 'folder'
-							? () => updateCurrentFolderId()
-							: () => downloadFile()
-					}
+					onDoubleClick={handleDoubleClick}
 					onKeyDown={_handleOnKeyDown}
 				>
 					{item.__typename == 'folder' && (

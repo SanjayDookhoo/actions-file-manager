@@ -1,28 +1,73 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import defaultFile from '../../../../../assets/defaultFile.webp';
 import folder from '../../../../../assets/folder.svg';
+import { axiosClientJSON } from '../../../../../endpoint';
 import { FileExplorerContext } from '../../../../../FileExplorer';
+import { imageTypes, videoTypes } from '../../../../../utils/constants';
 
 const RenderIcon = ({ record, className, style }) => {
-	const { fileExtensionsMap } = useContext(FileExplorerContext);
+	const { fileExtensionsMap, localStorage } = useContext(FileExplorerContext);
+	const [src, setSrc] = useState('');
 
 	const ext = (record.name ?? '').split('.').pop();
 	let iconURL = fileExtensionsMap?.[ext]?.icons.normal;
+
+	useEffect(() => {
+		const { id } = record;
+		axiosClientJSON({
+			url: '/downloadFile',
+			method: 'POST',
+			data: {
+				id,
+			},
+		}).then((res) => {
+			const { URL } = res.data;
+			setSrc(URL);
+		});
+	}, []);
 
 	return (
 		<div className={className} style={style}>
 			{record.__typename == 'folder' ? (
 				<img src={folder} className={className} style={style} />
 			) : (
-				<img
-					className={className}
-					style={style}
-					src={iconURL ? iconURL : defaultFile}
-					onError={({ currentTarget }) => {
-						currentTarget.onerror = null; // prevents looping
-						currentTarget.src = defaultFile;
-					}}
-				/>
+				<>
+					{['details', 'smallIcons'].includes(localStorage.layout) ||
+					(!videoTypes.includes(ext) && !imageTypes.includes(ext)) ? (
+						<img
+							className={className}
+							style={style}
+							src={iconURL ? iconURL : defaultFile}
+							onError={({ currentTarget }) => {
+								currentTarget.onerror = null; // prevents looping
+								currentTarget.src = defaultFile;
+							}}
+						/>
+					) : (
+						<>
+							{videoTypes.includes(ext) && (
+								<video
+									className={className}
+									style={style}
+									preload="metadata"
+									src={src}
+									type={`video/${ext}`}
+								/>
+							)}
+							{imageTypes.includes(ext) && (
+								<img
+									className={className}
+									style={style}
+									src={src}
+									onError={({ currentTarget }) => {
+										currentTarget.onerror = null; // prevents looping
+										currentTarget.src = defaultFile;
+									}}
+								/>
+							)}
+						</>
+					)}
+				</>
 			)}
 		</div>
 	);

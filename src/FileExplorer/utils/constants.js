@@ -52,3 +52,19 @@ export const layoutOptions = [
 ];
 
 export const newFolderNameDefault = 'Untitled Folder';
+
+export const videoTypes = ['mp4', 'webm', 'ogg']; // https://www.w3schools.com/tags/tag_video.asp
+export const audioTypes = ['mp3', 'wav']; // https://www.w3schools.com/tags/tag_audio.asp
+export const imageTypes = [
+	'apng',
+	'avif',
+	'gif',
+	'jpg',
+	'jpeg',
+	'jfif',
+	'pjpeg',
+	'pjp',
+	'png',
+	'svg',
+	'webp',
+]; // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
