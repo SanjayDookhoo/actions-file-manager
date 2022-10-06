@@ -10,20 +10,21 @@ const RenderIcon = ({ record, className, style }) => {
 	const [src, setSrc] = useState({});
 
 	const ext = (record.name ?? '').split('.').pop();
-	console.log(ext);
 	let iconURL = fileExtensionsMap?.[ext]?.icons.normal;
 
 	useEffect(() => {
-		const { id } = record;
-		axiosClientJSON({
-			url: '/downloadFile',
-			method: 'POST',
-			data: {
-				id,
-			},
-		}).then((res) => {
-			setSrc(res.data);
-		});
+		const { id, __typename } = record;
+		if (__typename == 'file') {
+			axiosClientJSON({
+				url: '/downloadFile',
+				method: 'POST',
+				data: {
+					id,
+				},
+			}).then((res) => {
+				setSrc(res.data);
+			});
+		}
 	}, []);
 
 	return (

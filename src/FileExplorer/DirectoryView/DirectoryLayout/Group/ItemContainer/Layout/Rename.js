@@ -63,7 +63,6 @@ const Rename = ({ record, renderName }) => {
 	};
 
 	const handleOnBlur = async (e) => {
-		console.log('test', e);
 		await onClose();
 	};
 
@@ -73,13 +72,13 @@ const Rename = ({ record, renderName }) => {
 			const nameSplit = name.split('.');
 			nameSplit.pop();
 			const cursorLocation = nameSplit.join('.').length;
-			e.currentTarget.setSelectionRange(cursorLocation, cursorLocation);
+			e.currentTarget.setSelectionRange(0, cursorLocation);
 		}
 	};
 
 	const handleKeyDown = async (e) => {
+		e.stopPropagation();
 		if (e.key === 'Enter') {
-			e.stopPropagation();
 			await onClose();
 		}
 	};
@@ -98,7 +97,7 @@ const Rename = ({ record, renderName }) => {
 		<>
 			{isRenaming(tabsState[activeTabId]) ? (
 				<input
-					className="text-black"
+					className="text-black rounded-sm px-1"
 					ref={ref}
 					value={value}
 					onChange={(e) => setValue(e.target.value)}

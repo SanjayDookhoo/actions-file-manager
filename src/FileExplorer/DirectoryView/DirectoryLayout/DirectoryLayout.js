@@ -487,8 +487,9 @@ const DirectoryLayout = () => {
 										<div
 											ref={provided.innerRef}
 											{...provided.droppableProps}
-											className="flex pl-6"
+											className="flex p-1"
 										>
+											<div className="pl-6">&nbsp;</div>
 											{/*pl compensates for the logo */}
 											{Object.entries(detailsLayoutMeta)
 												.filter(([key, meta]) => meta.visible)
@@ -509,7 +510,9 @@ const DirectoryLayout = () => {
 																<div {...provided.dragHandleProps}>
 																	<div
 																		className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2"
-																		style={{ width: meta.width }}
+																		style={{
+																			width: meta.width,
+																		}}
 																		onClick={() => handleMenuHeaderClick(key)}
 																		onContextMenu={handleOnContextMenuHeader}
 																	>

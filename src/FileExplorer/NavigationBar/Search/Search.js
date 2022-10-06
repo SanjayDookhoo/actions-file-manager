@@ -202,20 +202,13 @@ const Search = () => {
 		>
 			<input
 				ref={inputRef}
-				className="bg-zinc-500"
-				type="test"
+				className="bg-zinc-500 rounded-sm px-1 w-full"
+				type="search"
 				placeholder="Seach"
 				value={search}
 				onChange={handleSearchOnChange}
 				onKeyDown={handleOnKeyDownInput}
 			/>
-			<div className="flex align-center">
-				{search && (
-					<a onClick={clearText}>
-						<span className={buttonStyle}>close</span>
-					</a>
-				)}
-			</div>
 
 			<ControlledMenu
 				{...menuProps}
@@ -223,7 +216,7 @@ const Search = () => {
 				anchorPoint={anchorPoint}
 				onClose={() => toggleMenu(false)}
 			>
-				<div className="searchItems w-64">
+				<div className="searchItems w-56">
 					{searching ? (
 						'Searching ...'
 					) : (

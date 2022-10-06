@@ -82,7 +82,7 @@ const Arrow = ({ icon, disabled, ...otherProps }) => {
 		<div
 			className={
 				'bg-gray-800 rounded-full m-2 ' +
-				(disabled ? 'text-gray-400 cursor-not-allowed' : 'cursor-pointer')
+				(disabled ? 'text-gray-400 cursor-default' : 'cursor-pointer')
 			}
 			{...otherProps}
 		>

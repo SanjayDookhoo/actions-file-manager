@@ -389,7 +389,7 @@ const Item = ({
 		<>
 			{record && (
 				<div
-					className="outline-none"
+					className="outline-none select-none"
 					tabIndex={-1}
 					ref={itemRef}
 					onContextMenu={handleOnContextMenu}

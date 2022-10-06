@@ -11,6 +11,8 @@ const NavigationBar = () => {
 		useContext(FileExplorerContext);
 
 	const handleForwardBack = (num) => {
+		if (num == -1 && disabledBack()) return;
+		if (num == 1 && disabledForward()) return;
 		const { paths, currentIndex } = tabsState[activeTabId].history;
 		const index = currentIndex + num;
 		let path = paths[index];
@@ -51,25 +53,21 @@ const NavigationBar = () => {
 		[tabsState, activeTabId]
 	);
 
-	const disabledClasses = 'text-gray-600 pointer-events-none';
+	const disabledClasses = 'text-gray-600 cursor-default';
 
 	return (
 		<div className="flex items-center justify-start bg-zinc-800">
-			<a>
-				<span
-					className={buttonStyle + (disabledBack() ? disabledClasses : '')}
-					onClick={() => handleForwardBack(-1)}
-				>
-					west
-				</span>
+			<a
+				className={buttonStyle + (disabledBack() ? disabledClasses : '')}
+				onClick={() => handleForwardBack(-1)}
+			>
+				<span>west</span>
 			</a>
-			<a>
-				<span
-					className={buttonStyle + (disabledForward() ? disabledClasses : '')}
-					onClick={() => handleForwardBack(1)}
-				>
-					east
-				</span>
+			<a
+				className={buttonStyle + (disabledForward() ? disabledClasses : '')}
+				onClick={() => handleForwardBack(1)}
+			>
+				<span>east</span>
 			</a>
 			{/* <a>
 				<span className={buttonStyle} onClick={handleUp}>
@@ -81,9 +79,9 @@ const NavigationBar = () => {
 			</a> */}
 			<FolderPath />
 			<Search />
-			<a>
+			{/* <a>
 				<span className={buttonStyle}>settings</span>
-			</a>
+			</a> */}
 		</div>
 	);
 };
