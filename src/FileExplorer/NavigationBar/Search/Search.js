@@ -235,7 +235,7 @@ const Search = () => {
 											key={`${record.id}-${record.__typename}`}
 											img={
 												<RenderIcon
-													className="w-6 h-6"
+													className="w-6 h-6 object-contain"
 													{...{ record, fileExtensionsMap }}
 												/>
 											}

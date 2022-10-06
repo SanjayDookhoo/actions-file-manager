@@ -46,7 +46,10 @@ const DetailsLayout = (props) => {
 					(recordIsSelected(record) ? 'bg-zinc-500 ' : '')
 				}
 			>
-				<RenderIcon className="w-6 h-6" {...{ record, fileExtensionsMap }} />
+				<RenderIcon
+					className="w-6 h-6 object-contain"
+					{...{ record, fileExtensionsMap }}
+				/>
 				{Object.entries(detailsLayoutMeta)
 					.filter(([key, meta]) => meta.visible)
 					.sort((_a, _b) => {

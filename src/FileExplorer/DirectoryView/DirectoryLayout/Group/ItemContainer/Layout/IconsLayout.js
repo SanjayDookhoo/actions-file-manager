@@ -37,7 +37,7 @@ const IconsLayout = (props) => {
 				{layout == 'smallIcons' && (
 					<>
 						<RenderIcon
-							className="w-4 h-4"
+							className="w-4 h-4 object-contain"
 							{...{ record, fileExtensionsMap }}
 						/>
 						<div className="w-32 pl-2">
@@ -54,7 +54,7 @@ const IconsLayout = (props) => {
 				{layout == 'mediumIcons' && (
 					<>
 						<RenderIcon
-							className="w-16 h-16"
+							className="w-16 h-16 object-contain"
 							{...{ record, fileExtensionsMap }}
 						/>
 						<div className="w-32 pl-2">
@@ -71,7 +71,7 @@ const IconsLayout = (props) => {
 				{layout == 'largeIcons' && (
 					<>
 						<RenderIcon
-							className="w-32 h-32"
+							className="w-32 h-32 object-contain"
 							{...{ record, fileExtensionsMap }}
 						/>
 						<div className="w-32 pl-2">

@@ -7,9 +7,10 @@ import { imageTypes, videoTypes } from '../../../../../utils/constants';
 
 const RenderIcon = ({ record, className, style }) => {
 	const { fileExtensionsMap, localStorage } = useContext(FileExplorerContext);
-	const [src, setSrc] = useState('');
+	const [src, setSrc] = useState({});
 
 	const ext = (record.name ?? '').split('.').pop();
+	console.log(ext);
 	let iconURL = fileExtensionsMap?.[ext]?.icons.normal;
 
 	useEffect(() => {
@@ -21,8 +22,7 @@ const RenderIcon = ({ record, className, style }) => {
 				id,
 			},
 		}).then((res) => {
-			const { URL } = res.data;
-			setSrc(URL);
+			setSrc(res.data);
 		});
 	}, []);
 
@@ -50,7 +50,7 @@ const RenderIcon = ({ record, className, style }) => {
 									className={className}
 									style={style}
 									preload="metadata"
-									src={src}
+									src={src.URL}
 									type={`video/${ext}`}
 								/>
 							)}
@@ -58,7 +58,7 @@ const RenderIcon = ({ record, className, style }) => {
 								<img
 									className={className}
 									style={style}
-									src={src}
+									src={src.thumbnailURL}
 									onError={({ currentTarget }) => {
 										currentTarget.onerror = null; // prevents looping
 										currentTarget.src = defaultFile;

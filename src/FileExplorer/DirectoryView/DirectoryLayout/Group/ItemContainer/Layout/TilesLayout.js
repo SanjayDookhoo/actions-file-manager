@@ -24,7 +24,10 @@ const TilesLayout = (props) => {
 					(recordIsSelected(record) ? 'bg-zinc-500 ' : '')
 				}
 			>
-				<RenderIcon className="w-16 h-16" {...{ record, fileExtensionsMap }} />
+				<RenderIcon
+					className="w-16 h-16 object-contain"
+					{...{ record, fileExtensionsMap }}
+				/>
 				<div className="pl-2 w-32 h-16 flex flex-col justify-center">
 					{record.__typename == 'folder' ? (
 						<div
@@ -39,7 +42,7 @@ const TilesLayout = (props) => {
 								className="text-ellipsis overflow-hidden whitespace-nowrap"
 								style={{ lineHeight: '21px' }}
 							>
-								{renderName(record)}
+								<Rename record={record} renderName={renderName} />
 							</div>
 							<div
 								className="text-ellipsis overflow-hidden whitespace-nowrap"
