@@ -95,8 +95,10 @@ const DirectoryLayout = () => {
 				const { id, __typename } = item;
 				if (__typename == 'folder') return false;
 				const record = files.find((file) => file.id == id);
-				const ext = (record.name ?? '').split('.').pop();
-				if (imageTypes.includes(ext)) return true;
+				if (record) {
+					const ext = (record.name ?? '').split('.').pop();
+					if (imageTypes.includes(ext)) return true;
+				}
 				return false;
 			});
 			images = [...images, ...imagesTemp];
