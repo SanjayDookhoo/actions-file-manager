@@ -62,7 +62,22 @@ const Rename = ({ record }) => {
 		toast.promise(res, {
 			pending: `"${name}" renaming to "${value}"`,
 			success: `"${name}" renamed to "${value}"`,
-			error: `"${name}" failed to rename to "${value}"`,
+			error: {
+				render({ data }) {
+					const { errors } = data.response.data;
+					const tooLong = errors.find((error) =>
+						error.message.includes('too long')
+					);
+					if (tooLong) {
+						const charLimit = tooLong.message
+							.replace('value too long for type character varying(', '')
+							.replace(')', '');
+						return `Failed to rename, needs to be less than ${charLimit} chars`;
+					} else {
+						return `"${name}" failed to rename to "${value}"`;
+					}
+				},
+			},
 		});
 	};
 
