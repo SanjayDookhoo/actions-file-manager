@@ -10,7 +10,7 @@ import { FileExplorerContext } from '../../../../../FileExplorer';
 import { update } from '../../../../../utils/utils';
 import { toast } from 'react-toastify';
 
-const Rename = ({ record, renderName }) => {
+const Rename = ({ record }) => {
 	const {
 		tabsState,
 		setTabsState,
@@ -25,6 +25,7 @@ const Rename = ({ record, renderName }) => {
 		setFileArguments,
 		filtered,
 		setFiltered,
+		renderName,
 	} = useContext(FileExplorerContext);
 	const ref = useRef();
 	const [value, setValue] = useState('');
@@ -54,6 +55,9 @@ const Rename = ({ record, renderName }) => {
 				id,
 				__typename,
 			},
+		}).catch((err) => {
+			setValue(name); // return input to how it was before editing
+			throw err; // still send error for toast
 		});
 		toast.promise(res, {
 			pending: `"${name}" renaming to "${value}"`,

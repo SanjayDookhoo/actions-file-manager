@@ -4,17 +4,16 @@ import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const TilesLayout = (props) => {
-	const {
-		record,
-		renderDate,
-		renderType,
-		renderName,
-		renderSize,
-		recordIsSelected,
-	} = props;
+	const { record, renderDate, renderType, renderSize, recordIsSelected } =
+		props;
 
-	const { fileExtensionsMap, tabsState, setTabsState, activeTabId } =
-		useContext(FileExplorerContext);
+	const {
+		fileExtensionsMap,
+		tabsState,
+		setTabsState,
+		activeTabId,
+		renderName,
+	} = useContext(FileExplorerContext);
 
 	return (
 		<>

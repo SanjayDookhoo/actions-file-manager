@@ -20,7 +20,14 @@ const FolderName = ({ folderId }) => {
 		}
 	}, [folderId]);
 
-	return <div>{Number.isInteger(folderId) ? <>{name}</> : folderId}</div>;
+	return (
+		<div
+			className="text-ellipsis whitespace-nowrap overflow-hidden select-none"
+			style={{ height: '25px' }} // manually set so the folder name doesnt break up into multi line words. also spaced well with icons
+		>
+			{Number.isInteger(folderId) ? <>{name}</> : folderId}
+		</div>
+	);
 };
 
 export default FolderName;

@@ -4,14 +4,8 @@ import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const IconsLayout = (props) => {
-	const {
-		record,
-		renderDate,
-		renderType,
-		renderName,
-		renderSize,
-		recordIsSelected,
-	} = props;
+	const { record, renderDate, renderType, renderSize, recordIsSelected } =
+		props;
 
 	const {
 		tabsState,
@@ -21,6 +15,7 @@ const IconsLayout = (props) => {
 		localStorage,
 		setLocalStorage,
 		fileExtensionsMap,
+		renderName,
 	} = useContext(FileExplorerContext);
 
 	const { layout } = localStorage;

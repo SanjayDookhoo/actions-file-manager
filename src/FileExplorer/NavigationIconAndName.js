@@ -18,14 +18,9 @@ const NavigationIconAndName = ({ folderId }) => {
 	}, [folderId]);
 
 	return (
-		<div className="flex">
+		<div className="flex w-full">
 			<img src={src} className="w-6 h-6 mx-2" />
-			<div
-				className="inline text-ellipsis overflow-hidden select-none"
-				style={{ height: '25px' }} // manually set so the folder name doesnt break up into multi line words. also spaced well with icons
-			>
-				<FolderName folderId={folderId} />
-			</div>
+			<FolderName folderId={folderId} />
 		</div>
 	);
 };

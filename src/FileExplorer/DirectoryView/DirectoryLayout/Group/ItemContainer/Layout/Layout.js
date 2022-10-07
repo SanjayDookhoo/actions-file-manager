@@ -18,6 +18,7 @@ const Layout = ({ record }) => {
 		localStorage,
 		setLocalStorage,
 		fileExtensionsMap,
+		renderName,
 	} = useContext(FileExplorerContext);
 
 	const renderDate = (record, dateField) => {
@@ -33,25 +34,6 @@ const Layout = ({ record }) => {
 			const ext = (record.name ?? '').split('.').pop();
 			let fullName = fileExtensionsMap?.[ext]?.fullName;
 			return fullName ? fullName : ext.toUpperCase() + ' file';
-		}
-	};
-
-	const renderName = (record) => {
-		const { name = '', __typename } = record;
-		if (__typename == 'folder') {
-			return name;
-		}
-		const nameSplit = name.split('.');
-		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the name should not be considered a extension
-		if (
-			localStorage.showFileExtensions ||
-			(!localStorage.showFileExtensions &&
-				localStorage.showHiddenItems &&
-				!nameSplit[0])
-		) {
-			return name;
-		} else {
-			return nameSplit.slice(0, nameSplit.length - 1).join('.');
 		}
 	};
 
@@ -78,17 +60,16 @@ const Layout = ({ record }) => {
 		record,
 		renderDate,
 		renderType,
-		renderName,
 		renderSize,
 		recordIsSelected,
 	};
 
 	return (
-		<>
+		<div title={renderName(record)}>
 			{localStorage.layout == 'details' && <DetailsLayout {...props} />}
 			{localStorage.layout == 'tiles' && <TilesLayout {...props} />}
 			{localStorage.layout.includes('Icons') && <IconsLayout {...props} />}
-		</>
+		</div>
 	);
 };
 

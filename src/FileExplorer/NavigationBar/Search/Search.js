@@ -28,6 +28,7 @@ const Search = () => {
 		setActiveTabId,
 		fileExtensionsMap,
 		rootUserFolderId,
+		renderName,
 	} = useContext(FileExplorerContext);
 
 	const [search, setSearch] = useState('');
@@ -134,7 +135,8 @@ const Search = () => {
 	};
 
 	const title = (record) => {
-		const { relativePathName, name } = record;
+		const { relativePathName } = record;
+		const name = renderName(record);
 		if (relativePathName.length == 0) {
 			return '../' + name;
 		}
@@ -228,11 +230,11 @@ const Search = () => {
 											key={`${record.id}-${record.__typename}`}
 											img={
 												<RenderIcon
-													className="w-6 h-6 object-contain"
+													className="w-6 h-6 pr-1 object-contain"
 													{...{ record, fileExtensionsMap }}
 												/>
 											}
-											description={record.name}
+											description={renderName(record)}
 											onKeyDown={handleOnKeyDownSearchItem}
 											onClick={() => handleOnClick(record)}
 											title={title(record)}

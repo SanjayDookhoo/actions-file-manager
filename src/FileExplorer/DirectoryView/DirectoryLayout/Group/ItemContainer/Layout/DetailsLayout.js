@@ -4,14 +4,8 @@ import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const DetailsLayout = (props) => {
-	const {
-		record,
-		renderDate,
-		renderType,
-		renderName,
-		renderSize,
-		recordIsSelected,
-	} = props;
+	const { record, renderDate, renderType, renderSize, recordIsSelected } =
+		props;
 
 	const {
 		tabsState,
@@ -21,6 +15,7 @@ const DetailsLayout = (props) => {
 		localStorage,
 		setLocalStorage,
 		fileExtensionsMap,
+		renderName,
 	} = useContext(FileExplorerContext);
 
 	const { detailsLayoutMeta } = localStorage;

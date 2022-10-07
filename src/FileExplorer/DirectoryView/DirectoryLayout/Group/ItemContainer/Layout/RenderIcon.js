@@ -28,7 +28,7 @@ const RenderIcon = ({ record, className, style }) => {
 	}, []);
 
 	return (
-		<div className={className} style={style}>
+		<>
 			{record.__typename == 'folder' ? (
 				<img src={folder} className={className} style={style} />
 			) : (
@@ -70,7 +70,7 @@ const RenderIcon = ({ record, className, style }) => {
 					)}
 				</>
 			)}
-		</div>
+		</>
 	);
 };
 

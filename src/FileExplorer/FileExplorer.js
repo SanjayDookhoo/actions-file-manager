@@ -253,6 +253,25 @@ const FileExplorer = ({ height, width }) => {
 		});
 	};
 
+	const renderName = (record) => {
+		const { name = '', __typename } = record;
+		if (__typename == 'folder') {
+			return name;
+		}
+		const nameSplit = name.split('.');
+		// !localStorage.showFileExtensions && localStorage.showHiddenItems, this is because a hidden item starts with a dot(.), so the rest of the name should not be considered a extension
+		if (
+			localStorage.showFileExtensions ||
+			(!localStorage.showFileExtensions &&
+				localStorage.showHiddenItems &&
+				!nameSplit[0])
+		) {
+			return name;
+		} else {
+			return nameSplit.slice(0, nameSplit.length - 1).join('.');
+		}
+	};
+
 	const value = {
 		tabsState,
 		setTabsState,
@@ -279,6 +298,7 @@ const FileExplorer = ({ height, width }) => {
 		sharedAccessType,
 		modal,
 		setModal,
+		renderName,
 	};
 
 	return (
