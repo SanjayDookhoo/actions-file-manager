@@ -6,6 +6,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
+import { toast } from 'react-toastify';
 import { axiosClientJSON } from './endpoint';
 import { FileExplorerContext } from './FileExplorer';
 import { newFolderNameDefault } from './utils/constants';
@@ -26,13 +27,15 @@ const NewFolder = () => {
 	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 
 	const handleCancel = (e) => {
+		e.stopPropagation();
 		setModal(null);
 	};
 
 	const handleCreate = (e) => {
+		e.stopPropagation();
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
 		if (newFolderName) {
-			axiosClientJSON({
+			const res = axiosClientJSON({
 				url: '/createNewFolder',
 				method: 'POST',
 				data: {
@@ -41,6 +44,29 @@ const NewFolder = () => {
 				},
 			}).then((res) => {
 				setModal(null);
+			});
+
+			toast.promise(res, {
+				pending: `Creating folder "${newFolderName}"`,
+				success: `Created folder "${newFolderName}"`,
+				error: {
+					render({ data }) {
+						const { errors } = data.response.data;
+						if (errors) {
+							const tooLong = errors.find((error) =>
+								error.message.includes('too long')
+							);
+							if (tooLong) {
+								const charLimit = tooLong.message
+									.replace('value too long for type character varying(', '')
+									.replace(')', '');
+								return `Failed to create folder, needs to be less than ${charLimit} chars`;
+							}
+						}
+
+						return `Failed to create folder "${newFolderName}"`;
+					},
+				},
 			});
 		}
 	};
