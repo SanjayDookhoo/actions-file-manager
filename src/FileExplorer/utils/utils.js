@@ -41,9 +41,30 @@ export const uploadFiles = (files, folderId) => {
 					toast.update(toastId, { progress });
 				}
 			},
-		}).then((res) => {
-			toast.dismiss(toastId); // .done wasnt working for some reason
-		});
+		})
+			.then((res) => {
+				toast.update(toastId, {
+					render: 'Uploaded Successfully',
+					type: toast.TYPE.SUCCESS,
+					hideProgressBar: true,
+					// autoClose: 2000,
+				});
+			})
+			.catch((e) => {
+				toast.update(toastId, {
+					render: 'Upload Failed',
+					type: toast.TYPE.ERROR,
+					hideProgressBar: true,
+					// autoClose: 2000,
+				});
+			})
+			.finally(() => {
+				// auto close wasnt working
+				setTimeout(() => {
+					// .done wasnt working for some reason
+					toast.dismiss(toastId);
+				}, 2000);
+			});
 	}
 };
 
