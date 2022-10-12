@@ -16,6 +16,7 @@ import './CustomReactMenu/custom-css.css';
 import {
 	initialLocalStorageState,
 	newFolderNameDefault,
+	toastAutoClose,
 } from './utils/constants';
 import {
 	axiosClientFileExtension,
@@ -35,7 +36,7 @@ export const FileExplorerContext = createContext();
 
 const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 
-const FileExplorer = ({ height, width }) => {
+const FileExplorer = ({ height, width, color }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
 		[initialTabId]: { ...initialTabState, order: 0 },
@@ -306,7 +307,7 @@ const FileExplorer = ({ height, width }) => {
 		<FileExplorerContext.Provider value={value}>
 			<ToastContainer
 				position="top-right"
-				autoClose={2000}
+				autoClose={toastAutoClose}
 				hideProgressBar
 				newestOnTop={false}
 				closeOnClick
@@ -315,15 +316,15 @@ const FileExplorer = ({ height, width }) => {
 				draggable
 				pauseOnHover
 			/>
-			<Modal modal={modal} setModal={setModal} />
 			<div
 				tabIndex={-1}
-				className="fileExplorer flex flex-col bg-zinc-700"
+				className="fileExplorer flex flex-col bg-zinc-700 text-white relative"
 				style={{ height, width }}
 				ref={fileExplorerRef}
 				id="file-explorer"
 				onContextMenu={(e) => e.preventDefault()}
 			>
+				<Modal modal={modal} setModal={setModal} />
 				<Tabs />
 				{activeTabId && (
 					<>

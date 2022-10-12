@@ -68,3 +68,5 @@ export const imageTypes = [
 	'svg',
 	'webp',
 ]; // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+
+export const toastAutoClose = 2000;

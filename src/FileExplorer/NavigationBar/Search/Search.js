@@ -192,10 +192,6 @@ const Search = () => {
 		setSearch('');
 	};
 
-	useEffect(() => {
-		console.log(tabsState);
-	}, [tabsState]);
-
 	return (
 		<div
 			ref={searchContainerRef}

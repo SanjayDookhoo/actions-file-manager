@@ -2,6 +2,7 @@ import { axiosClientFiles } from '../endpoint';
 import _update from 'immutability-helper';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
+import { toastAutoClose } from './constants';
 
 export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
@@ -47,7 +48,7 @@ export const uploadFiles = (files, folderId) => {
 					render: 'Uploaded Successfully',
 					type: toast.TYPE.SUCCESS,
 					hideProgressBar: true,
-					// autoClose: 2000,
+					// autoClose: toastAutoClose,
 				});
 			})
 			.catch((e) => {
@@ -55,7 +56,7 @@ export const uploadFiles = (files, folderId) => {
 					render: 'Upload Failed',
 					type: toast.TYPE.ERROR,
 					hideProgressBar: true,
-					// autoClose: 2000,
+					// autoClose: toastAutoClose,
 				});
 			})
 			.finally(() => {
@@ -63,7 +64,7 @@ export const uploadFiles = (files, folderId) => {
 				setTimeout(() => {
 					// .done wasnt working for some reason
 					toast.dismiss(toastId);
-				}, 2000);
+				}, toastAutoClose);
 			});
 	}
 };

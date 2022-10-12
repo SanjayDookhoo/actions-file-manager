@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reactToWebcomponent from 'react-to-webcomponent';
+import FileExplorer from './FileExplorer/FileExplorer';
 
 // normal development beginning
 const props = {
-	height: '100vh',
+	height: '100%',
 	width: '100%',
 };
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -27,6 +28,6 @@ reportWebVitals();
 // creating custom element beginning
 // customElements.define(
 // 	'file-manager',
-// 	reactToWebcomponent(App, React, ReactDOM)
+// 	reactToWebcomponent(FileExplorer, React, ReactDOM)
 // );
 // creating custom element end
