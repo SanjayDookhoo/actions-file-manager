@@ -54,7 +54,7 @@ export const layoutOptions = [
 export const newFolderNameDefault = 'Untitled Folder';
 
 export const videoTypes = ['mp4', 'webm', 'ogg']; // https://www.w3schools.com/tags/tag_video.asp
-export const audioTypes = ['mp3', 'wav']; // https://www.w3schools.com/tags/tag_audio.asp
+export const audioTypes = ['mp3', 'wav', 'ogg']; // https://www.w3schools.com/tags/tag_audio.asp
 export const imageTypes = [
 	'apng',
 	'avif',

@@ -103,7 +103,6 @@ const DirectoryLayout = () => {
 			});
 			images = [...images, ...imagesTemp];
 		});
-		console.log({ images });
 		setImageGalleryOrdered(images);
 	}, [files, filteredGroupedSorted]);
 

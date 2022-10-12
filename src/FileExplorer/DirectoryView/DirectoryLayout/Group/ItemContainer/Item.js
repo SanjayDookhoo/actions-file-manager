@@ -325,32 +325,31 @@ const Item = ({
 	}, [record, itemIndex, groupIndex]);
 
 	const handleFileDoubleClick = async () => {
-		const ext = (record.name ?? '').split('.').pop();
+		const { name, id, mimeType } = record;
+
+		const ext = (name ?? '').split('.').pop();
 		const res = await axiosClientJSON({
 			url: '/downloadFile',
 			method: 'POST',
 			data: {
-				id: record.id,
+				id,
 			},
 		});
 		const { URL } = res.data;
 
-		if (videoTypes.includes(ext)) {
-			console.log('video');
+		if (videoTypes.includes(ext) && mimeType.includes('video')) {
 			setModal({
 				isOpen: true,
 				component: Video,
 				componentProps: { URL, ext },
 			});
-		} else if (audioTypes.includes(ext)) {
-			console.log('audio');
+		} else if (audioTypes.includes(ext) && mimeType.includes('audio')) {
 			setModal({
 				isOpen: true,
 				component: Audio,
 				componentProps: { URL, ext },
 			});
 		} else if (imageTypes.includes(ext)) {
-			console.log('image');
 			setModal({
 				isOpen: true,
 				component: Gallery,
