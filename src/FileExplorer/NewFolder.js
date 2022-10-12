@@ -83,7 +83,7 @@ const NewFolder = () => {
 	}, []);
 
 	return (
-		<div className="w-64 h-44 bg-gray-500 rounded-lg flex flex-col">
+		<div className="w-64 h-44 rounded-lg flex flex-col bg-shade-3">
 			<div className="p-2 px-4">New Folder</div>
 			<input
 				className="text-black m-4 p-2 rounded "

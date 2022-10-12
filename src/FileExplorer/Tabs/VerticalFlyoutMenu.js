@@ -41,7 +41,7 @@ const VerticalFlyoutMenu = (props) => {
 				))}
 				<div className="">
 					<a
-						className="w-full flex justify-center items-center bg-gray-300 rounded-lg"
+						className="w-full flex justify-center items-center rounded-lg bg-shade-4"
 						onClick={handleAddNewTabFromContextMenu}
 						title={`New tab${shortcutHintGenerate(' (Ctrl+Alt+T)')}`}
 					>

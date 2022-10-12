@@ -176,7 +176,7 @@ const Tab = (props) => {
 				className={
 					'p-1 h-8 flex justify-between items-center ' +
 					(inContextMenu ? 'rounded-lg ' : 'rounded-tl-lg rounded-tr-lg ') +
-					(activeTabId == tabId ? 'bg-zinc-800 ' : '')
+					(activeTabId == tabId ? 'bg-shade-2' : '')
 				}
 			>
 				<div

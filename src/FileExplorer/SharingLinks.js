@@ -85,8 +85,10 @@ const SharingLinks = ({ record }) => {
 
 	return (
 		<div
-			className="h-fit bg-gray-500 rounded-lg flex flex-col p-2"
-			style={{ width: '501px' }}
+			className="h-fit rounded-lg flex flex-col p-2 bg-shade-3"
+			style={{
+				width: '501px',
+			}}
 			onClick={(e) => e.stopPropagation()}
 		>
 			<div className="text-2xl">Share "{renderName(record)}"</div>
@@ -95,7 +97,7 @@ const SharingLinks = ({ record }) => {
 				.map((record) => (
 					<>
 						<div key={record.id} className="flex my-1">
-							<div className="flex items-center rounded-l-full rounded-r-lg w-32 bg-gray-200 ">
+							<div className="flex items-center rounded-l-full rounded-r-lg w-32 bg-shade-4">
 								<span className={buttonStyle}>
 									{record.accessType == 'EDIT' ? 'edit' : 'visibility'}
 								</span>

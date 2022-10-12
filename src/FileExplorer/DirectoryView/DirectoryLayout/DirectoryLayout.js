@@ -479,7 +479,7 @@ const DirectoryLayout = () => {
 			>
 				<div>
 					{layout == 'details' && (
-						<div className="sticky top-0 bg-gray-500">
+						<div className="sticky top-0 bg-shade-2">
 							<DragDropContext onDragEnd={handleOnDragEnd}>
 								<Droppable droppableId="droppable" direction="horizontal">
 									{(provided, snapshot) => (

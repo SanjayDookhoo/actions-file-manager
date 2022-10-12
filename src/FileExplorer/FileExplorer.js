@@ -36,7 +36,7 @@ export const FileExplorerContext = createContext();
 
 const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 
-const FileExplorer = ({ height, width, color }) => {
+const FileExplorer = ({ height, width, color, themeSettings }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
 		[initialTabId]: { ...initialTabState, order: 0 },
@@ -81,6 +81,12 @@ const FileExplorer = ({ height, width, color }) => {
 	const [rootUserFolderId, setRootUserFolderId] = useState(null);
 	const [sharedAccessType, setSharedAccessType] = useState(null);
 	const [modal, setModal] = useState(null);
+
+	const [prefersColorSchemeDark, setPrefersColorSchemeDark] = useState(
+		window.matchMedia &&
+			window.matchMedia('(prefers-color-scheme: dark)').matches
+	);
+	const [theme, setTheme] = useState('light');
 
 	useLayoutEffect(() => {
 		fileExplorerRef.current.focus();
@@ -274,6 +280,48 @@ const FileExplorer = ({ height, width, color }) => {
 		}
 	};
 
+	useEffect(() => {
+		let theme;
+		if (themeSettings != 'systemDefault') {
+			theme = themeSettings;
+		} else {
+			theme = prefersColorSchemeDark ? 'dark' : 'light';
+		}
+		setTheme(theme);
+	}, [themeSettings, prefersColorSchemeDark]);
+
+	// TODO: theme changes to custom-css
+	useEffect(() => {
+		const root = document.documentElement;
+		if (theme == 'light') {
+			// darkness increases
+			root.style.setProperty('--bg-shade-1', 'white');
+			root.style.setProperty('--bg-shade-2', 'rgb(244 244 245)'); // bg-zinc-100
+			root.style.setProperty('--bg-shade-3', ' rgb(228 228 231)'); // bg-zinc-200
+			root.style.setProperty('--bg-shade-4', 'rgb(212 212 216)'); // bg-zinc-300
+		} else {
+			// darkness decreases
+			root.style.setProperty('--bg-shade-1', 'rgb(24 24 27)'); // bg-zinc-900
+			root.style.setProperty('--bg-shade-2', 'rgb(39 39 42)'); // bg-zinc-800
+			root.style.setProperty('--bg-shade-3', 'rgb(63 63 70)'); // bg-zinc-700
+			root.style.setProperty('--bg-shade-4', 'rgb(82 82 91)'); // bg-zinc-600
+		}
+	}, [theme]);
+
+	useEffect(() => {
+		const eventHandler = (e) => {
+			setPrefersColorSchemeDark(e.matches);
+		};
+		window
+			.matchMedia('(prefers-color-scheme: dark)')
+			.addEventListener('change', eventHandler);
+		return () => {
+			window
+				.matchMedia('(prefers-color-scheme: dark)')
+				.removeEventListener('change', eventHandler);
+		};
+	}, []);
+
 	const value = {
 		tabsState,
 		setTabsState,
@@ -301,6 +349,8 @@ const FileExplorer = ({ height, width, color }) => {
 		modal,
 		setModal,
 		renderName,
+		color,
+		theme,
 	};
 
 	return (
@@ -318,8 +368,12 @@ const FileExplorer = ({ height, width, color }) => {
 			/>
 			<div
 				tabIndex={-1}
-				className="fileExplorer flex flex-col bg-zinc-700 text-white relative"
-				style={{ height, width }}
+				className="fileExplorer flex flex-col relative bg-shade-1"
+				style={{
+					height,
+					width,
+					color: theme == 'dark' ? 'white' : 'black',
+				}}
 				ref={fileExplorerRef}
 				id="file-explorer"
 				onContextMenu={(e) => e.preventDefault()}

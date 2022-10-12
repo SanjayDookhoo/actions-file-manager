@@ -53,18 +53,16 @@ const NavigationBar = () => {
 		[tabsState, activeTabId]
 	);
 
-	const disabledClasses = 'text-gray-600 cursor-default';
-
 	return (
-		<div className="flex items-center justify-start bg-zinc-800">
+		<div className="flex items-center justify-start bg-shade-2">
 			<a
-				className={buttonStyle + (disabledBack() ? disabledClasses : '')}
+				className={buttonStyle + (disabledBack() ? 'disabled' : '')}
 				onClick={() => handleForwardBack(-1)}
 			>
 				<span>west</span>
 			</a>
 			<a
-				className={buttonStyle + (disabledForward() ? disabledClasses : '')}
+				className={buttonStyle + (disabledForward() ? 'disabled' : '')}
 				onClick={() => handleForwardBack(1)}
 			>
 				<span>east</span>

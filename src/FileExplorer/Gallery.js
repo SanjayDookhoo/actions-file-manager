@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { axiosClientJSON } from './endpoint';
+import { FileExplorerContext } from './FileExplorer';
 import { buttonStyle } from './utils/constants';
 
 const Gallery = ({ imageGalleryOrdered, record }) => {
@@ -84,8 +85,8 @@ const Arrow = ({ icon, disabled, ...otherProps }) => {
 	return (
 		<div
 			className={
-				'bg-gray-800 rounded-full m-2 ' +
-				(disabled ? 'text-gray-400 cursor-default' : 'cursor-pointer')
+				'rounded-full m-2 bg-shade-2 ' +
+				(disabled ? 'disabledWClick' : 'cursor-pointer')
 			}
 			{...otherProps}
 		>

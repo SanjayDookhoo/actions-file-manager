@@ -200,7 +200,7 @@ const Search = () => {
 		>
 			<input
 				ref={inputRef}
-				className="bg-zinc-500 rounded-sm px-1 w-full"
+				className={'rounded-sm px-1 w-full bg-shade-3'}
 				type="search"
 				placeholder="Seach"
 				value={search}

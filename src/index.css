@@ -3,6 +3,35 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:root {
+	--bg-shade-1: initial;
+	--bg-shade-2: initial;
+	--bg-shade-3: initial;
+	--bg-shade-4: initial;
+}
+
+.bg-shade-1 {
+	background: var(--bg-shade-1);
+}
+.bg-shade-2 {
+	background: var(--bg-shade-2);
+}
+.bg-shade-3 {
+	background: var(--bg-shade-3);
+}
+.bg-shade-4 {
+	background: var(--bg-shade-4);
+}
+
+.disabled {
+	pointer-events: none;
+	color: #aaa;
+}
+
+.disabledWClick {
+	color: #aaa;
+}
+
 .material-symbols-outlined {
 	user-select: none;
 }
@@ -46,8 +75,8 @@ input:focus {
 	position: absolute;
 	top: 50%;
 	left: 0;
-	border-top: 1px solid black;
-	background: black;
+	border-top: 1px solid gray;
+	background: gray;
 	width: 100%;
 	transform: translateY(-50%);
 }
