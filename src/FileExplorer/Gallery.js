@@ -65,7 +65,10 @@ const Gallery = ({ imageGalleryOrdered, record }) => {
 			{currIndex != -1 && (
 				<img
 					// className={className}
-					style={{ maxWidth: 'calc(100% - 104px)' }} // (32px + 16px) * 2, where 32px is size of arrow and 16px is the total extra margin
+					style={{
+						maxWidth: 'calc(100% - 104px)',
+						maxHeight: 'calc(100% - 104px)',
+					}} // (32px + 16px) * 2, where 32px is size of arrow and 16px is the total extra margin
 					onClick={(e) => e.stopPropagation()}
 					src={src}
 				/>
