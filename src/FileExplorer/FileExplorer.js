@@ -240,7 +240,7 @@ const FileExplorer = ({ height, width }) => {
 			})
 			.catch((err) => {
 				setPaste(null);
-				throw err
+				throw err;
 			});
 
 		const operationPending = paste == 'cut' ? 'Moving' : 'Copying';

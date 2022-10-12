@@ -231,7 +231,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		setModal({
 			isOpen: true,
 			component: SharingLinks,
-			componentProps: record,
+			componentProps: { record },
 		});
 	};
 

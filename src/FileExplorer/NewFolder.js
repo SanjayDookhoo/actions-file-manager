@@ -7,6 +7,7 @@ import {
 	useState,
 } from 'react';
 import { toast } from 'react-toastify';
+import Button from './Button';
 import { axiosClientJSON } from './endpoint';
 import { FileExplorerContext } from './FileExplorer';
 import { newFolderNameDefault } from './utils/constants';
@@ -94,8 +95,12 @@ const NewFolder = () => {
 				onClick={(e) => e.stopPropagation()}
 			/>
 			<div className="flex justify-end p-4">
-				<button onClick={handleCancel}>Cancel</button>
-				<button onClick={handleCreate}>Create</button>
+				<Button className="ml-1" onClick={handleCancel}>
+					Cancel
+				</Button>
+				<Button className="ml-1" onClick={handleCreate}>
+					Create
+				</Button>
 			</div>
 		</div>
 	);
