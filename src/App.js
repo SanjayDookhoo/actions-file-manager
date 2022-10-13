@@ -3,7 +3,7 @@ import FileExplorer from './FileExplorer/FileExplorer';
 
 const App = (props) => {
 	const [chooseColor, setChooseColor] = useState(false);
-	const [color, setColor] = useState('#854242');
+	const [color, setColor] = useState('#7eb9a0');
 	const [themeSettings, setThemeSettings] = useState('light');
 
 	const fileExplorerProps = {

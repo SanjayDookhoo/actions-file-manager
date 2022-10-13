@@ -176,8 +176,10 @@ const Tab = (props) => {
 			{/* a extra padding container used here instead of margin, because that margin is not tied to the width like padding is */}
 			<div
 				className={
-					'p-1 h-8 flex justify-between items-center border-b-2 border-transparent ' +
-					(inContextMenu ? 'rounded-lg ' : 'rounded-tl-lg rounded-tr-lg ') +
+					'hover-no-rounding p-1 h-8 flex justify-between items-center border-b-2 border-transparent ' +
+					(inContextMenu
+						? 'rounded-lg cursor-pointer '
+						: 'rounded-tl-lg rounded-tr-lg ') +
 					(activeTabId == tabId ? 'bg-shade-2 border-conditional-shade-4' : '')
 				}
 			>

@@ -88,6 +88,11 @@ const DirectoryLayout = () => {
 	const [newGroupItemFocus, setNewGroupItemFocus] = useState(null);
 	const [imageGalleryOrdered, setImageGalleryOrdered] = useState([]);
 
+	// resets newGroupItemFocus, so a useeffect dependent on this doesnt trigger on layout change
+	useEffect(() => {
+		setNewGroupItemFocus(null);
+	}, [layout]);
+
 	useEffect(() => {
 		let images = [];
 		Object.values(filteredGroupedSorted).forEach((groups) => {

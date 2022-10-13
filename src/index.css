@@ -73,6 +73,10 @@
 	background: var(--bg-conditional-shade-4);
 }
 
+.hover-no-rounding:hover {
+	background: var(--bg-conditional-shade-4);
+}
+
 .disabled {
 	pointer-events: none;
 	color: #aaa;

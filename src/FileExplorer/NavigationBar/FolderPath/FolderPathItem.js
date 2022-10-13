@@ -117,8 +117,10 @@ const FolderPathItem = ({ folderId, i }) => {
 	return (
 		<div
 			className={
-				'flex align-center ' +
-				(i != tabsState[activeTabId]?.path.length - 1 ? 'cursor-pointer' : '')
+				'flex align-center pl-1 ' +
+				(i != tabsState[activeTabId]?.path.length - 1
+					? 'cursor-pointer hover'
+					: '')
 			}
 			onContextMenu={handleOnContextMenu}
 			onClick={handleFolderPathOnClick}

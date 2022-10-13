@@ -85,7 +85,10 @@ const Group = ({
 	return (
 		<>
 			{groupName != 'noneGrouping' && (
-				<div className="flex items-center hover" onClick={handleGroupSelectAll}>
+				<div
+					className="flex items-center select-none hover"
+					onClick={handleGroupSelectAll}
+				>
 					<div onClick={handleCollapsibleClick}>
 						<span className={buttonStyle}>
 							{collapsed ? 'expand_more' : 'expand_less'}
@@ -97,25 +100,24 @@ const Group = ({
 					<div className="ml-3 group-separator"></div>
 				</div>
 			)}
-			{!collapsed && (
-				<div
-					className={
-						'flex ' +
-						(localStorage.layout == 'details' ? 'flex-col w-fit' : 'flex-wrap')
-					}
-					ref={flexContainerRef}
-				>
-					{items.map((item, index) => (
-						<Item
-							key={`${item.__typename}-${item.id}`}
-							item={item}
-							itemIndex={index}
-							groupIndex={groupIndex}
-							{...itemProps}
-						/>
-					))}
-				</div>
-			)}
+			<div
+				className={
+					'flex ' +
+					(collapsed ? 'hidden ' : ' ') +
+					(localStorage.layout == 'details' ? 'flex-col w-fit' : 'flex-wrap')
+				}
+				ref={flexContainerRef}
+			>
+				{items.map((item, index) => (
+					<Item
+						key={`${item.__typename}-${item.id}`}
+						item={item}
+						itemIndex={index}
+						groupIndex={groupIndex}
+						{...itemProps}
+					/>
+				))}
+			</div>
 		</>
 	);
 };

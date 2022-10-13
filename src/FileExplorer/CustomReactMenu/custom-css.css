@@ -38,6 +38,7 @@
 	transform: translateX(-50%) rotate(45deg);
 }
 .szh-menu__item {
+	@apply rounded;
 	cursor: pointer;
 }
 .szh-menu__item:focus {

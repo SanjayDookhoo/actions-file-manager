@@ -30,11 +30,12 @@ const FilterContext = () => {
 		setFileArguments,
 		filtered,
 		setFiltered,
+		fileExplorerRef,
 	} = useContext(FileExplorerContext);
 
 	const [filterSelected, setFilterSelected] = useState({});
 	const [groupBuckets, setGroupBuckets] = useState({});
-	const [isOpen, setOpen] = useState();
+	const [isOpen, setIsOpen] = useState();
 	const ref = useRef(null);
 	const { path } = tabsState[activeTabId];
 	const { showHiddenItems } = localStorage;
@@ -186,12 +187,19 @@ const FilterContext = () => {
 
 	const handleFilterOptionOnClick = (groupName, filterOption) => {
 		handleFilterStateChange(groupName, filterOption);
-		setOpen(false); // close menu
+		setIsOpen(false); // close menu
 	};
 
 	const isChecked = (groupName, filterOption) => {
 		const group = filterSelected?.[groupName] ?? [];
 		return group.includes(filterOption);
+	};
+
+	const controlledMenuPortal = {
+		target: fileExplorerRef.current,
+		stablePosition: true,
+		// https://szhsin.github.io/react-menu/docs
+		// search "portal"
 	};
 
 	return (
@@ -200,7 +208,7 @@ const FilterContext = () => {
 				className="hover flex items-center"
 				title="Filter"
 				ref={ref}
-				onClick={() => setOpen(true)}
+				onClick={() => setIsOpen(true)}
 			>
 				<span className={buttonStyle}>
 					{Object.keys(filterSelected).length == 0
@@ -214,15 +222,18 @@ const FilterContext = () => {
 			<ControlledMenu
 				state={isOpen ? 'open' : 'closed'}
 				anchorRef={ref}
-				onClose={() => setOpen(false)}
+				portal={controlledMenuPortal}
+				onClose={() => setIsOpen(false)}
 			>
 				<div className="flex">
 					{Object.entries(groupBuckets).map(([groupName, filterOptions]) => (
 						<div key={groupName} className="px-4">
-							<div className="py-2 flex">
+							<div className="py-2 flex items-center">
 								{camelCaseToPhrase(groupName)}
 								{filterSelected[groupName] && (
-									<span className={buttonStyle}>filter_alt</span>
+									<span className={'material-symbols-outlined'}>
+										filter_alt
+									</span>
 								)}
 							</div>
 							{Object.keys(filterOptions).map((filterOption) => (
@@ -234,6 +245,7 @@ const FilterContext = () => {
 									}
 								>
 									<input
+										className="mr-1"
 										type="checkbox"
 										checked={isChecked(groupName, filterOption)}
 										onChange={(e) =>
