@@ -37,6 +37,7 @@ export const uploadFiles = (files, folderId) => {
 					toastId = toast('Upload in Progress', {
 						progress,
 						hideProgressBar: false,
+						progressClassName: 'bg-conditional-shade-4',
 					});
 				} else {
 					toast.update(toastId, { progress });

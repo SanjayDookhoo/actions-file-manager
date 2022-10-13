@@ -94,7 +94,7 @@ const Group = ({
 					<div>
 						{groupName} ({items.length})
 					</div>
-					<div className="mx-3 group-separator"></div>
+					<div className="ml-3 group-separator"></div>
 				</div>
 			)}
 			{!collapsed && (

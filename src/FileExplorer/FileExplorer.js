@@ -425,6 +425,7 @@ const FileExplorer = ({ height, width, chooseColor, color, themeSettings }) => {
 					pauseOnFocusLoss
 					draggable
 					pauseOnHover
+					theme={theme}
 				/>
 				<Modal modal={modal} setModal={setModal} />
 				<Tabs />

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { axiosClientJSON } from './endpoint';
 import { update } from './utils/utils';
 import { toast } from 'react-toastify';
+import Button from './Button';
 
 const DeleteRestoreConfirmation = ({
 	type,
@@ -78,11 +79,21 @@ const DeleteRestoreConfirmation = ({
 	};
 
 	return (
-		<div>
-			{message}
-			<div className="flex justify-end p-4">
-				<button onClick={handleConfirm}>Confirm</button>
-				<button onClick={handleClose}>Cancel</button>
+		<div
+			className="h-fit rounded-lg flex flex-col p-2 bg-shade-3"
+			style={{
+				width: '501px',
+			}}
+			onClick={(e) => e.stopPropagation()}
+		>
+			<div className="text-2xl">{message}</div>
+			<div className="flex justify-end p-2">
+				<Button className="ml-1" onClick={handleConfirm}>
+					Confirm
+				</Button>
+				<Button className="ml-1" onClick={handleClose}>
+					Cancel
+				</Button>
 			</div>
 		</div>
 	);

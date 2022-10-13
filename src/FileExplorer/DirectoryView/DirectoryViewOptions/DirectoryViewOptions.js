@@ -55,7 +55,10 @@ const DirectoryViewOptions = () => {
 						menuButton={
 							<a className="flex items-center hover" title="cut">
 								<span className={buttonStyle}>add</span>
-								New
+								<div className="">New</div>
+								<span className="material-symbols-outlined text-sm px-1">
+									expand_more
+								</span>
 							</a>
 						}
 					>
@@ -65,13 +68,16 @@ const DirectoryViewOptions = () => {
 
 				<FilesOptions />
 			</div>
-			<div className="flex">
+			<div className="flex pr-1">
 				<SelectionDropdown />
 				<FilterContext />
 				<Menu
 					menuButton={
-						<a className="hover" title="Sort">
+						<a className="hover flex items-center" title="Sort">
 							<span className={buttonStyle}>swap_vert</span>
+							<span className="material-symbols-outlined text-sm relative -left-1">
+								expand_more
+							</span>
 						</a>
 					}
 				>
@@ -79,8 +85,11 @@ const DirectoryViewOptions = () => {
 				</Menu>
 				<Menu
 					menuButton={
-						<a className="hover" title="Group">
+						<a className="hover flex items-center" title="Group">
 							<span className={buttonStyle}>dvr</span>
+							<span className="material-symbols-outlined text-sm relative -left-1">
+								expand_more
+							</span>
 						</a>
 					}
 				>
@@ -88,8 +97,11 @@ const DirectoryViewOptions = () => {
 				</Menu>
 				<Menu
 					menuButton={
-						<a className="hover" title="Layout">
+						<a className="hover flex items-center" title="Layout">
 							<span className={buttonStyle}>grid_view</span>
+							<span className="material-symbols-outlined text-sm relative -left-1">
+								expand_more
+							</span>
 						</a>
 					}
 				>

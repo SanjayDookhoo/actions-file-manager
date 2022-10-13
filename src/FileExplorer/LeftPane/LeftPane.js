@@ -44,7 +44,7 @@ const LeftPane = () => {
 
 	return (
 		<div
-			className="flex flex-col items-start shrink-0"
+			className="flex flex-col items-start shrink-0 p-1"
 			style={{ width: '200px' }}
 		>
 			{rootNavigationArray.map((title) => (

@@ -194,7 +194,7 @@ const Tab = (props) => {
 						title={`Close tab (Ctrl+Alt+W)`}
 						onClick={handleClose}
 					>
-						<span className={buttonStyle}>close</span>
+						<span className={buttonStyle + ' w-7 h-7'}>close</span>
 					</a>
 				)}
 			</div>

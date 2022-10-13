@@ -48,7 +48,9 @@
 	background: var(--bg-conditional-shade-3);
 }
 .bg-conditional-shade-4 {
-	background: var(--bg-conditional-shade-4);
+	background: var(
+		--bg-conditional-shade-4
+	) !important; /* !important needed to override progress bar theme */
 }
 .border-conditional-shade-1 {
 	border-color: var(--bg-conditional-shade-1);

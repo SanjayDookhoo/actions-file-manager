@@ -475,7 +475,7 @@ const DirectoryLayout = () => {
 		>
 			<FileUploadDiv
 				folderId={getFolderId({ tabsState, activeTabId, rootUserFolderId })}
-				style={{ width: '100%', minHeight: '100%' }}
+				style={{ minHeight: '100%' }}
 			>
 				<div>
 					{layout == 'details' && (

@@ -83,10 +83,10 @@ const NewFolder = () => {
 	}, []);
 
 	return (
-		<div className="w-64 h-44 rounded-lg flex flex-col bg-shade-3">
-			<div className="p-2 px-4">New Folder</div>
+		<div className="w-64 h-fit rounded-lg flex flex-col bg-shade-3 p-2">
+			<div className="text-2xl">Folder</div>
 			<input
-				className="text-black m-4 p-2 rounded "
+				className="text-black my-2 p-2 rounded "
 				ref={ref}
 				type="text"
 				value={newFolderName}
@@ -94,7 +94,7 @@ const NewFolder = () => {
 				onKeyDown={handleKeyDown}
 				onClick={(e) => e.stopPropagation()}
 			/>
-			<div className="flex justify-end p-4">
+			<div className="flex justify-end pt-2">
 				<Button className="ml-1" onClick={handleCancel}>
 					Cancel
 				</Button>

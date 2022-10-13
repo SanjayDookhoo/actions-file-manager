@@ -73,8 +73,11 @@ const SelectionDropdown = () => {
 	return (
 		<Menu
 			menuButton={
-				<a className="hover" title="Selection options">
+				<a className="hover flex items-center" title="Selection options">
 					<span className={buttonStyle}>check_box</span>
+					<span className="material-symbols-outlined text-sm relative -left-1">
+						expand_more
+					</span>
 				</a>
 			}
 		>

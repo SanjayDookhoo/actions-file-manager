@@ -197,7 +197,7 @@ const FilterContext = () => {
 	return (
 		<>
 			<a
-				className="hover"
+				className="hover flex items-center"
 				title="Filter"
 				ref={ref}
 				onClick={() => setOpen(true)}
@@ -206,6 +206,9 @@ const FilterContext = () => {
 					{Object.keys(filterSelected).length == 0
 						? 'filter_alt_off'
 						: 'filter_alt'}
+				</span>
+				<span className="material-symbols-outlined text-sm relative -left-1">
+					expand_more
 				</span>
 			</a>
 			<ControlledMenu

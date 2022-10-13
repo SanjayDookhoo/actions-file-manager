@@ -81,13 +81,14 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 
 	return (
 		<>
-			<button
+			<a
+				className="hover w-full"
 				onContextMenu={handleOnContextMenu}
 				onClick={() => handleOnClick(title)}
 				onMouseDown={onMouseDown}
 			>
 				<NavigationIconAndName folderId={title} />
-			</button>
+			</a>
 
 			<ControlledMenu
 				{...menuProps}
