@@ -30,7 +30,7 @@ const VerticalFlyoutMenu = (props) => {
 			}
 		>
 			<div className="" style={{ width: tabMaxWidth }}>
-				<div className="pt-4">Open tabs</div>
+				<div className="pb-2">Open tabs</div>
 				{Object.keys(tabsState).map((tabId) => (
 					<Tab
 						key={tabId}
