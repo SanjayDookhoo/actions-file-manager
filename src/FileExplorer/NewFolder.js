@@ -74,7 +74,7 @@ const NewFolder = () => {
 
 	const handleKeyDown = (e) => {
 		if (e.key === 'Enter') {
-			handleCreate();
+			handleCreate(e);
 		}
 	};
 
