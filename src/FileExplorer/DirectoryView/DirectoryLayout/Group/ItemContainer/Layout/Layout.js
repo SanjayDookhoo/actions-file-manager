@@ -19,6 +19,8 @@ const Layout = ({ record }) => {
 		setLocalStorage,
 		fileExtensionsMap,
 		renderName,
+		chooseColor,
+		color,
 	} = useContext(FileExplorerContext);
 
 	const renderDate = (record, dateField) => {
@@ -65,7 +67,12 @@ const Layout = ({ record }) => {
 	};
 
 	return (
-		<div title={renderName(record)}>
+		<div
+			className={
+				'hover ' + (recordIsSelected(record) ? 'bg-conditional-shade-4' : '')
+			}
+			title={renderName(record)}
+		>
 			{localStorage.layout == 'details' && <DetailsLayout {...props} />}
 			{localStorage.layout == 'tiles' && <TilesLayout {...props} />}
 			{localStorage.layout.includes('Icons') && <IconsLayout {...props} />}

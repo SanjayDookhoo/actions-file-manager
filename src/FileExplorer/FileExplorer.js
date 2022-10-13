@@ -23,7 +23,13 @@ import {
 	axiosClientJSON,
 	backendEndpointWS,
 } from './endpoint';
-import { getFolderId, update } from './utils/utils';
+import {
+	colorStyleLayeredOnWhite,
+	getFolderId,
+	hexToRgb,
+	rgbAddA,
+	update,
+} from './utils/utils';
 import useWebSocket from 'react-use-websocket';
 import NewFolder from './NewFolder';
 import SharingLinks from './SharingLinks';
@@ -31,12 +37,13 @@ import useSubscription from './useSubscription';
 import Modal from './Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import rgbaToRgb from 'rgba-to-rgb';
 
 export const FileExplorerContext = createContext();
 
 const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 
-const FileExplorer = ({ height, width, color, themeSettings }) => {
+const FileExplorer = ({ height, width, chooseColor, color, themeSettings }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
 		[initialTabId]: { ...initialTabState, order: 0 },
@@ -290,23 +297,63 @@ const FileExplorer = ({ height, width, color, themeSettings }) => {
 		setTheme(theme);
 	}, [themeSettings, prefersColorSchemeDark]);
 
+	const rgba2rgb = (rgba) => {
+		return rgbaToRgb('rgb(255, 255, 255)', rgba);
+	};
+
 	// TODO: theme changes to custom-css
 	useEffect(() => {
-		const root = document.documentElement;
+		const light = ['0', '0.1', '0.2', '0.3'];
+		const dark = ['0.9', '0.8', '0.7', '0.6'];
+		const root = document.querySelector('#file-explorer');
+		const rgbColor = hexToRgb(color);
+		const black = 'rgb(0,0,0)';
 		if (theme == 'light') {
-			// darkness increases
-			root.style.setProperty('--bg-shade-1', 'white');
-			root.style.setProperty('--bg-shade-2', 'rgb(244 244 245)'); // bg-zinc-100
-			root.style.setProperty('--bg-shade-3', ' rgb(228 228 231)'); // bg-zinc-200
-			root.style.setProperty('--bg-shade-4', 'rgb(212 212 216)'); // bg-zinc-300
+			light.forEach((alpha, i) => {
+				root.style.setProperty(
+					`--bg-shade-${i + 1}`,
+					rgba2rgb(rgbAddA(black, alpha))
+				);
+			});
+			if (!chooseColor) {
+				light.forEach((alpha, i) => {
+					root.style.setProperty(
+						`--bg-conditional-shade-${i + 1}`,
+						rgba2rgb(rgbAddA(black, alpha))
+					);
+				});
+			} else {
+				[...dark].reverse().forEach((alpha, i) => {
+					root.style.setProperty(
+						`--bg-conditional-shade-${i + 1}`,
+						rgba2rgb(rgbAddA(rgbColor, alpha))
+					);
+				});
+			}
 		} else {
-			// darkness decreases
-			root.style.setProperty('--bg-shade-1', 'rgb(24 24 27)'); // bg-zinc-900
-			root.style.setProperty('--bg-shade-2', 'rgb(39 39 42)'); // bg-zinc-800
-			root.style.setProperty('--bg-shade-3', 'rgb(63 63 70)'); // bg-zinc-700
-			root.style.setProperty('--bg-shade-4', 'rgb(82 82 91)'); // bg-zinc-600
+			dark.forEach((alpha, i) => {
+				root.style.setProperty(
+					`--bg-shade-${i + 1}`,
+					rgba2rgb(rgbAddA(black, alpha))
+				);
+			});
+			if (!chooseColor) {
+				dark.forEach((alpha, i) => {
+					root.style.setProperty(
+						`--bg-conditional-shade-${i + 1}`,
+						rgba2rgb(rgbAddA(black, alpha))
+					);
+				});
+			} else {
+				[...dark].reverse().forEach((alpha, i) => {
+					root.style.setProperty(
+						`--bg-conditional-shade-${i + 1}`,
+						rgba2rgb(rgbAddA(rgbColor, alpha))
+					);
+				});
+			}
 		}
-	}, [theme]);
+	}, [theme, chooseColor, color]);
 
 	useEffect(() => {
 		const eventHandler = (e) => {
@@ -349,23 +396,13 @@ const FileExplorer = ({ height, width, color, themeSettings }) => {
 		modal,
 		setModal,
 		renderName,
+		chooseColor,
 		color,
 		theme,
 	};
 
 	return (
 		<FileExplorerContext.Provider value={value}>
-			<ToastContainer
-				position="top-right"
-				autoClose={toastAutoClose}
-				hideProgressBar
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
 			<div
 				tabIndex={-1}
 				className="fileExplorer flex flex-col relative bg-shade-1"
@@ -378,6 +415,17 @@ const FileExplorer = ({ height, width, color, themeSettings }) => {
 				id="file-explorer"
 				onContextMenu={(e) => e.preventDefault()}
 			>
+				<ToastContainer
+					position="top-right"
+					autoClose={toastAutoClose}
+					hideProgressBar
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
 				<Modal modal={modal} setModal={setModal} />
 				<Tabs />
 				{activeTabId && (

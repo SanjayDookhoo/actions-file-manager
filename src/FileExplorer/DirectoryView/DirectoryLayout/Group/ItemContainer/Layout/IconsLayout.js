@@ -25,7 +25,6 @@ const IconsLayout = (props) => {
 			<div
 				className={
 					'flex items-center rounded-sm p-1 ' +
-					(recordIsSelected(record) ? 'bg-shade-3 ' : ' ') +
 					(!layout.includes('small') ? 'flex-col' : '')
 				}
 			>

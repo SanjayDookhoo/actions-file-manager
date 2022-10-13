@@ -56,19 +56,19 @@ const NavigationBar = () => {
 	return (
 		<div className="flex items-center justify-start bg-shade-2">
 			<a
-				className={buttonStyle + (disabledBack() ? 'disabled' : '')}
+				className={'hover ' + (disabledBack() ? 'disabled' : '')}
 				onClick={() => handleForwardBack(-1)}
 			>
-				<span>west</span>
+				<span className={buttonStyle}>west</span>
 			</a>
 			<a
-				className={buttonStyle + (disabledForward() ? 'disabled' : '')}
+				className={'hover ' + (disabledForward() ? 'disabled' : '')}
 				onClick={() => handleForwardBack(1)}
 			>
-				<span>east</span>
+				<span className={buttonStyle}>east</span>
 			</a>
 			{/* <a>
-				<span className={buttonStyle} onClick={handleUp}>
+				<span className={buttonStyle}>
 					north
 				</span>
 			</a> */}

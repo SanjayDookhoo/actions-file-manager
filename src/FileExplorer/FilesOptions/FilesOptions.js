@@ -298,9 +298,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 							</>
 						) : (
 							<a
-								className={
-									isActive(title) ? '' : 'pointer-events-none text-gray-400'
-								}
+								className={'hover ' + (isActive(title) ? '' : 'disabled')}
 								title={
 									title +
 									(shortcutHint

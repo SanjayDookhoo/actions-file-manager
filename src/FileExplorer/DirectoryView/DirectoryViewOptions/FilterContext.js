@@ -196,7 +196,12 @@ const FilterContext = () => {
 
 	return (
 		<>
-			<a title="Filter" ref={ref} onClick={() => setOpen(true)}>
+			<a
+				className="hover"
+				title="Filter"
+				ref={ref}
+				onClick={() => setOpen(true)}
+			>
 				<span className={buttonStyle}>
 					{Object.keys(filterSelected).length == 0
 						? 'filter_alt_off'

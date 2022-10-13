@@ -35,12 +35,7 @@ const DetailsLayout = (props) => {
 
 	return (
 		<>
-			<div
-				className={
-					'flex items-center rounded-sm p-1 ' +
-					(recordIsSelected(record) ? 'bg-shade-3' : '')
-				}
-			>
+			<div className={'flex items-center rounded-sm p-1 '}>
 				<RenderIcon
 					className="w-6 h-6 object-contain"
 					{...{ record, fileExtensionsMap }}

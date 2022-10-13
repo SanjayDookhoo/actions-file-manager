@@ -85,7 +85,7 @@ const Group = ({
 	return (
 		<>
 			{groupName != 'noneGrouping' && (
-				<div className="flex items-center test" onClick={handleGroupSelectAll}>
+				<div className="flex items-center hover" onClick={handleGroupSelectAll}>
 					<div onClick={handleCollapsibleClick}>
 						<span className={buttonStyle}>
 							{collapsed ? 'expand_more' : 'expand_less'}

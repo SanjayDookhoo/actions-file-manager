@@ -159,8 +159,6 @@ const Tabs = () => {
 		closeTab,
 	};
 
-	const unclickableButtonStyle = 'text-gray-100 cursor-auto ';
-
 	useLayoutEffect(() => {
 		const tabsContainer = tabsContainerRef.current;
 		const handleResizeObserver = () => {
@@ -230,7 +228,7 @@ const Tabs = () => {
 		>
 			{scrollable && (
 				<a
-					className={scrollLeft == 0 ? unclickableButtonStyle : ''}
+					className={'hover ' + (scrollLeft == 0 ? 'disabled' : '')}
 					onClick={() => scrollTabs('backward')}
 					title="Scoll tab list backward"
 				>
@@ -271,7 +269,7 @@ const Tabs = () => {
 			</div>
 			{scrollable && (
 				<a
-					className={scrollLeft == maxScrollLeft ? unclickableButtonStyle : ''}
+					className={'hover ' + (scrollLeft == maxScrollLeft ? 'disabled' : '')}
 					onClick={() => scrollTabs('forward')}
 					title="Scoll tab list forward"
 				>
@@ -279,7 +277,7 @@ const Tabs = () => {
 				</a>
 			)}
 			<a
-				className=""
+				className="hover"
 				onClick={addNewTab}
 				title={`New tab${shortcutHintGenerate(' (Ctrl+Alt+T)')}`}
 			>

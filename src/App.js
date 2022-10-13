@@ -1,11 +1,13 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import FileExplorer from './FileExplorer/FileExplorer';
 
 const App = (props) => {
+	const [chooseColor, setChooseColor] = useState(false);
 	const [color, setColor] = useState('#854242');
 	const [themeSettings, setThemeSettings] = useState('light');
 
 	const fileExplorerProps = {
+		chooseColor,
 		color,
 		themeSettings,
 	};
@@ -13,12 +15,23 @@ const App = (props) => {
 	return (
 		<div className="flex flex-col h-screen w-full">
 			<div>
-				Color
+				Choose color
 				<input
-					type="color"
-					value={color}
-					onChange={(e) => setColor(e.target.value)}
+					type="checkbox"
+					value={chooseColor}
+					onChange={(e) => setChooseColor(e.target.checked)}
 				/>
+				<span className="slider"></span>
+				{chooseColor && (
+					<>
+						Color
+						<input
+							type="color"
+							value={color}
+							onChange={(e) => setColor(e.target.value)}
+						/>
+					</>
+				)}
 				Text Color
 				<select
 					value={themeSettings}

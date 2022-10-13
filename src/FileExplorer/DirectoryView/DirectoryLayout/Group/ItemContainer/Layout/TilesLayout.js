@@ -17,12 +17,7 @@ const TilesLayout = (props) => {
 
 	return (
 		<>
-			<div
-				className={
-					'flex items-center rounded-sm p-1 ' +
-					(recordIsSelected(record) ? 'bg-shade-3' : '')
-				}
-			>
+			<div className={'flex items-center rounded-sm p-1 '}>
 				<RenderIcon
 					className="w-16 h-16 object-contain"
 					{...{ record, fileExtensionsMap }}

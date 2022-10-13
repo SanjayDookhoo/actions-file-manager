@@ -53,7 +53,7 @@ const DirectoryViewOptions = () => {
 				{canEdit({ tabsState, activeTabId, sharedAccessType }) && (
 					<Menu
 						menuButton={
-							<a className="flex items-center" title="cut">
+							<a className="flex items-center hover" title="cut">
 								<span className={buttonStyle}>add</span>
 								New
 							</a>
@@ -70,7 +70,7 @@ const DirectoryViewOptions = () => {
 				<FilterContext />
 				<Menu
 					menuButton={
-						<a title="Sort">
+						<a className="hover" title="Sort">
 							<span className={buttonStyle}>swap_vert</span>
 						</a>
 					}
@@ -79,7 +79,7 @@ const DirectoryViewOptions = () => {
 				</Menu>
 				<Menu
 					menuButton={
-						<a title="Group">
+						<a className="hover" title="Group">
 							<span className={buttonStyle}>dvr</span>
 						</a>
 					}
@@ -88,7 +88,7 @@ const DirectoryViewOptions = () => {
 				</Menu>
 				<Menu
 					menuButton={
-						<a title="Layout">
+						<a className="hover" title="Layout">
 							<span className={buttonStyle}>grid_view</span>
 						</a>
 					}

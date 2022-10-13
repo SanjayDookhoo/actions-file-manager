@@ -408,3 +408,23 @@ export const shortcutHotkeyGenerate = (shortcut) => {
 	}
 	return shortcut;
 };
+
+export const rgbAddA = (rgb, a) => {
+	console.log(rgb);
+	const rgbSplit = rgb.replace('rgb', 'rgba').split(')');
+	rgbSplit.pop();
+	return rgbSplit.join(')') + ',' + a + ')';
+};
+
+export const hexToRgb = (hex) => {
+	let newHex = hex.substring(1);
+	if (newHex.length != 6) {
+		throw 'Only six-digit hex colors are allowed.';
+	}
+
+	var aRgbHex = newHex.match(/.{1,2}/g);
+	const r = parseInt(aRgbHex[0], 16);
+	const g = parseInt(aRgbHex[1], 16);
+	const b = parseInt(aRgbHex[2], 16);
+	return `rgb(${r},${g},${b})`;
+};

@@ -24,7 +24,7 @@ const VerticalFlyoutMenu = (props) => {
 	return (
 		<Menu
 			menuButton={
-				<a className="" title="Vertical tab flyout">
+				<a className="hover" title="Vertical tab flyout">
 					<span className={buttonStyle}>expand_more</span>
 				</a>
 			}
@@ -41,7 +41,7 @@ const VerticalFlyoutMenu = (props) => {
 				))}
 				<div className="">
 					<a
-						className="w-full flex justify-center items-center rounded-lg bg-shade-4"
+						className="w-full flex justify-center items-center rounded-lg bg-shade-4 hover"
 						onClick={handleAddNewTabFromContextMenu}
 						title={`New tab${shortcutHintGenerate(' (Ctrl+Alt+T)')}`}
 					>

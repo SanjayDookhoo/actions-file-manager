@@ -6,7 +6,12 @@ const FileFocusableItem = (props) => {
 	return (
 		<FocusableItem>
 			{({ ref }) => (
-				<a ref={ref} className="inline-block" title={title} onClick={onClick}>
+				<a
+					ref={ref}
+					className="inline-block rounded hover"
+					title={title}
+					onClick={onClick}
+				>
 					<span className={buttonStyle}>{icon}</span>
 				</a>
 			)}

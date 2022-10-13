@@ -85,8 +85,7 @@ const Arrow = ({ icon, disabled, ...otherProps }) => {
 	return (
 		<div
 			className={
-				'rounded-full m-2 bg-shade-2 ' +
-				(disabled ? 'disabledWClick' : 'cursor-pointer')
+				'hover m-2 bg-shade-2 ' + (disabled ? 'disabled' : 'cursor-pointer')
 			}
 			{...otherProps}
 		>

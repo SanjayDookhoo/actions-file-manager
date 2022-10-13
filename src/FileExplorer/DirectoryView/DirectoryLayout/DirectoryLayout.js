@@ -508,7 +508,7 @@ const DirectoryLayout = () => {
 																{/* dragHandleProps designates the draggable area https://stackoverflow.com/a/61360662/4224964 */}
 																<div {...provided.dragHandleProps}>
 																	<div
-																		className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2"
+																		className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2 hover h-9"
 																		style={{
 																			width: meta.width,
 																		}}
