@@ -482,116 +482,112 @@ const DirectoryLayout = () => {
 				folderId={getFolderId({ tabsState, activeTabId, rootUserFolderId })}
 				style={{ minHeight: '100%' }}
 			>
-				<div>
-					{layout == 'details' && (
-						<div className="sticky top-0 bg-shade-2">
-							<DragDropContext onDragEnd={handleOnDragEnd}>
-								<Droppable droppableId="droppable" direction="horizontal">
-									{(provided, snapshot) => (
-										<div
-											ref={provided.innerRef}
-											{...provided.droppableProps}
-											className="flex p-1"
-										>
-											<div className="pl-6">&nbsp;</div>
-											{/*pl compensates for the logo */}
-											{Object.entries(detailsLayoutMeta)
-												.filter(([key, meta]) => meta.visible)
-												.sort((_a, _b) => {
-													const a = _a[1].order;
-													const b = _b[1].order;
-													return a - b;
-												})
-												.map(([key, meta], index) => (
-													<Draggable key={key} draggableId={key} index={index}>
-														{(provided, snapshot) => (
-															<div
-																ref={provided.innerRef}
-																{...provided.draggableProps}
-																className="flex items-center"
-															>
-																{/* dragHandleProps designates the draggable area https://stackoverflow.com/a/61360662/4224964 */}
-																<div {...provided.dragHandleProps}>
-																	<div
-																		className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2 hover h-9"
-																		style={{
-																			width: meta.width,
-																		}}
-																		onClick={() => handleMenuHeaderClick(key)}
-																		onContextMenu={handleOnContextMenuHeader}
-																	>
-																		{camelCaseToPhrase(key)}
-																		{sortBy == key && sortOrder == 1 && (
-																			<span className={buttonStyle}>
-																				expand_less
-																			</span>
-																		)}
-																		{sortBy == key && sortOrder == -1 && (
-																			<span className={buttonStyle}>
-																				expand_more
-																			</span>
-																		)}
-																	</div>
-																</div>
+				{layout == 'details' && (
+					<div className="sticky top-0 bg-shade-2">
+						<DragDropContext onDragEnd={handleOnDragEnd}>
+							<Droppable droppableId="droppable" direction="horizontal">
+								{(provided, snapshot) => (
+									<div
+										ref={provided.innerRef}
+										{...provided.droppableProps}
+										className="flex p-1"
+									>
+										<div className="pl-6">&nbsp;</div>
+										{/*pl compensates for the logo */}
+										{Object.entries(detailsLayoutMeta)
+											.filter(([key, meta]) => meta.visible)
+											.sort((_a, _b) => {
+												const a = _a[1].order;
+												const b = _b[1].order;
+												return a - b;
+											})
+											.map(([key, meta], index) => (
+												<Draggable key={key} draggableId={key} index={index}>
+													{(provided, snapshot) => (
+														<div
+															ref={provided.innerRef}
+															{...provided.draggableProps}
+															className="flex items-center"
+														>
+															{/* dragHandleProps designates the draggable area https://stackoverflow.com/a/61360662/4224964 */}
+															<div {...provided.dragHandleProps}>
 																<div
-																	className="border-2 border-transparent hover:border-white select-none cursor-col-resize"
-																	onMouseDown={(e) => handleMouseDown(e, key)}
+																	className="flex justify-between items-center text-ellipsis overflow-hidden whitespace-nowrap px-2 hover h-9"
+																	style={{
+																		width: meta.width,
+																	}}
+																	onClick={() => handleMenuHeaderClick(key)}
+																	onContextMenu={handleOnContextMenuHeader}
 																>
-																	<div className="drag h-full w-0.5 bg-white ">
-																		&nbsp;
-																	</div>
+																	{camelCaseToPhrase(key)}
+																	{sortBy == key && sortOrder == 1 && (
+																		<span className={buttonStyle}>
+																			expand_less
+																		</span>
+																	)}
+																	{sortBy == key && sortOrder == -1 && (
+																		<span className={buttonStyle}>
+																			expand_more
+																		</span>
+																	)}
 																</div>
 															</div>
-														)}
-													</Draggable>
-												))}
+															<div
+																className="border-2 border-transparent hover:border-white select-none cursor-col-resize"
+																onMouseDown={(e) => handleMouseDown(e, key)}
+															>
+																<div className="drag h-full w-0.5 bg-white ">
+																	&nbsp;
+																</div>
+															</div>
+														</div>
+													)}
+												</Draggable>
+											))}
 
-											{provided.placeholder}
-										</div>
-									)}
-								</Droppable>
-							</DragDropContext>
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
 
-							<ControlledMenu
-								{...menuPropsHeader}
-								anchorPoint={anchorPointHeader}
-								onClose={() => toggleMenuHeader(false)}
-							>
-								<div className="w-64">
-									{/* <FileMenuItem
+						<ControlledMenu
+							{...menuPropsHeader}
+							anchorPoint={anchorPointHeader}
+							onClose={() => toggleMenuHeader(false)}
+						>
+							<div className="w-64">
+								{/* <FileMenuItem
 										controlledStatePadding={true}
 										description="Size all columns to fit"
 									/>
 									<MenuDivider /> */}
-									{Object.entries(localStorage.detailsLayoutMeta).map(
-										([key, meta]) => (
-											<FileMenuItem
-												key={key}
-												type="checkbox"
-												checked={meta.visible}
-												onClick={(e) => setDetailsLayoutMeta(e, key)}
-												description={camelCaseToPhrase(key)}
-												disabled={key == 'name' ? true : false}
-											/>
-										)
-									)}
-								</div>
-							</ControlledMenu>
-						</div>
-					)}
+								{Object.entries(localStorage.detailsLayoutMeta).map(
+									([key, meta]) => (
+										<FileMenuItem
+											key={key}
+											type="checkbox"
+											checked={meta.visible}
+											onClick={(e) => setDetailsLayoutMeta(e, key)}
+											description={camelCaseToPhrase(key)}
+											disabled={key == 'name' ? true : false}
+										/>
+									)
+								)}
+							</div>
+						</ControlledMenu>
+					</div>
+				)}
 
-					{Object.entries(filteredGroupedSorted).map(
-						([groupName, items], i) => (
-							<Group
-								key={i}
-								groupIndex={i}
-								groupName={groupName}
-								items={items}
-								{...groupProps}
-							/>
-						)
-					)}
-				</div>
+				{Object.entries(filteredGroupedSorted).map(([groupName, items], i) => (
+					<Group
+						key={i}
+						groupIndex={i}
+						groupName={groupName}
+						items={items}
+						{...groupProps}
+					/>
+				))}
 
 				<ControlledMenu
 					{...menuPropsEmpty}
