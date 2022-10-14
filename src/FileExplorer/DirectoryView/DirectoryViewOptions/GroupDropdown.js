@@ -8,6 +8,7 @@ import {
 	SubMenu,
 	MenuRadioGroup,
 	MenuDivider,
+	MenuHeader,
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
@@ -58,6 +59,7 @@ const GroupDropdown = () => {
 
 	return (
 		<>
+			<MenuHeader>Group By</MenuHeader>
 			<MenuRadioGroup
 				value={groupBy}
 				onRadioChange={(e) => setGroupBy(e.value)}
@@ -69,7 +71,7 @@ const GroupDropdown = () => {
 			{groupBy != 'none' && (
 				<>
 					<MenuDivider />
-
+					<MenuHeader>Group Order</MenuHeader>
 					<MenuRadioGroup
 						value={groupOrder}
 						onRadioChange={(e) => setGroupOrder(e.value)}

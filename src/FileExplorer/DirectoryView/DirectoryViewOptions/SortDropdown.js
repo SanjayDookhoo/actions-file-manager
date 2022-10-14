@@ -8,6 +8,7 @@ import {
 	SubMenu,
 	MenuRadioGroup,
 	MenuDivider,
+	MenuHeader,
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
@@ -58,12 +59,13 @@ const SortDropdown = () => {
 
 	return (
 		<>
+			<MenuHeader>Sort By</MenuHeader>
 			<MenuRadioGroup value={sortBy} onRadioChange={(e) => setSortBy(e.value)}>
 				<FileMenuItemGroup />
 			</MenuRadioGroup>
 
 			<MenuDivider />
-
+			<MenuHeader>Sort Order</MenuHeader>
 			<MenuRadioGroup
 				value={sortOrder}
 				onRadioChange={(e) => setSortOrder(e.value)}

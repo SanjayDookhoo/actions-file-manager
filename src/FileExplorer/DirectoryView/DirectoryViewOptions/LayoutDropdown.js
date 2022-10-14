@@ -8,6 +8,7 @@ import {
 	SubMenu,
 	MenuRadioGroup,
 	MenuDivider,
+	MenuHeader,
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
@@ -23,6 +24,7 @@ const LayoutDropdown = () => {
 
 	return (
 		<>
+			<MenuHeader>Layout</MenuHeader>
 			<MenuRadioGroup
 				value={localStorage.layout}
 				onRadioChange={(e) =>
@@ -41,7 +43,7 @@ const LayoutDropdown = () => {
 			</MenuRadioGroup>
 
 			<MenuDivider />
-
+			<MenuHeader>Other</MenuHeader>
 			<FileMenuItem
 				description="Show hidden items"
 				type="checkbox"

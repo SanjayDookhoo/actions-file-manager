@@ -9,6 +9,7 @@ import {
 	MenuRadioGroup,
 	MenuDivider,
 	ControlledMenu,
+	MenuHeader,
 } from '@szhsin/react-menu';
 import FileMenuItem from '../../../CustomReactMenu/FileMenuItem';
 import FileSubMenu from '../../../CustomReactMenu/FileSubMenu';
@@ -236,6 +237,7 @@ const FilterContext = () => {
 				portal={controlledMenuPortal}
 				onClose={() => setIsOpen(false)}
 			>
+				<MenuHeader>Filter</MenuHeader>
 				<div className="flex flex-col " style={{ minWidth: '500px' }}>
 					{Object.entries(groupBuckets).map(
 						([groupName, filterOptions], index) => (
