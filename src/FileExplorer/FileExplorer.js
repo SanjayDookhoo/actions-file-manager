@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import LeftPane from './LeftPane/LeftPane';
 import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
+import './assets/googleFonts.css';
 import {
 	initialLocalStorageState,
 	newFolderNameDefault,
