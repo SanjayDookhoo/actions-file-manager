@@ -43,7 +43,14 @@ export const FileExplorerContext = createContext();
 
 const localStorageKey = 'fileExplorer-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 
-const FileExplorer = ({ height, width, chooseColor, color, themeSettings }) => {
+const FileExplorer = ({
+	height,
+	width,
+	chooseColor,
+	color,
+	themeSettings,
+	actions,
+}) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
 		[initialTabId]: { ...initialTabState, order: 0 },
@@ -399,6 +406,7 @@ const FileExplorer = ({ height, width, chooseColor, color, themeSettings }) => {
 		chooseColor,
 		color,
 		theme,
+		actions,
 	};
 
 	return (

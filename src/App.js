@@ -6,10 +6,50 @@ const App = (props) => {
 	const [color, setColor] = useState('#7eb9a0');
 	const [themeSettings, setThemeSettings] = useState('light');
 
+	const logAction = (record, toast) => {
+		console.log('testing log: ', record);
+		toast.success('action was successful!');
+	};
+
+	const logDisplayCondition = (record) => {
+		return record.mimeType.includes('image');
+	};
+
+	const actions = [
+		{
+			description: 'log',
+			function: logAction,
+			displayCondition: logDisplayCondition,
+		},
+	];
+
+	const groupActions = {
+		'test group': [
+			{
+				description: 'log',
+				function: logAction,
+				displayCondition: logDisplayCondition,
+			},
+			{
+				description: 'log2',
+				function: logAction,
+				displayCondition: logDisplayCondition,
+			},
+		],
+		'test group 2': [
+			{
+				description: 'log',
+				function: logAction,
+				displayCondition: () => true,
+			},
+		],
+	};
+
 	const fileExplorerProps = {
 		chooseColor,
 		color,
 		themeSettings,
+		// actions: groupActions,
 	};
 
 	return (

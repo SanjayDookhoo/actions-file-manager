@@ -1,5 +1,11 @@
-import { ControlledMenu, MenuDivider, useMenuState } from '@szhsin/react-menu';
 import {
+	ControlledMenu,
+	MenuDivider,
+	MenuHeader,
+	useMenuState,
+} from '@szhsin/react-menu';
+import {
+	Fragment,
 	useContext,
 	useEffect,
 	useLayoutEffect,
@@ -24,6 +30,7 @@ import {
 import Video from '../../../../Video';
 import Audio from '../../../../Audio';
 import Gallery from '../../../../Gallery';
+import { toast } from 'react-toastify';
 
 const Item = ({
 	item,
@@ -52,6 +59,7 @@ const Item = ({
 		setFiltered,
 		setSharingLinksIsOpen,
 		setModal,
+		actions,
 	} = useContext(FileExplorerContext);
 
 	const [record, setRecord] = useState(null);
@@ -59,6 +67,22 @@ const Item = ({
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
 	const itemRef = useRef();
 	const [keydown, setKeydown] = useState(0);
+	const [groupActions, setGroupActions] = useState({});
+
+	useEffect(() => {
+		let tempGroupActions = {};
+		if (actions) {
+			if (Array.isArray(actions)) {
+				tempGroupActions = {
+					actions: actions,
+				};
+			} else {
+				tempGroupActions = actions;
+			}
+		}
+
+		setGroupActions(tempGroupActions);
+	}, [actions]);
 
 	useEffect(() => {
 		setRecord(getRecord(item));
@@ -452,6 +476,28 @@ const Item = ({
 									)}
 								</>
 							)}
+							{/* context menu actions */}
+							{Object.entries(groupActions).map(([groupName, actions]) => (
+								<Fragment key={groupName}>
+									{actions.filter((action) => action.displayCondition(record)) // if no action to display, dont show divider and header
+										.length != 0 && (
+										<>
+											<MenuDivider />
+											<MenuHeader>{groupName}</MenuHeader>
+										</>
+									)}
+									{actions.map((action) => (
+										<Fragment key={action.description}>
+											{action.displayCondition(record) && (
+												<FileMenuItem
+													description={action.description}
+													onClick={() => action.function(record, toast)}
+												/>
+											)}
+										</Fragment>
+									))}
+								</Fragment>
+							))}
 						</div>
 					</ControlledMenu>
 				</div>
