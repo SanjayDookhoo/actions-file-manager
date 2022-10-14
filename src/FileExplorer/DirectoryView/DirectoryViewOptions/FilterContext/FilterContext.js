@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import FilesOptions from '../../FilesOptions/FilesOptions';
-import { buttonStyle } from '../../utils/constants';
+import FilesOptions from '../../../FilesOptions/FilesOptions';
+import { buttonStyle } from '../../../utils/constants';
 import {
 	Menu,
 	MenuItem,
@@ -10,10 +10,11 @@ import {
 	MenuDivider,
 	ControlledMenu,
 } from '@szhsin/react-menu';
-import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import { camelCaseToPhrase, createBuckets, update } from '../../utils/utils';
-import { FileExplorerContext } from '../../FileExplorer';
+import FileMenuItem from '../../../CustomReactMenu/FileMenuItem';
+import FileSubMenu from '../../../CustomReactMenu/FileSubMenu';
+import { camelCaseToPhrase, createBuckets, update } from '../../../utils/utils';
+import { FileExplorerContext } from '../../../FileExplorer';
+import FilterContextGroup from './FilterContextGroup';
 
 const FilterContext = () => {
 	const {
@@ -39,6 +40,7 @@ const FilterContext = () => {
 	const ref = useRef(null);
 	const { path } = tabsState[activeTabId];
 	const { showHiddenItems } = localStorage;
+	const [opened, setOpened] = useState('name');
 
 	useEffect(() => {
 		setFilterSelected({});
@@ -202,6 +204,15 @@ const FilterContext = () => {
 		// search "portal"
 	};
 
+	const filterContextGroupProps = {
+		handleFilterOptionOnClick,
+		handleCheckboxOnChange,
+		isChecked,
+		filterSelected,
+		opened,
+		setOpened,
+	};
+
 	return (
 		<>
 			<a
@@ -225,39 +236,18 @@ const FilterContext = () => {
 				portal={controlledMenuPortal}
 				onClose={() => setIsOpen(false)}
 			>
-				<div className="flex">
-					{Object.entries(groupBuckets).map(([groupName, filterOptions]) => (
-						<div key={groupName} className="px-4">
-							<div className="py-2 flex items-center">
-								{camelCaseToPhrase(groupName)}
-								{filterSelected[groupName] && (
-									<span className={'material-symbols-outlined'}>
-										filter_alt
-									</span>
-								)}
-							</div>
-							{Object.keys(filterOptions).map((filterOption) => (
-								<div
-									key={filterOption}
-									className="flex"
-									onClick={() =>
-										handleFilterOptionOnClick(groupName, filterOption)
-									}
-								>
-									<input
-										className="mr-1"
-										type="checkbox"
-										checked={isChecked(groupName, filterOption)}
-										onChange={(e) =>
-											handleCheckboxOnChange(groupName, filterOption)
-										}
-										onClick={(e) => e.stopPropagation()}
-									/>
-									<div>{filterOption}</div>
-								</div>
-							))}
-						</div>
-					))}
+				<div className="flex flex-col " style={{ minWidth: '500px' }}>
+					{Object.entries(groupBuckets).map(
+						([groupName, filterOptions], index) => (
+							<FilterContextGroup
+								key={groupName}
+								groupName={groupName}
+								filterOptions={filterOptions}
+								index={index}
+								{...filterContextGroupProps}
+							/>
+						)
+					)}
 				</div>
 			</ControlledMenu>
 		</>

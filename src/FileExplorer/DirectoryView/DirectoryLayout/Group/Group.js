@@ -91,7 +91,7 @@ const Group = ({
 				>
 					<div onClick={handleCollapsibleClick}>
 						<span className={buttonStyle}>
-							{collapsed ? 'expand_more' : 'expand_less'}
+							{!collapsed ? 'expand_more' : 'expand_less'}
 						</span>
 					</div>
 					<div>

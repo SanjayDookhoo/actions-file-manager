@@ -16,7 +16,7 @@ import SelectionDropdown from './SelectionDropdown';
 import LayoutDropdown from './LayoutDropdown';
 import NewDropdown from './NewDropdown';
 import GroupDropdown from './GroupDropdown';
-import FilterContext from './FilterContext';
+import FilterContext from './FilterContext/FilterContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FileExplorerContext } from '../../FileExplorer';
 import { canEdit, shortcutHotkeyGenerate } from '../../utils/utils';

@@ -179,17 +179,7 @@ export const createBuckets = ({
 		} else {
 			name = folder.name;
 		}
-		if (/[0-9]/.test(name.charAt(0))) {
-			_bucketPush('name', '0-9', item);
-		} else if (/[a-hA-H]/.test(name.charAt(0))) {
-			_bucketPush('name', 'A-H', item);
-		} else if (/[i-pI-P]/.test(name.charAt(0))) {
-			_bucketPush('name', 'I-P', item);
-		} else if (/[q-zQ-Z]/.test(name.charAt(0))) {
-			_bucketPush('name', 'Q-Z', item);
-		} else {
-			_bucketPush('name', 'Other', item);
-		}
+		_bucketPush('name', name.charAt(0).toUpperCase() + '...', item);
 
 		// type
 		if (__typename == 'file') {
