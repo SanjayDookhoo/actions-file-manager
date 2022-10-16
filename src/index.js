@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reactToWebcomponent from 'react-to-webcomponent';
-import FileExplorer from './FileExplorer/FileExplorer';
+import FileManager from './FileManager/FileManager';
 
 // normal development beginning
 const props = {
@@ -28,6 +28,6 @@ reportWebVitals();
 // creating custom element beginning
 // customElements.define(
 // 	'file-manager',
-// 	reactToWebcomponent(FileExplorer, React, ReactDOM)
+// 	reactToWebcomponent(FileManager, React, ReactDOM)
 // );
 // creating custom element end

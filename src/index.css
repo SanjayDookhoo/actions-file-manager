@@ -3,7 +3,7 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-#file-explorer {
+#actions-file-manager {
 	--bg-shade-1: initial;
 	--bg-shade-2: initial;
 	--bg-shade-3: initial;

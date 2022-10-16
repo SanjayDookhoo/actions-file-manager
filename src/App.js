@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import FileExplorer from './FileExplorer/FileExplorer';
+import FileManager from './FileManager/FileManager';
 
 const App = (props) => {
 	const [chooseColor, setChooseColor] = useState(false);
@@ -45,7 +45,7 @@ const App = (props) => {
 		],
 	};
 
-	const fileExplorerProps = {
+	const fileManagerProps = {
 		chooseColor,
 		color,
 		themeSettings,
@@ -83,7 +83,7 @@ const App = (props) => {
 				</select>
 			</div>
 			<div className="grow">
-				<FileExplorer {...props} {...fileExplorerProps} />
+				<FileManager {...props} {...fileManagerProps} />
 			</div>
 		</div>
 	);
