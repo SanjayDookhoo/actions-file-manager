@@ -13,6 +13,7 @@ import {
 } from '../utils/utils';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { toast } from 'react-toastify';
+import { MenuDivider } from '@szhsin/react-menu';
 
 const FilesOptions = ({ item, buttonsToFilter }) => {
 	const {
@@ -37,6 +38,17 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		setModal,
 		rootUserFolderId,
 	} = useContext(FileManagerContext);
+
+	const [buttonListItemFiltered, setButtonListItemFiltered] = useState([]);
+
+	useEffect(() => {
+		const temp = buttonList.filter(
+			({ title }) =>
+				(buttonsToFilter ? buttonsToFilter.includes(title) : true) &&
+				isActive(title)
+		);
+		setButtonListItemFiltered(temp);
+	}, [tabsState, activeTabId, paste, sharedAccessType]);
 
 	const isActive = (title) => {
 		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
@@ -275,43 +287,44 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 
 	return (
 		<>
-			{buttonList
-				.filter(({ title }) =>
-					buttonsToFilter ? buttonsToFilter.includes(title) : true
-				)
-				.map(({ title, onClick, icon, shortcutHint }) => (
-					<Fragment key={title}>
-						{item ? (
-							<>
-								{isActive(title) && (
-									<FileFocusableItem
-										title={
-											title +
-											(shortcutHint
-												? shortcutHintGenerate(` (${shortcutHint})`)
-												: '')
-										}
-										icon={icon}
-										onClick={onClick}
-									/>
-								)}
-							</>
-						) : (
-							<a
-								className={'hover ' + (isActive(title) ? '' : 'disabled')}
-								title={
-									title +
-									(shortcutHint
-										? shortcutHintGenerate(` (${shortcutHint})`)
-										: '')
-								}
-								onClick={onClick}
-							>
-								<span className={buttonStyle}>{icon}</span>
-							</a>
-						)}
-					</Fragment>
-				))}
+			{item ? (
+				<div className="py-1.5 px-4">
+					{buttonListItemFiltered.map(
+						({ title, onClick, icon, shortcutHint }) => (
+							<Fragment key={title}>
+								<FileFocusableItem
+									key={title}
+									title={
+										title +
+										(shortcutHint
+											? shortcutHintGenerate(` (${shortcutHint})`)
+											: '')
+									}
+									icon={icon}
+									onClick={onClick}
+								/>
+							</Fragment>
+						)
+					)}
+					{buttonListItemFiltered.length != 0 && <MenuDivider />}
+				</div>
+			) : (
+				<>
+					{buttonList.map(({ title, onClick, icon, shortcutHint }) => (
+						<a
+							key={title}
+							className={'hover ' + (isActive(title) ? '' : 'disabled')}
+							title={
+								title +
+								(shortcutHint ? shortcutHintGenerate(` (${shortcutHint})`) : '')
+							}
+							onClick={onClick}
+						>
+							<span className={buttonStyle}>{icon}</span>
+						</a>
+					))}
+				</>
+			)}
 		</>
 	);
 };

@@ -446,7 +446,6 @@ const Item = ({
 					>
 						<div className="w-64" onClick={(e) => e.stopPropagation()}>
 							<FilesOptions item={true} />
-							<MenuDivider />
 							{tabsState[activeTabId].path[0] == 'Recycle bin' &&
 								tabsState[activeTabId].path.length == 1 && (
 									<>
@@ -455,11 +454,12 @@ const Item = ({
 											description="Permanently Delete"
 											onClick={permanentlyDelete}
 										/>
-										<MenuDivider />
 									</>
 								)}
 							{record.__typename == 'folder' ? (
 								<>
+									{tabsState[activeTabId].path[0] == 'Recycle bin' &&
+										tabsState[activeTabId].path.length == 1 && <MenuDivider />}
 									<FileMenuItem
 										description="Open in new tab"
 										onClick={handleOpenInNewTab}

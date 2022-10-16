@@ -595,7 +595,10 @@ const DirectoryLayout = () => {
 					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
 					<div className="w-64">
-						<FilesOptions item={true} buttonsToFilter={['paste']} />
+						<FilesOptions
+							item={true}
+							buttonsToFilter={['Paste']}
+						/>
 						<FileSubMenu logo="grid_view" description="Layout">
 							<LayoutDropdown />
 						</FileSubMenu>
@@ -605,11 +608,13 @@ const DirectoryLayout = () => {
 						<FileSubMenu logo="dvr" description="Group by">
 							<GroupDropdown />
 						</FileSubMenu>
-						<MenuDivider />
 						{canEdit({ tabsState, activeTabId, sharedAccessType }) && (
-							<FileSubMenu logo="add" description="New">
-								<NewDropdown />
-							</FileSubMenu>
+							<>
+								<MenuDivider />
+								<FileSubMenu logo="add" description="New">
+									<NewDropdown />
+								</FileSubMenu>
+							</>
 						)}
 					</div>
 				</ControlledMenu>
