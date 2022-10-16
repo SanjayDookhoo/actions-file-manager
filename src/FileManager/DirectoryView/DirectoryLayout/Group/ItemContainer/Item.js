@@ -60,6 +60,7 @@ const Item = ({
 		setSharingLinksIsOpen,
 		setModal,
 		actions,
+		fileManagerRef,
 	} = useContext(FileManagerContext);
 
 	const [record, setRecord] = useState(null);
@@ -331,7 +332,7 @@ const Item = ({
 	// if first first item, then this facilitates knowing when the first arrow key is pressed
 	useEffect(() => {
 		if (itemIndex == 0 && groupIndex == 0) {
-			const fileManager = document.getElementById('actions-file-manager');
+			const fileManager = fileManagerRef.current;
 
 			const handleKeydown = (e) => {
 				const { keyCode } = e;

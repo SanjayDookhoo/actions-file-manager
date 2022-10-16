@@ -313,26 +313,26 @@ const FileManager = ({
 	useEffect(() => {
 		const light = ['0', '0.1', '0.2', '0.3'];
 		const dark = ['0.9', '0.8', '0.7', '0.6'];
-		const root = document.querySelector('#actions-file-manager');
+		const fileManager = fileManagerRef.current;
 		const rgbColor = hexToRgb(color);
 		const black = 'rgb(0,0,0)';
 		if (theme == 'light') {
 			light.forEach((alpha, i) => {
-				root.style.setProperty(
+				fileManager.style.setProperty(
 					`--bg-shade-${i + 1}`,
 					rgba2rgb(rgbAddA(black, alpha))
 				);
 			});
 			if (!chooseColor) {
 				light.forEach((alpha, i) => {
-					root.style.setProperty(
+					fileManager.style.setProperty(
 						`--bg-conditional-shade-${i + 1}`,
 						rgba2rgb(rgbAddA(black, alpha))
 					);
 				});
 			} else {
 				[...dark].reverse().forEach((alpha, i) => {
-					root.style.setProperty(
+					fileManager.style.setProperty(
 						`--bg-conditional-shade-${i + 1}`,
 						rgba2rgb(rgbAddA(rgbColor, alpha))
 					);
@@ -340,21 +340,21 @@ const FileManager = ({
 			}
 		} else {
 			dark.forEach((alpha, i) => {
-				root.style.setProperty(
+				fileManager.style.setProperty(
 					`--bg-shade-${i + 1}`,
 					rgba2rgb(rgbAddA(black, alpha))
 				);
 			});
 			if (!chooseColor) {
 				dark.forEach((alpha, i) => {
-					root.style.setProperty(
+					fileManager.style.setProperty(
 						`--bg-conditional-shade-${i + 1}`,
 						rgba2rgb(rgbAddA(black, alpha))
 					);
 				});
 			} else {
 				[...dark].reverse().forEach((alpha, i) => {
-					root.style.setProperty(
+					fileManager.style.setProperty(
 						`--bg-conditional-shade-${i + 1}`,
 						rgba2rgb(rgbAddA(rgbColor, alpha))
 					);
