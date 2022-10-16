@@ -406,7 +406,12 @@ export const rgbAddA = (rgb, a) => {
 	return rgbSplit.join(')') + ',' + a + ')';
 };
 
+const isValidHexColor = (color) => {
+	return /^#[0-9A-F]{6}$/i.test(color);
+};
+
 export const hexToRgb = (hex) => {
+	if (!isValidHexColor(hex)) return null;
 	let newHex = hex.substring(1);
 	if (newHex.length != 6) {
 		throw 'Only six-digit hex colors are allowed.';

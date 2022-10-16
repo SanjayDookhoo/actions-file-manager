@@ -45,11 +45,11 @@ export const FileManagerContext = createContext();
 const localStorageKey = 'actions-file-manager-v1'; // versioned, in case localstorage access is changed, can migrate the old to new version, and continue with the new version
 
 const FileManager = ({
-	height,
-	width,
-	chooseColor,
+	height = '100%',
+	width = '100%',
+	chooseColor = false,
 	color,
-	themeSettings,
+	themeSettings = 'light',
 	actions,
 }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
@@ -323,18 +323,18 @@ const FileManager = ({
 					rgba2rgb(rgbAddA(black, alpha))
 				);
 			});
-			if (!chooseColor) {
-				light.forEach((alpha, i) => {
-					fileManager.style.setProperty(
-						`--bg-conditional-shade-${i + 1}`,
-						rgba2rgb(rgbAddA(black, alpha))
-					);
-				});
-			} else {
+			if (chooseColor && rgbColor) {
 				[...dark].reverse().forEach((alpha, i) => {
 					fileManager.style.setProperty(
 						`--bg-conditional-shade-${i + 1}`,
 						rgba2rgb(rgbAddA(rgbColor, alpha))
+					);
+				});
+			} else {
+				light.forEach((alpha, i) => {
+					fileManager.style.setProperty(
+						`--bg-conditional-shade-${i + 1}`,
+						rgba2rgb(rgbAddA(black, alpha))
 					);
 				});
 			}
@@ -345,18 +345,18 @@ const FileManager = ({
 					rgba2rgb(rgbAddA(black, alpha))
 				);
 			});
-			if (!chooseColor) {
-				dark.forEach((alpha, i) => {
-					fileManager.style.setProperty(
-						`--bg-conditional-shade-${i + 1}`,
-						rgba2rgb(rgbAddA(black, alpha))
-					);
-				});
-			} else {
+			if (chooseColor && rgbColor) {
 				[...dark].reverse().forEach((alpha, i) => {
 					fileManager.style.setProperty(
 						`--bg-conditional-shade-${i + 1}`,
 						rgba2rgb(rgbAddA(rgbColor, alpha))
+					);
+				});
+			} else {
+				dark.forEach((alpha, i) => {
+					fileManager.style.setProperty(
+						`--bg-conditional-shade-${i + 1}`,
+						rgba2rgb(rgbAddA(black, alpha))
 					);
 				});
 			}
@@ -414,14 +414,13 @@ const FileManager = ({
 		<FileManagerContext.Provider value={value}>
 			<div
 				tabIndex={-1}
-				className="flex flex-col relative bg-shade-1"
+				className="actions-file-manager flex flex-col relative bg-shade-1"
 				style={{
 					height,
 					width,
 					color: theme == 'dark' ? 'white' : 'black',
 				}}
 				ref={fileManagerRef}
-				id="actions-file-manager"
 				onContextMenu={(e) => e.preventDefault()}
 			>
 				<ToastContainer
