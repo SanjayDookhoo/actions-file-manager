@@ -33,6 +33,7 @@ const FilterContext = () => {
 		filtered,
 		setFiltered,
 		fileManagerRef,
+		breakpointClass,
 	} = useContext(FileManagerContext);
 
 	const [filterSelected, setFilterSelected] = useState({});
@@ -227,7 +228,15 @@ const FilterContext = () => {
 						? 'filter_alt_off'
 						: 'filter_alt'}
 				</span>
-				<span className="material-symbols-outlined text-sm relative -left-1">
+				<span
+					className={
+						'material-symbols-outlined text-sm relative -left-1 ' +
+						breakpointClass({
+							lg: 'block',
+							default: 'hidden',
+						})
+					}
+				>
 					expand_more
 				</span>
 			</a>

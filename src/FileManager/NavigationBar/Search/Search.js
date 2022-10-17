@@ -242,7 +242,14 @@ const Search = () => {
 								</Fragment>
 							))}
 
-							{Object.values(searchResponse).length == 0 && 'No results found'}
+							{Object.values(searchResponse).length == 0 && (
+								<FileMenuItem
+									controlledStatePadding={true}
+									description="No results found"
+									onKeyDown={handleOnKeyDownSearchItem}
+									title="No results found"
+								/>
+							)}
 						</>
 					)}
 				</div>

@@ -28,7 +28,9 @@ const DirectoryViewOptions = () => {
 		tabsState,
 		activeTabId,
 		sharedAccessType,
+		breakpointClass,
 	} = useContext(FileManagerContext);
+	const [smLeftOpen, setSmLeftOpen] = useState(true);
 
 	// hot keys needed to be placed here because the menu does not mount originally until first opened
 	useHotkeys(shortcutHotkeyGenerate('ctrl+shift+1'), () =>
@@ -49,14 +51,34 @@ const DirectoryViewOptions = () => {
 
 	return (
 		<div className="w-full flex justify-between">
-			<div className="flex">
+			<div
+				className={breakpointClass({
+					sm: 'flex',
+					default: !smLeftOpen ? 'flex' : 'hidden',
+				})}
+			>
 				{canEdit({ tabsState, activeTabId, sharedAccessType }) && (
 					<Menu
 						menuButton={
 							<a className="flex items-center hover" title="cut">
 								<span className={buttonStyle}>add</span>
-								<div className="">New</div>
-								<span className="material-symbols-outlined text-sm px-1">
+								<div
+									className={breakpointClass({
+										sm: 'block',
+										default: 'hidden',
+									})}
+								>
+									New
+								</div>
+								<span
+									className={
+										'material-symbols-outlined text-sm px-1 ' +
+										breakpointClass({
+											sm: 'block',
+											default: 'hidden',
+										})
+									}
+								>
 									expand_more
 								</span>
 							</a>
@@ -68,14 +90,31 @@ const DirectoryViewOptions = () => {
 
 				<FilesOptions />
 			</div>
-			<div className="flex pr-1">
+
+			<div
+				className={
+					'flex pr-1 ' +
+					breakpointClass({
+						sm: 'flex',
+						default: smLeftOpen ? 'flex' : 'hidden',
+					})
+				}
+			>
 				<SelectionDropdown />
 				<FilterContext />
 				<Menu
 					menuButton={
 						<a className="hover flex items-center" title="Sort">
 							<span className={buttonStyle}>swap_vert</span>
-							<span className="material-symbols-outlined text-sm relative -left-1">
+							<span
+								className={
+									'material-symbols-outlined text-sm relative -left-1 ' +
+									breakpointClass({
+										lg: 'block',
+										default: 'hidden',
+									})
+								}
+							>
 								expand_more
 							</span>
 						</a>
@@ -87,7 +126,15 @@ const DirectoryViewOptions = () => {
 					menuButton={
 						<a className="hover flex items-center" title="Group">
 							<span className={buttonStyle}>dvr</span>
-							<span className="material-symbols-outlined text-sm relative -left-1">
+							<span
+								className={
+									'material-symbols-outlined text-sm relative -left-1 ' +
+									breakpointClass({
+										lg: 'block',
+										default: 'hidden',
+									})
+								}
+							>
 								expand_more
 							</span>
 						</a>
@@ -99,7 +146,15 @@ const DirectoryViewOptions = () => {
 					menuButton={
 						<a className="hover flex items-center" title="Layout">
 							<span className={buttonStyle}>grid_view</span>
-							<span className="material-symbols-outlined text-sm relative -left-1">
+							<span
+								className={
+									'material-symbols-outlined text-sm relative -left-1 ' +
+									breakpointClass({
+										lg: 'block',
+										default: 'hidden',
+									})
+								}
+							>
 								expand_more
 							</span>
 						</a>
@@ -108,6 +163,24 @@ const DirectoryViewOptions = () => {
 					<LayoutDropdown />
 				</Menu>
 			</div>
+
+			<a
+				className={
+					'hover ' +
+					breakpointClass({
+						sm: 'hidden',
+						default: '',
+					})
+				}
+				title="Change Options"
+			>
+				<span
+					className={buttonStyle}
+					onClick={() => setSmLeftOpen(!smLeftOpen)}
+				>
+					flip_camera_android
+				</span>
+			</a>
 		</div>
 	);
 };

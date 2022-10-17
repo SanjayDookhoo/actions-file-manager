@@ -103,6 +103,8 @@ const FileManager = ({
 	);
 	const [theme, setTheme] = useState('light');
 
+	const [fileManagerWidth, setFileManagerWidth] = useState(0);
+
 	useLayoutEffect(() => {
 		fileManagerRef.current.focus();
 	}, [folderId]);
@@ -309,7 +311,7 @@ const FileManager = ({
 		return rgbaToRgb('rgb(255, 255, 255)', rgba);
 	};
 
-	// TODO: theme changes to custom-css
+	// theme changes to custom-css
 	useEffect(() => {
 		const light = ['0', '0.1', '0.2', '0.3'];
 		const dark = ['0.9', '0.8', '0.7', '0.6'];
@@ -377,6 +379,36 @@ const FileManager = ({
 		};
 	}, []);
 
+	useLayoutEffect(() => {
+		const fileManager = fileManagerRef.current;
+		const handleResizeObserver = () => {
+			const width = fileManager.offsetWidth;
+			setFileManagerWidth(width);
+		};
+		const observer = new ResizeObserver(handleResizeObserver);
+		observer.observe(fileManager);
+		return () => {
+			observer.unobserve(fileManager);
+		};
+	}, []);
+
+	const breakpointClass = (breakpoints) => {
+		const breakpointMap = {
+			'2xl': 1536,
+			xl: 1280,
+			lg: 1024,
+			md: 768,
+			sm: 640,
+		};
+
+		for (const [key, value] of Object.entries(breakpointMap)) {
+			if (breakpoints[key] && fileManagerWidth >= value)
+				return breakpoints[key];
+		}
+		if (breakpoints.default) return breakpoints.default;
+		else return '';
+	};
+
 	const value = {
 		tabsState,
 		setTabsState,
@@ -408,6 +440,7 @@ const FileManager = ({
 		color,
 		theme,
 		actions,
+		breakpointClass,
 	};
 
 	return (

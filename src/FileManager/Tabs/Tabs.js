@@ -37,7 +37,6 @@ const Tabs = () => {
 	const [tabWidth, setTabWidth] = useState(null);
 	const [scrollable, setScrollable] = useState(false);
 	const [scrollLeft, setScrollLeft] = useState(0);
-	const [maxScrollLeft, setMaxScrollLeft] = useState(0);
 
 	const [menuProps, toggleMenu] = useMenuState();
 	const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -90,24 +89,11 @@ const Tabs = () => {
 		const handleScroll = (e) => {
 			setScrollLeft(element.scrollLeft);
 		};
-		const handleResize = (e) => {
-			setMaxScrollLeft(getMaxScrollLeft(element));
-		};
-
 		element.addEventListener('scroll', handleScroll);
-		window.addEventListener('resize', handleResize);
-
 		return () => {
 			element.removeEventListener('scroll', handleScroll);
-			window.removeEventListener('resize', handleResize);
 		};
 	}, []);
-
-	useLayoutEffect(() => {
-		// set initial
-		const element = scrollableTabsRef.current;
-		setMaxScrollLeft(getMaxScrollLeft(element));
-	}, [scrollable]);
 
 	const scrollTabs = (direction) => {
 		const element = scrollableTabsRef.current;
@@ -235,15 +221,14 @@ const Tabs = () => {
 					<span className={buttonStyle}>chevron_left</span>
 				</a>
 			)}
-			<div className="overflow-hidden" ref={scrollableTabsRef}>
+			<div className="overflow-x-auto scrollable-tabs" ref={scrollableTabsRef}>
 				<DragDropContext onDragEnd={handleOnDragEnd}>
 					<Droppable droppableId="droppable" direction="horizontal">
 						{(provided, snapshot) => (
 							<div
-								// ref={scrollableTabsRef}
 								ref={provided.innerRef}
 								{...provided.droppableProps}
-								className="flex overflow-x-auto scrollable-tabs"
+								className="flex"
 							>
 								{Object.keys(tabsState)
 									.sort((a, b) => tabsState[a].order - tabsState[b].order)
@@ -269,7 +254,12 @@ const Tabs = () => {
 			</div>
 			{scrollable && (
 				<a
-					className={'hover ' + (scrollLeft == maxScrollLeft ? 'disabled' : '')}
+					className={
+						'hover ' +
+						(scrollLeft == getMaxScrollLeft(scrollableTabsRef.current)
+							? 'disabled'
+							: '')
+					}
 					onClick={() => scrollTabs('forward')}
 					title="Scoll tab list forward"
 				>

@@ -23,6 +23,7 @@ const SelectionDropdown = () => {
 		setLocalStorage,
 		folders,
 		files,
+		breakpointClass,
 	} = useContext(FileManagerContext);
 
 	const selectAll = () => {
@@ -75,7 +76,15 @@ const SelectionDropdown = () => {
 			menuButton={
 				<a className="hover flex items-center" title="Selection options">
 					<span className={buttonStyle}>check_box</span>
-					<span className="material-symbols-outlined text-sm relative -left-1">
+					<span
+						className={
+							'material-symbols-outlined text-sm relative -left-1 ' +
+							breakpointClass({
+								lg: 'block',
+								default: 'hidden',
+							})
+						}
+					>
 						expand_more
 					</span>
 				</a>

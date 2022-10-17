@@ -11,7 +11,7 @@ const FolderPath = () => {
 		useContext(FileManagerContext);
 
 	return (
-		<div className="flex grow align-center">
+		<div className="flex grow align-center min-w-0">
 			{tabsState[activeTabId]?.path.map((folderId, i) => (
 				<FolderPathItem key={folderId} folderId={folderId} i={i} />
 			))}

@@ -8,7 +8,7 @@ export const uploadFiles = (files, folderId) => {
 	if (files.length > 0) {
 		let toastId = null;
 
-		// TODO: upload files to backend
+		// upload files to backend
 		let formData = new FormData();
 		const filesPath = [];
 		// the files are not stored in a normal array
