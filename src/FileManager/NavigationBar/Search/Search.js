@@ -29,6 +29,7 @@ const Search = () => {
 		fileExtensionsMap,
 		rootUserFolderId,
 		renderName,
+		breakpointClass,
 	} = useContext(FileManagerContext);
 
 	const [search, setSearch] = useState('');
@@ -41,6 +42,8 @@ const Search = () => {
 	const [captureFocus, setCaptureFocus] = useState(false);
 
 	const [searchResponse, setSearchResponse] = useState([]);
+
+	const [mobileSearchExpanded, setMobileSearchExpanded] = useState(false);
 
 	useHotkeys(shortcutHotkeyGenerate('ctrl+f'), (e) => {
 		e.preventDefault();
@@ -192,68 +195,96 @@ const Search = () => {
 		setSearch('');
 	};
 
+	const onClick = () => {
+		if (!mobileSearchExpanded) {
+			inputRef.current.focus();
+		}
+		setMobileSearchExpanded(!mobileSearchExpanded);
+	};
+
 	return (
-		<div
-			ref={searchContainerRef}
-			className="w-64 px-2 flex align-center justify-between cursor-text"
-			onClick={handleSearchOnClick}
-		>
-			<input
-				ref={inputRef}
-				className={'rounded-sm px-1 w-full bg-shade-3'}
-				type="search"
-				placeholder="Seach"
-				value={search}
-				onChange={handleSearchOnChange}
-				onKeyDown={handleOnKeyDownInput}
-			/>
-
-			<ControlledMenu
-				{...menuProps}
-				{...tooltipProps}
-				anchorPoint={anchorPoint}
-				onClose={() => toggleMenu(false)}
+		<div className="shrink-0 flex">
+			<div
+				ref={searchContainerRef}
+				className={
+					'w-64 px-2 flex align-center justify-between cursor-text ' +
+					breakpointClass({
+						sm: 'block',
+						default: !mobileSearchExpanded ? 'hidden' : '',
+					})
+				}
+				onClick={handleSearchOnClick}
 			>
-				<div className="searchItems w-56">
-					{searching ? (
-						'Searching ...'
-					) : (
-						<>
-							{Object.values(searchResponse).map((value, i) => (
-								<Fragment key={i}>
-									{value.map((record) => (
-										<FileMenuItem
-											key={`${record.id}-${record.__typename}`}
-											img={
-												<RenderIcon
-													className="w-6 h-6 pr-1 object-contain"
-													{...{ record, fileExtensionsMap }}
-												/>
-											}
-											description={renderName(record)}
-											onKeyDown={handleOnKeyDownSearchItem}
-											onClick={() => handleOnClick(record)}
-											title={title(record)}
-										/>
-									))}
-									{i != Object.values(searchResponse).length - 1 && (
-										<MenuDivider />
-									)}
-								</Fragment>
-							))}
+				<input
+					ref={inputRef}
+					className={'rounded-sm px-1 w-full bg-shade-3'}
+					type="search"
+					placeholder="Seach"
+					value={search}
+					onChange={handleSearchOnChange}
+					onKeyDown={handleOnKeyDownInput}
+				/>
 
-							{Object.values(searchResponse).length == 0 && (
-								<FileMenuItem
-									controlledStatePadding={true}
-									description="No results found"
-									onKeyDown={handleOnKeyDownSearchItem}
-									title="No results found"
-								/>
-							)}
-						</>
-					)}
-				</div>
-			</ControlledMenu>
+				<ControlledMenu
+					{...menuProps}
+					{...tooltipProps}
+					anchorPoint={anchorPoint}
+					onClose={() => toggleMenu(false)}
+				>
+					<div className="searchItems w-56">
+						{searching ? (
+							'Searching ...'
+						) : (
+							<>
+								{Object.values(searchResponse).map((value, i) => (
+									<Fragment key={i}>
+										{value.map((record) => (
+											<FileMenuItem
+												key={`${record.id}-${record.__typename}`}
+												img={
+													<RenderIcon
+														className="w-6 h-6 pr-1 object-contain"
+														{...{ record, fileExtensionsMap }}
+													/>
+												}
+												description={renderName(record)}
+												onKeyDown={handleOnKeyDownSearchItem}
+												onClick={() => handleOnClick(record)}
+												title={title(record)}
+											/>
+										))}
+										{i != Object.values(searchResponse).length - 1 && (
+											<MenuDivider />
+										)}
+									</Fragment>
+								))}
+
+								{Object.values(searchResponse).length == 0 && (
+									<FileMenuItem
+										controlledStatePadding={true}
+										description="No results found"
+										onKeyDown={handleOnKeyDownSearchItem}
+										title="No results found"
+									/>
+								)}
+							</>
+						)}
+					</div>
+				</ControlledMenu>
+			</div>
+			<span
+				className={
+					buttonStyle +
+					'hover bg-shade-2 ' +
+					breakpointClass({
+						sm: 'hidden',
+						default: '',
+					})
+				}
+				onClick={onClick}
+			>
+				search
+			</span>
 		</div>
 	);
 };
