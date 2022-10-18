@@ -247,7 +247,10 @@ const FilterContext = () => {
 				onClose={() => setIsOpen(false)}
 			>
 				<MenuHeader>Filter</MenuHeader>
-				<div className="flex flex-col " style={{ minWidth: '500px' }}>
+				<div
+					className="flex flex-col "
+					style={{ width: 'calc(100% + 20px)', paddingRight: '20px' }} // gives a 20px group seperator to the largest group name, instead of nothing at all
+				>
 					{Object.entries(groupBuckets).map(
 						([groupName, filterOptions], index) => (
 							<FilterContextGroup

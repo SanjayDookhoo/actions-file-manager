@@ -474,7 +474,7 @@ const DirectoryLayout = () => {
 
 	return (
 		<div
-			className="w-full"
+			className="flex-grow"
 			onClick={handleEmptySpaceOnClick}
 			onContextMenu={handleOnContextMenuEmpty}
 		>
@@ -595,10 +595,7 @@ const DirectoryLayout = () => {
 					onClose={() => toggleMenuHeaderEmpty(false)}
 				>
 					<div className="w-64">
-						<FilesOptions
-							item={true}
-							buttonsToFilter={['Paste']}
-						/>
+						<FilesOptions item={true} buttonsToFilter={['Paste']} />
 						<FileSubMenu logo="grid_view" description="Layout">
 							<LayoutDropdown />
 						</FileSubMenu>

@@ -193,6 +193,7 @@ const Search = () => {
 
 		toggleMenu(false);
 		setSearch('');
+		setMobileSearchExpanded(false);
 	};
 
 	const onClick = () => {
