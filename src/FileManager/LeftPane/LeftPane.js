@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
+import AvailableSpace from './AvailableSpace';
 import { FileManagerContext } from '../FileManager';
 import { openInNewTab, rootNavigationArray, update } from '../utils/utils';
 import LeftPaneButton from './LeftPaneButton';
 
 const LeftPane = () => {
-	const { tabsState, setTabsState, activeTabId } =
+	const { tabsState, setTabsState, activeTabId, breakpointClass } =
 		useContext(FileManagerContext);
 
 	// const [favoritesIsOpen, setFavoritesIsOpen] = useState(true);
@@ -43,10 +44,23 @@ const LeftPane = () => {
 	};
 
 	return (
-		<div className="flex flex-col items-start shrink-0 p-1 w-12 md:w-52">
-			{rootNavigationArray.map((title) => (
-				<LeftPaneButton key={title} title={title} {...leftPaneButtonProps} />
-			))}
+		<div className="flex flex-col justify-between">
+			<div
+				className={
+					'flex flex-col items-start shrink-0 p-1 ' +
+					breakpointClass({
+						md: 'w-52',
+						default: 'w-12',
+					})
+				}
+			>
+				{rootNavigationArray.map((title) => (
+					<LeftPaneButton key={title} title={title} {...leftPaneButtonProps} />
+				))}
+			</div>
+			<div className="">
+				<AvailableSpace />
+			</div>
 		</div>
 	);
 };
