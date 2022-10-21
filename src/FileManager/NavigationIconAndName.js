@@ -6,7 +6,7 @@ import share from './assets/share.svg';
 import trash from './assets/trash.svg';
 import FolderName from './FolderName';
 
-const NavigationIconAndName = ({ folderId }) => {
+const NavigationIconAndName = ({ folderId, className = '' }) => {
 	const [src, setSrc] = useState();
 
 	useEffect(() => {
@@ -18,7 +18,7 @@ const NavigationIconAndName = ({ folderId }) => {
 	}, [folderId]);
 
 	return (
-		<div className="flex w-full">
+		<div className={'flex w-full ' + className}>
 			<img src={src} className="w-6 h-6 mx-2" />
 			<FolderName folderId={folderId} />
 		</div>

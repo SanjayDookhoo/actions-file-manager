@@ -87,7 +87,14 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 				onClick={() => handleOnClick(title)}
 				onMouseDown={onMouseDown}
 			>
-				<NavigationIconAndName folderId={title} />
+				<NavigationIconAndName
+					folderId={title}
+					className={
+						tabsState[activeTabId].path[0] == title
+							? 'border-l-2 border-conditional-shade-4'
+							: ''
+					}
+				/>
 			</a>
 
 			<ControlledMenu
