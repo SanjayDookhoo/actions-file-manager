@@ -50,7 +50,7 @@ const FileUploadDiv = ({ children, folderId, style }) => {
 			className={
 				'p-1 h-fit border-dashed border ' +
 				(enabled && draggedOver
-					? 'border-conditional-shade-4'
+					? 'border-conditional-color'
 					: 'border-transparent')
 			}
 			style={style}

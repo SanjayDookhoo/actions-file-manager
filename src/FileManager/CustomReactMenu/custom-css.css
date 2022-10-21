@@ -42,11 +42,11 @@
 	cursor: pointer;
 }
 .szh-menu__item:focus {
-	background: var(--bg-conditional-shade-4);
+	background: var(--conditional-color);
 	outline: none;
 }
 .szh-menu__item--hover {
-	background: var(--bg-conditional-shade-4);
+	background: var(--conditional-color);
 }
 .szh-menu__item--focusable {
 	cursor: default;

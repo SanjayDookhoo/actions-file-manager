@@ -97,7 +97,7 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 					folderId={title}
 					className={
 						tabsState[activeTabId].path[0] == title
-							? 'border-l-2 border-conditional-shade-4'
+							? 'border-l-2 border-conditional-color'
 							: ''
 					}
 				/>

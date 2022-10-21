@@ -47,11 +47,11 @@ const FilterContextGroup = ({
 				{Object.keys(filterOptions).map((filterOption) => (
 					<div
 						key={filterOption}
-						className="flex px-3"
+						className="flex px-3 items-center"
 						onClick={() => handleFilterOptionOnClick(groupName, filterOption)}
 					>
 						<input
-							className="mr-1"
+							className="mr-1 accent-conditional-color w-4 h-4"
 							type="checkbox"
 							checked={isChecked(groupName, filterOption)}
 							onChange={(e) => handleCheckboxOnChange(groupName, filterOption)}

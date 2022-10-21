@@ -15,6 +15,7 @@ import DirectoryView from './DirectoryView/DirectoryView';
 import './CustomReactMenu/custom-css.css';
 import './assets/googleFonts.css';
 import {
+	defaultConditionalColor,
 	initialLocalStorageState,
 	newFolderNameDefault,
 	toastAutoClose,
@@ -48,7 +49,7 @@ const FileManager = ({
 	height = '100%',
 	width = '100%',
 	chooseColor = false,
-	color,
+	color = defaultConditionalColor,
 	themeSettings = 'light',
 	actions,
 }) => {
@@ -84,10 +85,15 @@ const FileManager = ({
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
-	const [_files, filesLoading, filesError] = useSubscription(folderId, 'file', 'itemList');
+	const [_files, filesLoading, filesError] = useSubscription(
+		folderId,
+		'file',
+		'itemList'
+	);
 	const [_folders, foldersLoading, foldersError] = useSubscription(
 		folderId,
-		'folder', 'itemList'
+		'folder',
+		'itemList'
 	);
 
 	const [paste, setPaste] = useState(null);
@@ -325,20 +331,16 @@ const FileManager = ({
 					rgba2rgb(rgbAddA(black, alpha))
 				);
 			});
-			if (chooseColor && rgbColor) {
-				[...dark].reverse().forEach((alpha, i) => {
-					fileManager.style.setProperty(
-						`--bg-conditional-shade-${i + 1}`,
-						rgba2rgb(rgbAddA(rgbColor, alpha))
-					);
-				});
+			if (rgbColor) {
+				fileManager.style.setProperty(
+					`--conditional-color`,
+					rgba2rgb(rgbAddA(rgbColor, '1'))
+				);
 			} else {
-				light.forEach((alpha, i) => {
-					fileManager.style.setProperty(
-						`--bg-conditional-shade-${i + 1}`,
-						rgba2rgb(rgbAddA(black, alpha))
-					);
-				});
+				fileManager.style.setProperty(
+					`--conditional-color`,
+					rgba2rgb(rgbAddA(black, light[3]))
+				);
 			}
 		} else {
 			dark.forEach((alpha, i) => {
@@ -347,23 +349,19 @@ const FileManager = ({
 					rgba2rgb(rgbAddA(black, alpha))
 				);
 			});
-			if (chooseColor && rgbColor) {
-				[...dark].reverse().forEach((alpha, i) => {
-					fileManager.style.setProperty(
-						`--bg-conditional-shade-${i + 1}`,
-						rgba2rgb(rgbAddA(rgbColor, alpha))
-					);
-				});
+			if (rgbColor) {
+				fileManager.style.setProperty(
+					`--conditional-color`,
+					rgba2rgb(rgbAddA(rgbColor, '1'))
+				);
 			} else {
-				dark.forEach((alpha, i) => {
-					fileManager.style.setProperty(
-						`--bg-conditional-shade-${i + 1}`,
-						rgba2rgb(rgbAddA(black, alpha))
-					);
-				});
+				fileManager.style.setProperty(
+					`--conditional-color`,
+					rgba2rgb(rgbAddA(black, dark[3]))
+				);
 			}
 		}
-	}, [theme, chooseColor, color]);
+	}, [theme, color]);
 
 	useEffect(() => {
 		const eventHandler = (e) => {

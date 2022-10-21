@@ -8,10 +8,7 @@
 	--bg-shade-2: initial;
 	--bg-shade-3: initial;
 	--bg-shade-4: initial;
-	--bg-conditional-shade-1: initial;
-	--bg-conditional-shade-2: initial;
-	--bg-conditional-shade-3: initial;
-	--bg-conditional-shade-4: initial;
+	--conditional-color: initial;
 }
 
 .bg-shade-1 {
@@ -38,31 +35,16 @@
 .border-shade-4 {
 	border-color: var(--bg-shade-4);
 }
-.bg-conditional-shade-1 {
-	background: var(--bg-conditional-shade-1);
-}
-.bg-conditional-shade-2 {
-	background: var(--bg-conditional-shade-2);
-}
-.bg-conditional-shade-3 {
-	background: var(--bg-conditional-shade-3);
-}
-.bg-conditional-shade-4 {
+.bg-conditional-color {
 	background: var(
-		--bg-conditional-shade-4
+		--conditional-color
 	) !important; /* !important needed to override progress bar theme */
 }
-.border-conditional-shade-1 {
-	border-color: var(--bg-conditional-shade-1);
+.border-conditional-color {
+	border-color: var(--conditional-color);
 }
-.border-conditional-shade-2 {
-	border-color: var(--bg-conditional-shade-2);
-}
-.border-conditional-shade-3 {
-	border-color: var(--bg-conditional-shade-3);
-}
-.border-conditional-shade-4 {
-	border-color: var(--bg-conditional-shade-4);
+.accent-conditional-color {
+	accent-color: var(--conditional-color);
 }
 
 .hover {
@@ -70,11 +52,11 @@
 }
 
 .hover:hover {
-	background: var(--bg-conditional-shade-4);
+	background: var(--conditional-color);
 }
 
 .hover-no-rounding:hover {
-	background: var(--bg-conditional-shade-4);
+	background: var(--conditional-color);
 }
 
 .disabled {

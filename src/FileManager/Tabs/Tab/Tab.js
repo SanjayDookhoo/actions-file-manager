@@ -180,7 +180,7 @@ const Tab = (props) => {
 					(inContextMenu
 						? 'rounded-lg cursor-pointer '
 						: 'rounded-tl-lg rounded-tr-lg ') +
-					(activeTabId == tabId ? 'bg-shade-2 border-conditional-shade-4' : '')
+					(activeTabId == tabId ? 'bg-shade-2 border-conditional-color' : '')
 				}
 			>
 				<div

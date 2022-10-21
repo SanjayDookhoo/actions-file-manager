@@ -1,5 +1,6 @@
 import { data } from 'autoprefixer';
 import {
+	Fragment,
 	useContext,
 	useEffect,
 	useLayoutEffect,
@@ -95,8 +96,8 @@ const SharingLinks = ({ record }) => {
 			{data
 				.sort((a, b) => b.accessType.localeCompare(a.accessType)) // keeps it in order after a link is refreshed, since the order the info is retrieved in from the database, default, is last updated
 				.map((record) => (
-					<>
-						<div key={record.id} className="flex my-1">
+					<Fragment key={record.id}>
+						<div className="flex my-1">
 							<div className="flex items-center rounded-l-full rounded-r-lg w-32 bg-shade-4">
 								<span className={buttonStyle}>
 									{record.accessType == 'EDIT' ? 'edit' : 'visibility'}
@@ -135,7 +136,7 @@ const SharingLinks = ({ record }) => {
 							</div>
 						</div>
 						{confirmRefreshId == record.id && (
-							<div className="flex items-center">
+							<div className="flex items-center py-6">
 								<span className={buttonStyle}>warning</span>
 								<div className="pl-2">
 									Are you sure you would like to refresh link? the link will
@@ -143,7 +144,7 @@ const SharingLinks = ({ record }) => {
 								</div>
 							</div>
 						)}
-					</>
+					</Fragment>
 				))}
 			<div className="flex justify-end">
 				<Button onClick={handleClose}>Done</Button>

@@ -27,7 +27,7 @@ const AvailableSpaceDisplay = () => {
 							style={{ backgroundColor: '#aaa' }}
 						>
 							<div
-								className="bg-blue-300 h-full rounded"
+								className="bg-conditional-color h-full rounded"
 								style={{ width: `${Math.min((used / total) * 100, 100)}%` }} // Math.min used in the event that the percentage ever exceeds 100 for whatever reason
 							></div>
 						</div>

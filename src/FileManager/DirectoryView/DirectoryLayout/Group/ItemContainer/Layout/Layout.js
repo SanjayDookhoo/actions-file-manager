@@ -69,7 +69,7 @@ const Layout = ({ record }) => {
 	return (
 		<div
 			className={
-				'hover ' + (recordIsSelected(record) ? 'bg-conditional-shade-4' : '')
+				'hover ' + (recordIsSelected(record) ? 'bg-conditional-color' : '')
 			}
 			title={renderName(record)}
 		>

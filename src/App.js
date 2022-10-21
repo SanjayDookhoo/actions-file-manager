@@ -1,9 +1,9 @@
 import { createContext, useEffect, useState } from 'react';
 import FileManager from './FileManager/FileManager';
+import { defaultConditionalColor } from './FileManager/utils/constants';
 
 const App = (props) => {
-	const [chooseColor, setChooseColor] = useState(false);
-	const [color, setColor] = useState('#7eb9a0');
+	const [color, setColor] = useState(defaultConditionalColor);
 	const [themeSettings, setThemeSettings] = useState('light');
 
 	const logAction = (record, toast) => {
@@ -46,7 +46,6 @@ const App = (props) => {
 	};
 
 	const fileManagerProps = {
-		chooseColor,
 		color,
 		themeSettings,
 		// actions: groupActions,
@@ -55,23 +54,12 @@ const App = (props) => {
 	return (
 		<div className="flex flex-col h-screen w-full">
 			<div>
-				Choose color
+				Color
 				<input
-					type="checkbox"
-					value={chooseColor}
-					onChange={(e) => setChooseColor(e.target.checked)}
+					type="color"
+					value={color}
+					onChange={(e) => setColor(e.target.value)}
 				/>
-				<span className="slider"></span>
-				{chooseColor && (
-					<>
-						Color
-						<input
-							type="color"
-							value={color}
-							onChange={(e) => setColor(e.target.value)}
-						/>
-					</>
-				)}
 				Text Color
 				<select
 					value={themeSettings}
