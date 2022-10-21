@@ -7,6 +7,7 @@ import { openInNewTab, update } from '../utils/utils';
 import { initialTabState } from '../Tabs/constants';
 import { axiosClientJSON } from '../endpoint';
 import DeleteRestoreConfirmation from '../DeleteRestoreConfirmation';
+import useSubscription from '../useSubscription';
 
 const LeftPaneButton = ({ title, handleOnClick }) => {
 	const { tabsState, setTabsState, activeTabId, setActiveTabId, setModal } =
@@ -79,6 +80,11 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 		});
 	};
 
+	const recycleBinMenuItemsProps = {
+		restoreAllItems,
+		emptyRecycleBin,
+	};
+
 	return (
 		<>
 			<a
@@ -109,18 +115,7 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 						onClick={handleOpenInNewTab}
 					/>
 					{title == 'Recycle bin' && (
-						<>
-							<FileMenuItem
-								logo={false}
-								description="Empty recycle bin"
-								onClick={emptyRecycleBin}
-							/>
-							<FileMenuItem
-								logo={false}
-								description="Restore all items"
-								onClick={restoreAllItems}
-							/>
-						</>
+						<RecycleBinMenuItems {...recycleBinMenuItemsProps} />
 					)}
 				</div>
 			</ControlledMenu>
@@ -129,3 +124,42 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 };
 
 export default LeftPaneButton;
+
+const RecycleBinMenuItems = ({ restoreAllItems, emptyRecycleBin }) => {
+	const [folderData, folderDataLoading, folderDataError] = useSubscription(
+		'Recycle bin',
+		'folder',
+		'aggregate'
+	);
+	const [fileData, fileDataLoading, fileDataError] = useSubscription(
+		'Recycle bin',
+		'file',
+		'aggregate'
+	);
+	const [disabled, setDisabled] = useState(true);
+
+	useEffect(() => {
+		if ((folderData, fileData)) {
+			const folderCount = folderData.data.folderAggregate.aggregate.count;
+			const fileCount = fileData.data.fileAggregate.aggregate.count;
+			setDisabled(folderCount + fileCount == 0);
+		}
+	}, [folderData, fileData]);
+
+	return (
+		<>
+			<FileMenuItem
+				logo={false}
+				description="Empty recycle bin"
+				onClick={emptyRecycleBin}
+				disabled={disabled}
+			/>
+			<FileMenuItem
+				logo={false}
+				description="Restore all items"
+				onClick={restoreAllItems}
+				disabled={disabled}
+			/>
+		</>
+	);
+};
