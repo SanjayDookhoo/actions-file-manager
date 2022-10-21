@@ -84,10 +84,10 @@ const FileManager = ({
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
-	const [_files, filesLoading, filesError] = useSubscription(folderId, 'file');
+	const [_files, filesLoading, filesError] = useSubscription(folderId, 'file', 'itemList');
 	const [_folders, foldersLoading, foldersError] = useSubscription(
 		folderId,
-		'folder'
+		'folder', 'itemList'
 	);
 
 	const [paste, setPaste] = useState(null);

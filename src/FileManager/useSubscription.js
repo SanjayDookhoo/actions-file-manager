@@ -3,7 +3,7 @@ import { backendEndpointWS } from './endpoint';
 import useWebSocket from 'react-use-websocket';
 import { v4 as uuidv4 } from 'uuid';
 
-const useSubscription = (folderId, __typename) => {
+const useSubscription = (folderId, __typename, type) => {
 	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS, {
 		shouldReconnect: (closeEvent) => true,
 	});
@@ -16,10 +16,10 @@ const useSubscription = (folderId, __typename) => {
 			setLoading(true);
 			const id = uuidv4();
 			const token = window.localStorage.getItem('token');
-			sendMessage(JSON.stringify({ __typename, folderId, id, token }));
+			sendMessage(JSON.stringify({ __typename, folderId, id, token, type }));
 			// console.log({ __typename, folderId, id });
 		}
-	}, [__typename, folderId]);
+	}, [__typename, folderId, type]);
 
 	useEffect(() => {
 		if (lastMessage) {
