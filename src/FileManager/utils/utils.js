@@ -54,7 +54,8 @@ export const uploadFiles = (files, folderId) => {
 			})
 			.catch((e) => {
 				toast.update(toastId, {
-					render: 'Upload Failed',
+					// render: 'Upload Failed',
+					render: errorRenderLimitedSpace({ msg: 'Upload failed', data: e }),
 					type: toast.TYPE.ERROR,
 					hideProgressBar: true,
 					// autoClose: toastAutoClose,
@@ -422,4 +423,18 @@ export const hexToRgb = (hex) => {
 	const g = parseInt(aRgbHex[1], 16);
 	const b = parseInt(aRgbHex[2], 16);
 	return `rgb(${r},${g},${b})`;
+};
+
+export const errorRenderLimitedSpace = ({ msg, data }) => {
+	const { errors } = data.response.data;
+	if (errors) {
+		const limitedSpace = errors.find((error) =>
+			error.message.includes('Not enough available space')
+		);
+		if (limitedSpace) {
+			return `${msg}, not enough available space`;
+		}
+	}
+
+	return msg;
 };

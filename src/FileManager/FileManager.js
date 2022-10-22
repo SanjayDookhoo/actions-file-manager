@@ -27,6 +27,7 @@ import {
 } from './endpoint';
 import {
 	colorStyleLayeredOnWhite,
+	errorRenderLimitedSpace,
 	getFolderId,
 	hexToRgb,
 	rgbAddA,
@@ -279,7 +280,14 @@ const FileManager = ({
 		toast.promise(res, {
 			pending: `${operationPending} item/s`,
 			success: `${operationSuccess} item/s`,
-			error: `Failed to ${operationError} item/s`,
+			// error: `Failed to ${operationError} item/s`,
+			error: {
+				render: ({ data }) =>
+					errorRenderLimitedSpace({
+						msg: `Failed to ${operationError} item/s`,
+						data,
+					}),
+			},
 		});
 	};
 
