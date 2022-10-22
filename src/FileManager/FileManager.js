@@ -48,7 +48,6 @@ const localStorageKey = 'actions-file-manager-v1'; // versioned, in case localst
 const FileManager = ({
 	height = '100%',
 	width = '100%',
-	chooseColor = false,
 	color = defaultConditionalColor,
 	themeSettings = 'light',
 	actions,
@@ -434,7 +433,6 @@ const FileManager = ({
 		modal,
 		setModal,
 		renderName,
-		chooseColor,
 		color,
 		theme,
 		actions,

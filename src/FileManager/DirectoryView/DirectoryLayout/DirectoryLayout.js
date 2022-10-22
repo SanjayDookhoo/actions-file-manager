@@ -51,6 +51,7 @@ const DirectoryLayout = () => {
 		handlePaste,
 		rootUserFolderId,
 		sharedAccessType,
+		fileManagerRef,
 	} = useContext(FileManagerContext);
 	const [menuPropsHeader, toggleMenuHeader] = useMenuState();
 	const [anchorPointHeader, setAnchorPointHeader] = useState({ x: 0, y: 0 });
@@ -290,7 +291,6 @@ const DirectoryLayout = () => {
 	};
 
 	const handleMenuHeaderClick = (key) => {
-		console.log({ key });
 		const params = {
 			prev: folderSpecific,
 			localStorage,
@@ -459,6 +459,14 @@ const DirectoryLayout = () => {
 		setItemsPerRow(Math.floor(flexContainerWidth / itemWidth));
 	}, [itemWidth, flexContainerWidth]);
 
+	// needed to fix odd bug: right clicking details header when a grouping type is selected, the grouping seperator can be seen on the context menu
+	const controlledMenuPortal = {
+		target: fileManagerRef.current,
+		stablePosition: true,
+		// https://szhsin.github.io/react-menu/docs
+		// search "portal"
+	};
+
 	const groupProps = {
 		files,
 		folders,
@@ -554,6 +562,7 @@ const DirectoryLayout = () => {
 						<ControlledMenu
 							{...menuPropsHeader}
 							anchorPoint={anchorPointHeader}
+							portal={controlledMenuPortal}
 							onClose={() => toggleMenuHeader(false)}
 						>
 							<div className="w-64">
