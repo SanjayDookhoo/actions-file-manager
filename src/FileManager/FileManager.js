@@ -27,7 +27,7 @@ import {
 } from './endpoint';
 import {
 	colorStyleLayeredOnWhite,
-	errorRenderLimitedSpace,
+	errorRender,
 	getFolderId,
 	hexToRgb,
 	rgbAddA,
@@ -283,9 +283,13 @@ const FileManager = ({
 			// error: `Failed to ${operationError} item/s`,
 			error: {
 				render: ({ data }) =>
-					errorRenderLimitedSpace({
+					errorRender({
 						msg: `Failed to ${operationError} item/s`,
 						data,
+						errorList: [
+							'Not enough available space',
+							'The destination folder is a subfolder of the source folder',
+						],
 					}),
 			},
 		});

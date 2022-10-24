@@ -55,7 +55,11 @@ export const uploadFiles = (files, folderId) => {
 			.catch((e) => {
 				toast.update(toastId, {
 					// render: 'Upload Failed',
-					render: errorRenderLimitedSpace({ msg: 'Upload failed', data: e }),
+					render: errorRender({
+						msg: 'Upload failed',
+						data: e,
+						errorList: ['Not enough available space'],
+					}),
 					type: toast.TYPE.ERROR,
 					hideProgressBar: true,
 					// autoClose: toastAutoClose,
@@ -319,6 +323,10 @@ export const capitalizeFirstLetter = (string) => {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+export const decapitalizeFirstLetter = (string) => {
+	return string.charAt(0).toLowerCase() + string.slice(1);
+};
+
 const defaultSortOrGroupOrder = (column) => {
 	if (dateVariations.includes(column)) return -1; // default ordering for dates is descending
 	return 1;
@@ -425,14 +433,14 @@ export const hexToRgb = (hex) => {
 	return `rgb(${r},${g},${b})`;
 };
 
-export const errorRenderLimitedSpace = ({ msg, data }) => {
-	const { errors } = data.response.data;
+export const errorRender = ({ msg, data, errorList }) => {
+	const { errors } = data?.response?.data ?? {};
 	if (errors) {
-		const limitedSpace = errors.find((error) =>
-			error.message.includes('Not enough available space')
+		const expectedServerError = errors.find((error) =>
+			errorList.includes(error.message)
 		);
-		if (limitedSpace) {
-			return `${msg}, not enough available space`;
+		if (expectedServerError) {
+			return `${msg}, ${decapitalizeFirstLetter(expectedServerError.message)}`;
 		}
 	}
 

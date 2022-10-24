@@ -11,7 +11,7 @@ const AvailableSpaceDisplay = () => {
 
 	useEffect(() => {
 		if (data) {
-			const { size, trashSize } = data.data.folder[0];
+			const { size = 0, trashSize = 0 } = data.data.folder?.[0] ?? {};
 			setUsed(size + trashSize);
 		}
 	}, [data]);
