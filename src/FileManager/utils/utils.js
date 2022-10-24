@@ -29,8 +29,7 @@ export const uploadFiles = (files, folderId) => {
 				folderId, // added this to the headers to allow easy autheticity check since that depends on the folderId, without needing to deal with multipart form data
 			},
 			onUploadProgress: (p) => {
-				const progress = p.loaded / p.total;
-				console.log({ progress });
+				const progress = Math.min(p.loaded / p.total, 0.99); // changing toast type to error when the progress was set to 1, causes the toast to immediately close for some reason, dirty fix
 
 				// check if we already displayed a toast
 				if (toastId === null) {
