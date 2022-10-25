@@ -127,7 +127,7 @@ const SharingLinks = ({ record }) => {
 										</Button>
 										<Button
 											className="ml-2"
-											onClick={() => copyLink(record.link)}
+											onClick={() => refreshLink(record.id)}
 										>
 											Confirm refresh
 										</Button>
