@@ -6,6 +6,13 @@ const App = (props) => {
 	const [color, setColor] = useState(defaultConditionalColor);
 	const [themeSettings, setThemeSettings] = useState('light');
 
+	const openModal = (record, toast, setModal) => {
+		setModal({
+			isOpen: true,
+			htmlStr: '<p>test</p>',
+		});
+	};
+
 	const logAction = (record, toast) => {
 		console.log('testing log: ', record);
 		toast.success('action was successful!');
@@ -16,10 +23,15 @@ const App = (props) => {
 	};
 
 	const actions = [
+		// {
+		// 	description: 'log',
+		// 	function: logAction,
+		// 	displayCondition: logDisplayCondition,
+		// },
 		{
-			description: 'log',
-			function: logAction,
-			displayCondition: logDisplayCondition,
+			description: 'open modal with component',
+			function: openModal,
+			displayCondition: () => true,
 		},
 	];
 
@@ -48,7 +60,7 @@ const App = (props) => {
 	const fileManagerProps = {
 		color,
 		themeSettings,
-		// actions: groupActions,
+		actions: actions,
 	};
 
 	return (

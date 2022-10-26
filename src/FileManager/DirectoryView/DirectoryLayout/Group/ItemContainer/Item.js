@@ -492,7 +492,9 @@ const Item = ({
 											{action.displayCondition(record) && (
 												<FileMenuItem
 													description={action.description}
-													onClick={() => action.function(record, toast)}
+													onClick={() =>
+														action.function(record, toast, setModal)
+													}
 												/>
 											)}
 										</Fragment>
