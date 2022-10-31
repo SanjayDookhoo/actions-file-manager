@@ -14,7 +14,7 @@ const RenderIcon = ({ record, className, style }) => {
 
 	useEffect(() => {
 		const { id, __typename } = record;
-		if (__typename == 'file') {
+		if (__typename === 'file') {
 			axiosClientJSON({
 				url: '/downloadFile',
 				method: 'POST',
@@ -29,7 +29,7 @@ const RenderIcon = ({ record, className, style }) => {
 
 	return (
 		<>
-			{record.__typename == 'folder' ? (
+			{record.__typename === 'folder' ? (
 				<img src={folder} className={className} style={style} />
 			) : (
 				<>

@@ -1,9 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import {
-	capitalizeFirstLetter,
-	formatBytes,
-	update,
-} from '../../../../../utils/utils';
+import { useContext } from 'react';
+import { capitalizeFirstLetter, formatBytes } from '../../../../../utils/utils';
 import { FileManagerContext } from '../../../../../FileManager';
 import DetailsLayout from './DetailsLayout';
 import TilesLayout from './TilesLayout';
@@ -12,15 +8,10 @@ import IconsLayout from './IconsLayout';
 const Layout = ({ record }) => {
 	const {
 		tabsState,
-		setTabsState,
 		activeTabId,
-		setActiveTabId,
 		localStorage,
-		setLocalStorage,
 		fileExtensionsMap,
 		renderName,
-		chooseColor,
-		color,
 	} = useContext(FileManagerContext);
 
 	const renderDate = (record, dateField) => {
@@ -30,7 +21,7 @@ const Layout = ({ record }) => {
 	};
 
 	const renderType = (record) => {
-		if (record.__typename == 'folder') {
+		if (record.__typename === 'folder') {
 			return 'File folder';
 		} else {
 			const ext = (record.name ?? '').split('.').pop();
@@ -40,7 +31,7 @@ const Layout = ({ record }) => {
 	};
 
 	const renderSize = (record) => {
-		if (record.__typename == 'folder') {
+		if (record.__typename === 'folder') {
 			return '';
 		} else {
 			return formatBytes(record.size);
@@ -73,8 +64,8 @@ const Layout = ({ record }) => {
 			}
 			title={renderName(record)}
 		>
-			{localStorage.layout == 'details' && <DetailsLayout {...props} />}
-			{localStorage.layout == 'tiles' && <TilesLayout {...props} />}
+			{localStorage.layout === 'details' && <DetailsLayout {...props} />}
+			{localStorage.layout === 'tiles' && <TilesLayout {...props} />}
 			{localStorage.layout.includes('Icons') && <IconsLayout {...props} />}
 		</div>
 	);

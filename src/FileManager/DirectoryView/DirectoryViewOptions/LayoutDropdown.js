@@ -1,23 +1,9 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import FilesOptions from '../../FilesOptions/FilesOptions';
-import { buttonStyle, layoutOptions } from '../../utils/constants';
-import {
-	Menu,
-	MenuItem,
-	FocusableItem,
-	SubMenu,
-	MenuRadioGroup,
-	MenuDivider,
-	MenuHeader,
-} from '@szhsin/react-menu';
+import { useContext } from 'react';
+import { layoutOptions } from '../../utils/constants';
+import { MenuRadioGroup, MenuDivider, MenuHeader } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { FileManagerContext } from '../../FileManager';
-import {
-	camelCaseToPhrase,
-	isMacOs,
-	shortcutHintGenerate,
-} from '../../utils/utils';
+import { camelCaseToPhrase, shortcutHintGenerate } from '../../utils/utils';
 
 const LayoutDropdown = () => {
 	const { localStorage, setLocalStorage } = useContext(FileManagerContext);

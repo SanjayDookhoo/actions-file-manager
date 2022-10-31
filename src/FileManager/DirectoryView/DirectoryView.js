@@ -1,14 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import DirectoryLayout from './DirectoryLayout/DirectoryLayout';
 import DirectoryViewOptions from './DirectoryViewOptions/DirectoryViewOptions';
 import Footer from './Footer/Footer';
-import DetailsPane from './DetailsPane/DetailsPane';
 import { FileManagerContext } from '../FileManager';
-import { axiosClientFileExtension } from '../endpoint';
 
 const DirectoryView = () => {
-	const { localStorage, setLocalStorage, subscriptionLoading } =
-		useContext(FileManagerContext);
+	const { subscriptionLoading } = useContext(FileManagerContext);
 
 	return (
 		<div className="flex-grow h-full flex flex-col overflow-auto">

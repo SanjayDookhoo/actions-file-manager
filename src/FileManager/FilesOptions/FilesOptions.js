@@ -6,7 +6,6 @@ import { FileManagerContext } from '../FileManager';
 import SharingLinks from '../SharingLinks';
 import { buttonStyle } from '../utils/constants';
 import {
-	getFolderId,
 	shortcutHotkeyGenerate,
 	shortcutHintGenerate,
 	update,
@@ -20,17 +19,8 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		tabsState,
 		setTabsState,
 		activeTabId,
-		setActiveTabId,
-		localStorage,
-		setLocalStorage,
 		files,
 		folders,
-		fileExtensionsMap,
-		setFolderArguments,
-		setFileArguments,
-		filtered,
-		setFiltered,
-		setSharingLinksIsOpen,
 		paste,
 		setPaste,
 		handlePaste,
@@ -55,40 +45,40 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 
 		const map = {
 			Cut: () => {
-				if (path[0] == 'Shared with me' && path.length == 1) return false;
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+				if (path[0] === 'Shared with me' && path.length === 1) return false;
+				if (path[0] === 'Shared with me' && sharedAccessType === 'VIEW')
 					return false;
-				if (path[0] == 'Recycle bin' && path.length != 1) return false; // only allowed at the top level of recycle bin
-				return selectedFolders.length + selectedFiles.length != 0;
+				if (path[0] === 'Recycle bin' && path.length !== 1) return false; // only allowed at the top level of recycle bin
+				return selectedFolders.length + selectedFiles.length !== 0;
 			},
 			Copy: () => {
-				if (path[0] == 'Recycle bin') return false; // not allowed at all in recycle bin folder
-				return selectedFolders.length + selectedFiles.length != 0;
+				if (path[0] === 'Recycle bin') return false; // not allowed at all in recycle bin folder
+				return selectedFolders.length + selectedFiles.length !== 0;
 			},
 			Paste: () => {
-				if (path[0] == 'Shared with me' && path.length == 1) return false;
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+				if (path[0] === 'Shared with me' && path.length === 1) return false;
+				if (path[0] === 'Shared with me' && sharedAccessType === 'VIEW')
 					return false;
-				if (path[0] == 'Recycle bin') return false;
+				if (path[0] === 'Recycle bin') return false;
 				return paste;
 			},
 			Rename: () => {
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+				if (path[0] === 'Shared with me' && sharedAccessType === 'VIEW')
 					return false;
-				if (path[0] == 'Recycle bin') return false;
-				return selectedFolders.length + selectedFiles.length == 1;
+				if (path[0] === 'Recycle bin') return false;
+				return selectedFolders.length + selectedFiles.length === 1;
 			},
 			Share: () => {
-				if (path[0] == 'Shared with me') return false;
-				if (path[0] == 'Recycle bin') return false;
-				return selectedFolders.length + selectedFiles.length == 1;
+				if (path[0] === 'Shared with me') return false;
+				if (path[0] === 'Recycle bin') return false;
+				return selectedFolders.length + selectedFiles.length === 1;
 			},
 			Delete: () => {
-				if (path[0] == 'Shared with me' && path.length == 1) return false;
-				if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW')
+				if (path[0] === 'Shared with me' && path.length === 1) return false;
+				if (path[0] === 'Shared with me' && sharedAccessType === 'VIEW')
 					return false;
-				if (path[0] == 'Recycle bin' && path.length != 1) return false;
-				return selectedFolders.length + selectedFiles.length != 0;
+				if (path[0] === 'Recycle bin' && path.length !== 1) return false;
+				return selectedFolders.length + selectedFiles.length !== 0;
 			},
 		};
 		return map[title]();
@@ -148,7 +138,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 			},
 		});
 		const count = selectedFiles.length + selectedFolders.length;
-		const str = `${count} Item${count != 1 ? 's' : ''}`;
+		const str = `${count} Item${count !== 1 ? 's' : ''}`;
 		toast.promise(res, {
 			pending: `${str} cutting to clipboard`,
 			success: `${str} cut to clipboard`,
@@ -168,7 +158,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 			},
 		});
 		const count = selectedFiles.length + selectedFolders.length;
-		const str = `${count} Item${count != 1 ? 's' : ''}`;
+		const str = `${count} Item${count !== 1 ? 's' : ''}`;
 		toast.promise(res, {
 			pending: `${str} copying to clipboard`,
 			success: `${str} copied to clipboard`,
@@ -185,7 +175,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 
 	const handleDelete = async () => {
 		const { selectedFolders, selectedFiles, path } = tabsState[activeTabId];
-		if (path[0] == 'Recycle bin') {
+		if (path[0] === 'Recycle bin') {
 			setModal({
 				isOpen: true,
 				component: DeleteRestoreConfirmation,
@@ -220,7 +210,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 			});
 
 			const count = selectedFiles.length + selectedFolders.length;
-			const str = `${count} item${count != 1 ? 's' : ''}`;
+			const str = `${count} item${count !== 1 ? 's' : ''}`;
 
 			toast.promise(res, {
 				pending: `Moving ${str} to recycle bin`,
@@ -235,10 +225,10 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		let record;
 
 		// find record
-		if (selectedFolders.length != 0) {
-			record = folders.find((folder) => folder.id == selectedFolders[0]);
+		if (selectedFolders.length !== 0) {
+			record = folders.find((folder) => folder.id === selectedFolders[0]);
 		} else {
-			record = files.find((file) => file.id == selectedFiles[0]);
+			record = files.find((file) => file.id === selectedFiles[0]);
 		}
 		setModal({
 			isOpen: true,
@@ -306,7 +296,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 							</Fragment>
 						)
 					)}
-					{buttonListItemFiltered.length != 0 && <MenuDivider />}
+					{buttonListItemFiltered.length !== 0 && <MenuDivider />}
 				</div>
 			) : (
 				<>

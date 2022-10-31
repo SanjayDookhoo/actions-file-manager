@@ -1,38 +1,13 @@
-import {
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useReducer,
-	useRef,
-	useState,
-} from 'react';
-import FilesOptions from '../../FilesOptions/FilesOptions';
-import { buttonStyle } from '../../utils/constants';
-import {
-	Menu,
-	MenuItem,
-	FocusableItem,
-	SubMenu,
-	MenuRadioGroup,
-	MenuDivider,
-} from '@szhsin/react-menu';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { MenuDivider } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import { axiosClientJSON } from '../../endpoint';
 import { getFolderId, uploadFiles } from '../../utils/utils';
 import { FileManagerContext } from '../../FileManager';
 import NewFolder from '../../NewFolder';
 
 const NewDropdown = () => {
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		setNewFolderIsOpen,
-		rootUserFolderId,
-		setModal,
-	} = useContext(FileManagerContext);
+	const { tabsState, activeTabId, rootUserFolderId, setModal } =
+		useContext(FileManagerContext);
 	const fileUploadRef = useRef();
 	const folderUploadRef = useRef();
 	const [files, setFiles] = useState([]);

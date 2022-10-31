@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { axiosClientJSON } from './endpoint';
-import { FileManagerContext } from './FileManager';
 import { buttonStyle } from './utils/constants';
 
 const Gallery = ({ imageGalleryOrdered, record }) => {
@@ -8,12 +7,14 @@ const Gallery = ({ imageGalleryOrdered, record }) => {
 	const [src, setSrc] = useState('');
 
 	useEffect(() => {
-		const index = imageGalleryOrdered.findIndex((item) => item.id == record.id);
+		const index = imageGalleryOrdered.findIndex(
+			(item) => item.id === record.id
+		);
 		setCurrIndex(index);
 	}, [imageGalleryOrdered, record]);
 
 	useEffect(() => {
-		if (currIndex != -1) {
+		if (currIndex !== -1) {
 			const { id } = imageGalleryOrdered[currIndex];
 			axiosClientJSON({
 				url: '/downloadFile',
@@ -63,7 +64,7 @@ const Gallery = ({ imageGalleryOrdered, record }) => {
 	return (
 		<div className="w-full h-full flex justify-between items-center">
 			<Arrow icon="west" onClick={handleLeft} disabled={isLeftDisabled()} />
-			{currIndex != -1 && (
+			{currIndex !== -1 && (
 				<img
 					// className={className}
 					style={{

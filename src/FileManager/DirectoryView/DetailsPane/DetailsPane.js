@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const name = 'test folder';
 const type = 'folder';
@@ -16,7 +16,7 @@ const DetailsPane = () => {
 				<button>Details</button>
 				<button>Activity</button>
 			</div>
-			{view == 'details' ? (
+			{view === 'details' ? (
 				<div>
 					<div> Name: {name}</div>
 					<div> Type: {type}</div>

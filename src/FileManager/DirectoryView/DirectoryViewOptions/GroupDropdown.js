@@ -68,7 +68,7 @@ const GroupDropdown = () => {
 				<FileMenuItemGroup />
 			</MenuRadioGroup>
 
-			{groupBy != 'none' && (
+			{groupBy !== 'none' && (
 				<>
 					<MenuDivider />
 					<MenuHeader>Group Order</MenuHeader>

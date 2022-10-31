@@ -12,7 +12,6 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import FileFocusableItem from '../../../../CustomReactMenu/FileFocusableItem';
 import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
@@ -49,15 +48,6 @@ const Item = ({
 		activeTabId,
 		setActiveTabId,
 		localStorage,
-		setLocalStorage,
-		files,
-		folders,
-		fileExtensionsMap,
-		setFolderArguments,
-		setFileArguments,
-		filtered,
-		setFiltered,
-		setSharingLinksIsOpen,
 		setModal,
 		actions,
 		fileManagerRef,
@@ -100,16 +90,16 @@ const Item = ({
 
 		if (
 			!(
-				(__typename == 'folder' && selectedFolders.includes(id)) ||
-				(__typename == 'file' && selectedFiles.includes(id))
+				(__typename === 'folder' && selectedFolders.includes(id)) ||
+				(__typename === 'file' && selectedFiles.includes(id))
 			)
 		) {
 			// since the item right clicked was not selected, deselect everything else and only select the item right clicked
 			setTabsState(
 				update(tabsState, {
 					[activeTabId]: {
-						selectedFiles: { $set: __typename == 'file' ? [id] : [] },
-						selectedFolders: { $set: __typename == 'folder' ? [id] : [] },
+						selectedFiles: { $set: __typename === 'file' ? [id] : [] },
+						selectedFolders: { $set: __typename === 'folder' ? [id] : [] },
 					},
 				})
 			);
@@ -118,7 +108,7 @@ const Item = ({
 
 	const canDownload = () => {
 		const { path } = tabsState[activeTabId];
-		if (path[0] == 'Recycle bin') return false;
+		if (path[0] === 'Recycle bin') return false;
 		return true;
 	};
 
@@ -198,10 +188,10 @@ const Item = ({
 
 	const onMouseDown = (e) => {
 		// middle mouse button handle
-		if (e.button == 1) {
+		if (e.button === 1) {
 			e.preventDefault();
 
-			if (item.__typename == 'folder') {
+			if (item.__typename === 'folder') {
 				handleOpenInNewTab();
 			}
 		}
@@ -223,17 +213,17 @@ const Item = ({
 	useLayoutEffect(() => {
 		if (
 			record &&
-			itemIndex == newGroupItemFocus?.itemIndex &&
-			groupIndex == newGroupItemFocus?.groupIndex
+			itemIndex === newGroupItemFocus?.itemIndex &&
+			groupIndex === newGroupItemFocus?.groupIndex
 		) {
 			const multiselect =
-				newGroupItemFocus.event == 'mouse' ? localStorage.multiselect : false;
+				newGroupItemFocus.event === 'mouse' ? localStorage.multiselect : false;
 			const { id, __typename } = record;
 			const { selectedFolders, selectedFiles } = tabsState[activeTabId];
 			let tempSelectedFolders;
 			let tempSelectedFiles;
 
-			if (__typename == 'folder') {
+			if (__typename === 'folder') {
 				if (!multiselect) {
 					tempSelectedFolders = [id];
 					tempSelectedFiles = [];
@@ -241,13 +231,13 @@ const Item = ({
 					tempSelectedFiles = selectedFiles;
 					if (selectedFolders.includes(id)) {
 						tempSelectedFolders = [...selectedFolders];
-						const index = tempSelectedFolders.findIndex((el) => el == id);
+						const index = tempSelectedFolders.findIndex((el) => el === id);
 						tempSelectedFolders.splice(index, 1);
 					} else {
 						tempSelectedFolders = [...selectedFolders, id];
 					}
 				}
-			} else if (__typename == 'file') {
+			} else if (__typename === 'file') {
 				if (!multiselect) {
 					tempSelectedFiles = [id];
 					tempSelectedFolders = [];
@@ -255,7 +245,7 @@ const Item = ({
 					tempSelectedFolders = selectedFolders;
 					if (selectedFiles.includes(id)) {
 						tempSelectedFiles = [...selectedFiles];
-						const index = tempSelectedFiles.findIndex((el) => el == id);
+						const index = tempSelectedFiles.findIndex((el) => el === id);
 						tempSelectedFiles.splice(index, 1);
 					} else {
 						tempSelectedFiles = [...selectedFiles, id];
@@ -299,7 +289,7 @@ const Item = ({
 	};
 
 	useLayoutEffect(() => {
-		if (record && itemIndex == 0) {
+		if (record && itemIndex === 0) {
 			const item = itemRef.current;
 			const handleResizeObserver = () => {
 				const width = item.offsetWidth;
@@ -317,10 +307,10 @@ const Item = ({
 	useLayoutEffect(() => {
 		if (
 			record &&
-			itemIndex == 0 &&
-			groupIndex == 0 &&
+			itemIndex === 0 &&
+			groupIndex === 0 &&
 			!newGroupItemFocus &&
-			keydown != 0
+			keydown !== 0
 		) {
 			setNewGroupItemFocus({
 				groupIndex,
@@ -331,7 +321,7 @@ const Item = ({
 
 	// if first first item, then this facilitates knowing when the first arrow key is pressed
 	useEffect(() => {
-		if (itemIndex == 0 && groupIndex == 0) {
+		if (itemIndex === 0 && groupIndex === 0) {
 			const fileManager = fileManagerRef.current;
 
 			const handleKeydown = (e) => {
@@ -386,7 +376,7 @@ const Item = ({
 	};
 
 	const handleDoubleClick = () => {
-		if (record.__typename == 'folder') {
+		if (record.__typename === 'folder') {
 			updateCurrentFolderId();
 		} else {
 			handleFileDoubleClick();
@@ -396,9 +386,9 @@ const Item = ({
 	const _handleOnKeyDown = (e) => {
 		const { keyCode } = e;
 		if (
-			itemIndex == newGroupItemFocus?.itemIndex &&
-			groupIndex == newGroupItemFocus?.groupIndex &&
-			keyCode == 13
+			itemIndex === newGroupItemFocus?.itemIndex &&
+			groupIndex === newGroupItemFocus?.groupIndex &&
+			keyCode === 13
 		) {
 			handleDoubleClick();
 		}
@@ -422,13 +412,13 @@ const Item = ({
 					onDoubleClick={handleDoubleClick}
 					onKeyDown={_handleOnKeyDown}
 				>
-					{item.__typename == 'folder' && (
+					{item.__typename === 'folder' && (
 						<FileUploadDiv folderId={record.id}>
 							<Layout {...layoutProps} />
 						</FileUploadDiv>
 					)}
 
-					{item.__typename == 'file' && (
+					{item.__typename === 'file' && (
 						<div
 							// similar class to what FileUploadDiv uses, without the hover over with files effect
 							className={
@@ -446,8 +436,8 @@ const Item = ({
 					>
 						<div className="w-64" onClick={(e) => e.stopPropagation()}>
 							<FilesOptions item={true} />
-							{tabsState[activeTabId].path[0] == 'Recycle bin' &&
-								tabsState[activeTabId].path.length == 1 && (
+							{tabsState[activeTabId].path[0] === 'Recycle bin' &&
+								tabsState[activeTabId].path.length === 1 && (
 									<>
 										<FileMenuItem description="Restore" onClick={restore} />
 										<FileMenuItem
@@ -456,10 +446,10 @@ const Item = ({
 										/>
 									</>
 								)}
-							{record.__typename == 'folder' ? (
+							{record.__typename === 'folder' ? (
 								<>
-									{tabsState[activeTabId].path[0] == 'Recycle bin' &&
-										tabsState[activeTabId].path.length == 1 && <MenuDivider />}
+									{tabsState[activeTabId].path[0] === 'Recycle bin' &&
+										tabsState[activeTabId].path.length === 1 && <MenuDivider />}
 									<FileMenuItem
 										description="Open in new tab"
 										onClick={handleOpenInNewTab}
@@ -481,7 +471,7 @@ const Item = ({
 							{Object.entries(groupActions).map(([groupName, actions]) => (
 								<Fragment key={groupName}>
 									{actions.filter((action) => action.displayCondition(record)) // if no action to display, dont show divider and header
-										.length != 0 && (
+										.length !== 0 && (
 										<>
 											<MenuDivider />
 											<MenuHeader>{groupName}</MenuHeader>

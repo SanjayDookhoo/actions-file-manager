@@ -1,11 +1,4 @@
-import {
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useReducer,
-	useRef,
-	useState,
-} from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import Button from './Button';
 import { axiosClientJSON } from './endpoint';
@@ -14,16 +7,8 @@ import { newFolderNameDefault } from './utils/constants';
 import { getFolderId } from './utils/utils';
 
 const NewFolder = () => {
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		setNewFolderIsOpen,
-		rootUserFolderId,
-		modal,
-		setModal,
-	} = useContext(FileManagerContext);
+	const { tabsState, activeTabId, rootUserFolderId, setModal } =
+		useContext(FileManagerContext);
 	const ref = useRef();
 	const [newFolderName, setNewFolderName] = useState(newFolderNameDefault);
 

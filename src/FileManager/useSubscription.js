@@ -24,7 +24,7 @@ const useSubscription = (folderId, __typename, type) => {
 	useEffect(() => {
 		if (lastMessage) {
 			const { status, data, accessType } = JSON.parse(lastMessage.data);
-			if (status == 200) {
+			if (status === 200) {
 				setData({ data, accessType });
 				setError(false);
 			} else {

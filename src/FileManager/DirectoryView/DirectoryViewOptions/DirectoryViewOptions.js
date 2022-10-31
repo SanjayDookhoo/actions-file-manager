@@ -1,16 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import FilesOptions from '../../FilesOptions/FilesOptions';
 import { buttonStyle, layoutOptions } from '../../utils/constants';
-import {
-	Menu,
-	MenuItem,
-	FocusableItem,
-	SubMenu,
-	MenuRadioGroup,
-	MenuDivider,
-} from '@szhsin/react-menu';
-import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
+import { Menu } from '@szhsin/react-menu';
 import SortDropdown from './SortDropdown';
 import SelectionDropdown from './SelectionDropdown';
 import LayoutDropdown from './LayoutDropdown';

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { FileManagerContext } from '../FileManager';
 import { buttonStyle } from '../utils/constants';
 import { shortcutHotkeyGenerate, update } from '../utils/utils';
@@ -11,8 +11,8 @@ const NavigationBar = () => {
 		useContext(FileManagerContext);
 
 	const handleForwardBack = (num) => {
-		if (num == -1 && disabledBack()) return;
-		if (num == 1 && disabledForward()) return;
+		if (num === -1 && disabledBack()) return;
+		if (num === 1 && disabledForward()) return;
 		const { paths, currentIndex } = tabsState[activeTabId].history;
 		const index = currentIndex + num;
 		let path = paths[index];
@@ -38,12 +38,12 @@ const NavigationBar = () => {
 
 	const disabledBack = () => {
 		const { paths, currentIndex } = tabsState[activeTabId].history;
-		return currentIndex == 0;
+		return currentIndex === 0;
 	};
 
 	const disabledForward = () => {
 		const { paths, currentIndex } = tabsState[activeTabId].history;
-		return currentIndex == paths.length - 1;
+		return currentIndex === paths.length - 1;
 	};
 
 	useHotkeys(

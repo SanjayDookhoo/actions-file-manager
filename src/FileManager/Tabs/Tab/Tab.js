@@ -1,15 +1,11 @@
 import { ControlledMenu, useMenuState } from '@szhsin/react-menu';
 import { useContext, useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { FileManagerContext } from '../../FileManager';
-import FolderName from '../../FolderName';
 import NavigationIconAndName from '../../NavigationIconAndName';
 import { buttonStyle } from '../../utils/constants';
-import { isMacOs, openInNewTab, shortcutHintGenerate } from '../../utils/utils';
+import { openInNewTab, shortcutHintGenerate } from '../../utils/utils';
 import { tabMaxWidth, tabMinWidth } from '../constants';
-
-const icon = 'folder';
 
 const Tab = (props) => {
 	const {
@@ -28,8 +24,6 @@ const Tab = (props) => {
 		fileManagerRef,
 		closedTabs,
 		setClosedTabs,
-		chooseColor,
-		color,
 	} = useContext(FileManagerContext);
 	const [width, setWidth] = useState(tabMaxWidth);
 	const [menuProps, toggleMenu] = useMenuState();
@@ -58,10 +52,10 @@ const Tab = (props) => {
 
 	const onMouseDown = (e) => {
 		// middle mouse button handle
-		if (e.button == 1) {
+		if (e.button === 1) {
 			e.preventDefault();
 
-			if (Object.keys(tabsState).length != 1) {
+			if (Object.keys(tabsState).length !== 1) {
 				handleClose(e);
 			}
 		}
@@ -90,7 +84,7 @@ const Tab = (props) => {
 		return (
 			Object.keys(tempTabsState).filter(
 				(key) => tempTabsState[key].order < order
-			).length != 0
+			).length !== 0
 		);
 	};
 
@@ -102,7 +96,7 @@ const Tab = (props) => {
 		return (
 			Object.keys(tempTabsState).filter(
 				(key) => tempTabsState[key].order > order
-			).length != 0
+			).length !== 0
 		);
 	};
 
@@ -138,11 +132,11 @@ const Tab = (props) => {
 
 		const data = { tempTabsState, order, toDelete: [] };
 
-		if (type == 'left' || type == 'other') closeTabsLeft({ data });
-		if (type == 'right' || type == 'other') closeTabsRight({ data });
+		if (type === 'left' || type === 'other') closeTabsLeft({ data });
+		if (type === 'right' || type === 'other') closeTabsRight({ data });
 
 		data.toDelete.forEach((key) => {
-			if (key == activeTabId) setActiveTabId(tabId);
+			if (key === activeTabId) setActiveTabId(tabId);
 			extraClosedTabs[key] = tempTabsState[key];
 			delete tempTabsState[key];
 		});
@@ -180,7 +174,7 @@ const Tab = (props) => {
 					(inContextMenu
 						? 'rounded-lg cursor-pointer '
 						: 'rounded-tl-lg rounded-tr-lg ') +
-					(activeTabId == tabId ? 'bg-shade-2 border-conditional-color' : '')
+					(activeTabId === tabId ? 'bg-shade-2 border-conditional-color' : '')
 				}
 			>
 				<div
@@ -190,7 +184,7 @@ const Tab = (props) => {
 					{/* the width calc minuses the size of the close button */}
 					<NavigationIconAndName folderId={folderId} />
 				</div>
-				{Object.keys(tabsState).length != 1 && (
+				{Object.keys(tabsState).length !== 1 && (
 					<a
 						className="hover"
 						title={`Close tab (Ctrl+Alt+W)`}
@@ -242,7 +236,7 @@ const Tab = (props) => {
 					description="Reopen closed tab"
 					shortcutHint={shortcutHintGenerate(`Ctrl+Alt+Shift+T`)}
 					onClick={reopenClosedTab}
-					disabled={Object.keys(closedTabs).length == 0}
+					disabled={Object.keys(closedTabs).length === 0}
 				/>
 			</ControlledMenu>
 		</div>

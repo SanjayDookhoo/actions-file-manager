@@ -17,7 +17,7 @@ const DeleteRestoreConfirmation = ({
 
 	useEffect(() => {
 		const { all, selectedFiles, selectedFolders } = data;
-		const operation = type == 'restore' ? 'restore' : 'permanently delete';
+		const operation = type === 'restore' ? 'restore' : 'permanently delete';
 		if (all) {
 			setMessage(
 				`Are you sure you want to ${operation} all the items from the recycle bin?`
@@ -26,7 +26,7 @@ const DeleteRestoreConfirmation = ({
 			const count = selectedFiles.length + selectedFolders.length;
 			setMessage(
 				`Are you sure you want to ${operation}: ${count} item${
-					count != 1 ? 's' : ''
+					count !== 1 ? 's' : ''
 				}?`
 			);
 		}
@@ -42,7 +42,7 @@ const DeleteRestoreConfirmation = ({
 
 			// conditional, if in recycle bin currently
 			const { path } = tabsState[activeTabId];
-			if (path[0] == 'Recycle bin') {
+			if (path[0] === 'Recycle bin') {
 				setTabsState(
 					update(tabsState, {
 						[activeTabId]: {
@@ -56,10 +56,11 @@ const DeleteRestoreConfirmation = ({
 
 		const { all, selectedFiles, selectedFolders } = data;
 		const operationPending =
-			type == 'restore' ? 'Restoring' : 'Permanently deleting';
+			type === 'restore' ? 'Restoring' : 'Permanently deleting';
 		const operationSuccess =
-			type == 'restore' ? 'Restored' : 'Permanently deleted';
-		const operationError = type == 'restore' ? 'restore' : 'permanently delete';
+			type === 'restore' ? 'Restored' : 'Permanently deleted';
+		const operationError =
+			type === 'restore' ? 'restore' : 'permanently delete';
 
 		if (all) {
 			toast.promise(res, {
@@ -69,7 +70,7 @@ const DeleteRestoreConfirmation = ({
 			});
 		} else {
 			const count = selectedFiles.length + selectedFolders.length;
-			const str = `${count} item${count != 1 ? 's' : ''}`;
+			const str = `${count} item${count !== 1 ? 's' : ''}`;
 			toast.promise(res, {
 				pending: `${operationPending} ${str}`,
 				success: `${operationSuccess} ${str}`,

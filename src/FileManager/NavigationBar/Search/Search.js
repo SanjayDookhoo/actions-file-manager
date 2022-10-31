@@ -7,12 +7,7 @@ import {
 	useState,
 } from 'react';
 import { buttonStyle } from '../../utils/constants';
-import {
-	ControlledMenu,
-	MenuDivider,
-	MenuItem,
-	useMenuState,
-} from '@szhsin/react-menu';
+import { ControlledMenu, MenuDivider, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { axiosClientJSON } from '../../endpoint';
 import { FileManagerContext } from '../../FileManager';
@@ -25,7 +20,6 @@ const Search = () => {
 		tabsState,
 		setTabsState,
 		activeTabId,
-		setActiveTabId,
 		fileExtensionsMap,
 		rootUserFolderId,
 		renderName,
@@ -131,7 +125,7 @@ const Search = () => {
 	};
 
 	const handleOnKeyDownInput = (e) => {
-		if (e.key == 'ArrowUp' || e.key == 'ArrowDown') {
+		if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
 			e.preventDefault();
 			setCaptureFocus(true);
 		}
@@ -140,7 +134,7 @@ const Search = () => {
 	const title = (record) => {
 		const { relativePathName } = record;
 		const name = renderName(record);
-		if (relativePathName.length == 0) {
+		if (relativePathName.length === 0) {
 			return '../' + name;
 		}
 		return '../' + relativePathName.join('/') + '/' + name;
@@ -149,17 +143,17 @@ const Search = () => {
 	const handleOnClick = (record) => {
 		const { relativePath } = record;
 
-		if (relativePath.length == 0) {
+		if (relativePath.length === 0) {
 			// just select the file
 			setTabsState(
 				update(tabsState, {
 					[activeTabId]: {
 						// clearing other selected files and folders
 						selectedFolders: {
-							$set: record.__typename == 'folder' ? [record.id] : [],
+							$set: record.__typename === 'folder' ? [record.id] : [],
 						},
 						selectedFiles: {
-							$set: record.__typename == 'file' ? [record.id] : [],
+							$set: record.__typename === 'file' ? [record.id] : [],
 						},
 					},
 				})
@@ -181,10 +175,10 @@ const Search = () => {
 						},
 						// clearing other selected files and folders
 						selectedFolders: {
-							$set: record.__typename == 'folder' ? [record.id] : [],
+							$set: record.__typename === 'folder' ? [record.id] : [],
 						},
 						selectedFiles: {
-							$set: record.__typename == 'file' ? [record.id] : [],
+							$set: record.__typename === 'file' ? [record.id] : [],
 						},
 					},
 				})
@@ -254,13 +248,13 @@ const Search = () => {
 												title={title(record)}
 											/>
 										))}
-										{i != Object.values(searchResponse).length - 1 && (
+										{i !== Object.values(searchResponse).length - 1 && (
 											<MenuDivider />
 										)}
 									</Fragment>
 								))}
 
-								{Object.values(searchResponse).length == 0 && (
+								{Object.values(searchResponse).length === 0 && (
 									<FileMenuItem
 										controlledStatePadding={true}
 										description="No results found"

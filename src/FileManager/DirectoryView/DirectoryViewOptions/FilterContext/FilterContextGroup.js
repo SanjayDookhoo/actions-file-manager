@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
 import { buttonStyle } from '../../../utils/constants';
 import { camelCaseToPhrase } from '../../../utils/utils';
 
 const FilterContextGroup = ({
 	groupName,
 	filterOptions,
-	index,
 	handleFilterOptionOnClick,
 	handleCheckboxOnChange,
 	isChecked,
@@ -26,7 +24,7 @@ const FilterContextGroup = ({
 			>
 				<div>
 					<span className={buttonStyle}>
-						{opened == groupName ? 'expand_more' : 'expand_less'}
+						{opened === groupName ? 'expand_more' : 'expand_less'}
 					</span>
 				</div>
 				<div className="py-2 flex items-center">
@@ -40,7 +38,7 @@ const FilterContextGroup = ({
 			<div
 				className={
 					'flex flex-col flex-wrap overflow-auto ' +
-					(opened != groupName ? 'hidden ' : ' ')
+					(opened !== groupName ? 'hidden ' : ' ')
 				}
 				style={{ maxHeight: '200px' }}
 			>

@@ -1,34 +1,25 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { FileManagerContext } from '../../../../../FileManager';
 import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const DetailsLayout = (props) => {
-	const { record, renderDate, renderType, renderSize, recordIsSelected } =
-		props;
+	const { record, renderDate, renderType, renderSize } = props;
 
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		localStorage,
-		setLocalStorage,
-		fileExtensionsMap,
-		renderName,
-	} = useContext(FileManagerContext);
+	const { localStorage, fileExtensionsMap, renderName } =
+		useContext(FileManagerContext);
 
 	const { detailsLayoutMeta } = localStorage;
 
 	const columnDetails = (key) => {
-		if (key == 'name') {
+		if (key === 'name') {
 			// return renderName(record);
 			return <Rename record={record} renderName={renderName} />;
 		} else if (['created', 'modified', 'lastAccessed'].includes(key)) {
 			return renderDate(record, key);
-		} else if (key == 'type') {
+		} else if (key === 'type') {
 			return renderType(record);
-		} else if (key == 'size') {
+		} else if (key === 'size') {
 			return renderSize(record);
 		}
 	};

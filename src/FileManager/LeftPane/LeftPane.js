@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import AvailableSpace from './AvailableSpace';
 import { FileManagerContext } from '../FileManager';
-import { openInNewTab, rootNavigationArray, update } from '../utils/utils';
+import { rootNavigationArray, update } from '../utils/utils';
 import LeftPaneButton from './LeftPaneButton';
 
 const LeftPane = () => {
@@ -15,7 +15,7 @@ const LeftPane = () => {
 		const newPath = [rootNavigation];
 		if (
 			// clicked the same item that is the current path
-			JSON.stringify(newPath) != JSON.stringify(tabsState[activeTabId].path)
+			JSON.stringify(newPath) !== JSON.stringify(tabsState[activeTabId].path)
 		) {
 			setTabsState(
 				update(tabsState, {

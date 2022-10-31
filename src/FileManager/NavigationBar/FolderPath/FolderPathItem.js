@@ -19,7 +19,7 @@ const FolderPathItem = ({ folderId, i }) => {
 	};
 
 	const handleFolderPathOnClick = () => {
-		if (folderId == [...tabsState[activeTabId].path].reverse()[0]) {
+		if (folderId === [...tabsState[activeTabId].path].reverse()[0]) {
 			// if the last path is clicked, just reset the selected folders and files
 			setTabsState(
 				update(tabsState, {
@@ -36,7 +36,7 @@ const FolderPathItem = ({ folderId, i }) => {
 			);
 		} else {
 			const index = tabsState[activeTabId].path.findIndex(
-				(el) => el == folderId
+				(el) => el === folderId
 			);
 			let newPath = [...tabsState[activeTabId].path];
 			newPath = newPath.slice(0, index + 1);
@@ -65,7 +65,7 @@ const FolderPathItem = ({ folderId, i }) => {
 	const handleOpenInNewTab = () => {
 		const tabId = activeTabId;
 		let newTabState;
-		if (folderId == [...tabsState[activeTabId].path].reverse()[0]) {
+		if (folderId === [...tabsState[activeTabId].path].reverse()[0]) {
 			newTabState = update(tabsState[activeTabId], {
 				// clearing other selected files and folders
 				selectedFolders: {
@@ -77,7 +77,7 @@ const FolderPathItem = ({ folderId, i }) => {
 			});
 		} else {
 			const index = tabsState[activeTabId].path.findIndex(
-				(el) => el == folderId
+				(el) => el === folderId
 			);
 			let newPath = [...tabsState[activeTabId].path];
 			newPath = newPath.slice(0, index + 1);
@@ -108,7 +108,7 @@ const FolderPathItem = ({ folderId, i }) => {
 
 	const onMouseDown = (e) => {
 		// middle mouse button handle
-		if (e.button == 1) {
+		if (e.button === 1) {
 			e.preventDefault();
 
 			handleOpenInNewTab();
@@ -118,7 +118,7 @@ const FolderPathItem = ({ folderId, i }) => {
 		<div
 			className={
 				'flex align-center pl-1 ' +
-				(i != tabsState[activeTabId]?.path.length - 1
+				(i !== tabsState[activeTabId]?.path.length - 1
 					? 'cursor-pointer hover'
 					: '')
 			}
@@ -127,7 +127,7 @@ const FolderPathItem = ({ folderId, i }) => {
 			onMouseDown={onMouseDown}
 		>
 			<FolderName folderId={folderId} />
-			{i != tabsState[activeTabId]?.path.length - 1 && (
+			{i !== tabsState[activeTabId]?.path.length - 1 && (
 				<span className="material-symbols-outlined">chevron_right</span>
 			)}
 

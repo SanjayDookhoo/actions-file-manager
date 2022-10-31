@@ -11,22 +11,8 @@ import { update } from '../../../../../utils/utils';
 import { toast } from 'react-toastify';
 
 const Rename = ({ record }) => {
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		localStorage,
-		setLocalStorage,
-		files,
-		folders,
-		fileExtensionsMap,
-		setFolderArguments,
-		setFileArguments,
-		filtered,
-		setFiltered,
-		renderName,
-	} = useContext(FileManagerContext);
+	const { tabsState, setTabsState, activeTabId, renderName } =
+		useContext(FileManagerContext);
 	const ref = useRef();
 	const [value, setValue] = useState('');
 
@@ -89,7 +75,7 @@ const Rename = ({ record }) => {
 
 	const handleOnFocus = async (e) => {
 		const { name, __typename } = record;
-		if (__typename == 'file') {
+		if (__typename === 'file') {
 			const nameSplit = name.split('.');
 			nameSplit.pop();
 			const cursorLocation = nameSplit.join('.').length;
@@ -108,9 +94,9 @@ const Rename = ({ record }) => {
 		const { renaming, selectedFolders, selectedFiles } = tab;
 		return (
 			renaming &&
-			// selectedFolders.length == 1 &&
-			// selectedFiles.length == 0 &&
-			(selectedFolders[0] == record.id || selectedFiles[0] == record.id)
+			// selectedFolders.length === 1 &&
+			// selectedFiles.length === 0 &&
+			(selectedFolders[0] === record.id || selectedFiles[0] === record.id)
 		);
 	};
 

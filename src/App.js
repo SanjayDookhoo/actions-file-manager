@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import FileManager from './FileManager/FileManager';
 import { defaultConditionalColor } from './FileManager/utils/constants';
 

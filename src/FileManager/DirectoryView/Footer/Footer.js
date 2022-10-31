@@ -18,7 +18,7 @@ const Footer = () => {
 		} else {
 			let size = 0;
 			selectedFiles.forEach((selectedFile) => {
-				const file = files.find((file) => file.id == selectedFile);
+				const file = files.find((file) => file.id === selectedFile);
 				if (file) {
 					size += file.size;
 				}
@@ -30,10 +30,10 @@ const Footer = () => {
 	return (
 		<div className="flex">
 			<div className={className}>{folders.length + files.length} items</div>
-			{countSelected != 0 && (
+			{countSelected !== 0 && (
 				<>
 					<div className={className}>
-						{countSelected} {countSelected == 1 ? 'item' : 'items'} selected
+						{countSelected} {countSelected === 1 ? 'item' : 'items'} selected
 					</div>
 					{totalSize && <div className={className}>{totalSize}</div>}
 				</>

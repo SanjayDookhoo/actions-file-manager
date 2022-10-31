@@ -1,22 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { FileManagerContext } from '../../../../../FileManager';
 import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const IconsLayout = (props) => {
-	const { record, renderDate, renderType, renderSize, recordIsSelected } =
-		props;
+	const { record } = props;
 
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		localStorage,
-		setLocalStorage,
-		fileExtensionsMap,
-		renderName,
-	} = useContext(FileManagerContext);
+	const { localStorage, fileExtensionsMap, renderName } =
+		useContext(FileManagerContext);
 
 	const { layout } = localStorage;
 
@@ -28,7 +19,7 @@ const IconsLayout = (props) => {
 					(!layout.includes('small') ? 'flex-col' : '')
 				}
 			>
-				{layout == 'smallIcons' && (
+				{layout === 'smallIcons' && (
 					<>
 						<RenderIcon
 							className="w-4 h-4 object-contain"
@@ -45,7 +36,7 @@ const IconsLayout = (props) => {
 					</>
 				)}
 
-				{layout == 'mediumIcons' && (
+				{layout === 'mediumIcons' && (
 					<>
 						<RenderIcon
 							className="w-16 h-16 object-contain"
@@ -62,7 +53,7 @@ const IconsLayout = (props) => {
 					</>
 				)}
 
-				{layout == 'largeIcons' && (
+				{layout === 'largeIcons' && (
 					<>
 						<RenderIcon
 							className="w-32 h-32 object-contain"

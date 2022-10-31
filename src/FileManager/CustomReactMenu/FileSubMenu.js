@@ -1,5 +1,4 @@
-import { MenuItem, SubMenu } from '@szhsin/react-menu';
-import { buttonStyle } from '../utils/constants';
+import { SubMenu } from '@szhsin/react-menu';
 
 // creates layout of item to be placed in Label
 // for some reasons the intended arrow of the creator of the package doesnt show, probably ties in with tailwind, make my own arrow

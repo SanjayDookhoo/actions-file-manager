@@ -1,16 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
-import FilesOptions from '../../FilesOptions/FilesOptions';
+import { useContext } from 'react';
 import { buttonStyle } from '../../utils/constants';
-import {
-	Menu,
-	MenuItem,
-	FocusableItem,
-	SubMenu,
-	MenuRadioGroup,
-	MenuDivider,
-} from '@szhsin/react-menu';
+import { Menu, MenuDivider } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import { FileManagerContext } from '../../FileManager';
 import { update } from '../../utils/utils';
 

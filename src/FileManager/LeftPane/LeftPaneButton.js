@@ -5,7 +5,6 @@ import NavigationIconAndName from '../NavigationIconAndName';
 import { FileManagerContext } from '../FileManager';
 import { openInNewTab, update } from '../utils/utils';
 import { initialTabState } from '../Tabs/constants';
-import { axiosClientJSON } from '../endpoint';
 import DeleteRestoreConfirmation from '../DeleteRestoreConfirmation';
 import useSubscription from '../useSubscription';
 
@@ -41,7 +40,7 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 
 	const onMouseDown = (e) => {
 		// middle mouse button handle
-		if (e.button == 1) {
+		if (e.button === 1) {
 			e.preventDefault();
 
 			handleOpenInNewTab();
@@ -96,7 +95,7 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 				<NavigationIconAndName
 					folderId={title}
 					className={
-						tabsState[activeTabId].path[0] == title
+						tabsState[activeTabId].path[0] === title
 							? 'border-l-2 border-conditional-color'
 							: ''
 					}
@@ -114,7 +113,7 @@ const LeftPaneButton = ({ title, handleOnClick }) => {
 						description="Open in new tab"
 						onClick={handleOpenInNewTab}
 					/>
-					{title == 'Recycle bin' && (
+					{title === 'Recycle bin' && (
 						<RecycleBinMenuItems {...recycleBinMenuItemsProps} />
 					)}
 				</div>
@@ -142,7 +141,7 @@ const RecycleBinMenuItems = ({ restoreAllItems, emptyRecycleBin }) => {
 		if ((folderData, fileData)) {
 			const folderCount = folderData.data.folderAggregate.aggregate.count;
 			const fileCount = fileData.data.fileAggregate.aggregate.count;
-			setDisabled(folderCount + fileCount == 0);
+			setDisabled(folderCount + fileCount === 0);
 		}
 	}, [folderData, fileData]);
 

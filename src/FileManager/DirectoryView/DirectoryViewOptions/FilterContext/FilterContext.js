@@ -1,36 +1,18 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import FilesOptions from '../../../FilesOptions/FilesOptions';
 import { buttonStyle } from '../../../utils/constants';
-import {
-	Menu,
-	MenuItem,
-	FocusableItem,
-	SubMenu,
-	MenuRadioGroup,
-	MenuDivider,
-	ControlledMenu,
-	MenuHeader,
-} from '@szhsin/react-menu';
-import FileMenuItem from '../../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../../CustomReactMenu/FileSubMenu';
-import { camelCaseToPhrase, createBuckets, update } from '../../../utils/utils';
+import { ControlledMenu, MenuHeader } from '@szhsin/react-menu';
+import { createBuckets } from '../../../utils/utils';
 import { FileManagerContext } from '../../../FileManager';
 import FilterContextGroup from './FilterContextGroup';
 
 const FilterContext = () => {
 	const {
 		tabsState,
-		setTabsState,
 		activeTabId,
-		setActiveTabId,
 		localStorage,
-		setLocalStorage,
 		files,
 		folders,
 		fileExtensionsMap,
-		setFolderArguments,
-		setFileArguments,
-		filtered,
 		setFiltered,
 		fileManagerRef,
 		breakpointClass,
@@ -115,11 +97,11 @@ const FilterContext = () => {
 		// create final array of items created here, the smallest array of groupName is chosen, where each value in that array is compared with the other groups, if the value exists in all other groups, then it is allowed to be shown
 
 		// choose array of the smallest length to start with
-		let smallestGroupName;
+		let smallestGroupName = null;
 		let smallestGroupSize;
 		Object.entries(inclusion).forEach(([groupName, inclusionValues]) => {
 			if (
-				smallestGroupName == null ||
+				smallestGroupName === null ||
 				inclusionValues.length < smallestGroupSize
 			) {
 				smallestGroupName = groupName;
@@ -134,7 +116,7 @@ const FilterContext = () => {
 				let flag = true;
 
 				for (const [groupName, inclusionValues] of Object.entries(inclusion)) {
-					if (groupName != smallestGroupName) {
+					if (groupName !== smallestGroupName) {
 						if (!inclusionValues.includes(el)) {
 							flag = false;
 							break;
@@ -164,7 +146,7 @@ const FilterContext = () => {
 				const index = tempGroupName.indexOf(filterOption);
 				tempGroupName.splice(index, 1);
 				// needs to be removed, but if its removed, and the property now has no items, the entire property should be removed, because an empty group name property is treated as all selected
-				if (tempGroupName.length == 0) {
+				if (tempGroupName.length === 0) {
 					delete tempFilterSelected[groupName];
 					setFilterSelected(tempFilterSelected);
 				} else {
@@ -224,7 +206,7 @@ const FilterContext = () => {
 				onClick={() => setIsOpen(true)}
 			>
 				<span className={buttonStyle}>
-					{Object.keys(filterSelected).length == 0
+					{Object.keys(filterSelected).length === 0
 						? 'filter_alt_off'
 						: 'filter_alt'}
 				</span>

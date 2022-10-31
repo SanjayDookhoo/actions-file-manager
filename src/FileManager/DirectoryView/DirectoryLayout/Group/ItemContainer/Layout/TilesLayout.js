@@ -4,16 +4,9 @@ import Rename from './Rename';
 import RenderIcon from './RenderIcon';
 
 const TilesLayout = (props) => {
-	const { record, renderDate, renderType, renderSize, recordIsSelected } =
-		props;
+	const { record, renderType, renderSize } = props;
 
-	const {
-		fileExtensionsMap,
-		tabsState,
-		setTabsState,
-		activeTabId,
-		renderName,
-	} = useContext(FileManagerContext);
+	const { fileExtensionsMap, renderName } = useContext(FileManagerContext);
 
 	return (
 		<>
@@ -23,7 +16,7 @@ const TilesLayout = (props) => {
 					{...{ record, fileExtensionsMap }}
 				/>
 				<div className="pl-2 w-32 h-16 flex flex-col justify-center">
-					{record.__typename == 'folder' ? (
+					{record.__typename === 'folder' ? (
 						<div
 							className="text-ellipsis overflow-hidden ellipsis-3-line"
 							style={{ lineHeight: '21px' }}

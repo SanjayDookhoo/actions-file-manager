@@ -1,30 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
-import FilesOptions from '../../FilesOptions/FilesOptions';
-import { buttonStyle } from '../../utils/constants';
-import {
-	Menu,
-	MenuItem,
-	FocusableItem,
-	SubMenu,
-	MenuRadioGroup,
-	MenuDivider,
-	MenuHeader,
-} from '@szhsin/react-menu';
+import { useContext } from 'react';
+import { MenuRadioGroup, MenuDivider, MenuHeader } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
-import { setLocalStorageFolderSpecific, update } from '../../utils/utils';
+import { setLocalStorageFolderSpecific } from '../../utils/utils';
 import { FileManagerContext } from '../../FileManager';
 import FileMenuItemGroup from './FileMenuItemGroup';
 
 const SortDropdown = () => {
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		localStorage,
-		setLocalStorage,
-	} = useContext(FileManagerContext);
+	const { tabsState, activeTabId, localStorage, setLocalStorage } =
+		useContext(FileManagerContext);
 
 	const { path } = tabsState[activeTabId];
 	const folderSpecific = localStorage.folderSpecific?.[path] ?? {};

@@ -1,16 +1,10 @@
-import {
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-	useState,
-} from 'react';
+import { useContext } from 'react';
 import { buttonStyle } from '../utils/constants';
-import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
+import { tabMaxWidth } from './constants';
 import Tab from './Tab/Tab';
-import { Menu, MenuItem, FocusableItem } from '@szhsin/react-menu';
+import { Menu } from '@szhsin/react-menu';
 import { FileManagerContext } from '../FileManager';
-import { isMacOs, shortcutHintGenerate } from '../utils/utils';
+import { shortcutHintGenerate } from '../utils/utils';
 
 const VerticalFlyoutMenu = (props) => {
 	const { addNewTab, closeTab } = props;

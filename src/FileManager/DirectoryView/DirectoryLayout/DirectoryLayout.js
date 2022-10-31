@@ -1,28 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
-import {
-	ControlledMenu,
-	FocusableItem,
-	MenuDivider,
-	MenuItem,
-	useMenuState,
-} from '@szhsin/react-menu';
+import { ControlledMenu, MenuDivider, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { buttonStyle, imageTypes } from '../../utils/constants';
-import FileFocusableItem from '../../CustomReactMenu/FileFocusableItem';
 import FileUploadDiv from '../../FileUploadDiv/FileUploadDiv';
 import {
 	camelCaseToPhrase,
 	canEdit,
 	createBuckets,
 	dateVariations,
-	formatBytes,
 	getFolderId,
 	setLocalStorageFolderSpecific,
 	update,
 } from '../../utils/utils';
 import { FileManagerContext } from '../../FileManager';
-import defaultFile from '../../assets/defaultFile.webp';
-import folder from '../../assets/folder.svg';
 import Group from './Group/Group';
 import FileSubMenu from '../../CustomReactMenu/FileSubMenu';
 import GroupDropdown from '../DirectoryViewOptions/GroupDropdown';
@@ -37,18 +27,12 @@ const DirectoryLayout = () => {
 		tabsState,
 		setTabsState,
 		activeTabId,
-		setActiveTabId,
 		localStorage,
 		setLocalStorage,
 		files,
 		folders,
 		fileExtensionsMap,
-		setFolderArguments,
-		setFileArguments,
 		filtered,
-		setFiltered,
-		paste,
-		handlePaste,
 		rootUserFolderId,
 		sharedAccessType,
 		fileManagerRef,
@@ -99,8 +83,8 @@ const DirectoryLayout = () => {
 		Object.values(filteredGroupedSorted).forEach((groups) => {
 			const imagesTemp = groups.filter((item) => {
 				const { id, __typename } = item;
-				if (__typename == 'folder') return false;
-				const record = files.find((file) => file.id == id);
+				if (__typename === 'folder') return false;
+				const record = files.find((file) => file.id === id);
 				if (record) {
 					const ext = (record.name ?? '').split('.').pop();
 					if (imageTypes.includes(ext)) return true;
@@ -115,9 +99,9 @@ const DirectoryLayout = () => {
 	const getRecord = (item) => {
 		const { id, __typename } = item;
 		let record;
-		if (__typename == 'folder')
-			record = folders.find((folder) => folder.id == id);
-		else record = files.find((file) => file.id == id);
+		if (__typename === 'folder')
+			record = folders.find((folder) => folder.id === id);
+		else record = files.find((file) => file.id === id);
 		return record;
 	};
 
@@ -142,7 +126,7 @@ const DirectoryLayout = () => {
 				return 1;
 			}
 
-			if (sortBy == 'name') {
+			if (sortBy === 'name') {
 				const a = recordA[sortBy];
 				const b = recordB[sortBy];
 				const compare = a.localeCompare(b);
@@ -152,20 +136,20 @@ const DirectoryLayout = () => {
 				const b = recordB.meta[sortBy];
 				const compare = new Date(a) - new Date(b);
 				return compare * sortOrder;
-			} else if (sortBy == 'size') {
+			} else if (sortBy === 'size') {
 				const a = recordA[sortBy];
 				const b = recordB[sortBy];
 				const compare = a - b;
 				return compare * sortOrder;
-			} else if (sortBy == 'type') {
+			} else if (sortBy === 'type') {
 				const aExt = recordA.name.split('.').pop();
 				const bExt = recordB.name.split('.').pop();
 				let a =
-					_a.__typename == 'folder'
+					_a.__typename === 'folder'
 						? 'File folder'
 						: fileExtensionsMap?.[aExt]?.fullName;
 				let b =
-					_b.__typename == 'folder'
+					_b.__typename === 'folder'
 						? 'File folder'
 						: fileExtensionsMap?.[bExt]?.fullName;
 				a = a ? a : aExt.toUpperCase() + ' File';
@@ -221,9 +205,9 @@ const DirectoryLayout = () => {
 	}, []);
 
 	useEffect(() => {
-		if (groupBy != 'none' && groupBuckets[groupBy]) {
+		if (groupBy !== 'none' && groupBuckets[groupBy]) {
 			let orderedKeys = Object.keys(groupBuckets[groupBy]);
-			if (groupOrder == -1) orderedKeys = [...orderedKeys].reverse();
+			if (groupOrder === -1) orderedKeys = [...orderedKeys].reverse();
 			const tempFilteredGroup = {};
 
 			orderedKeys.forEach((key) => {
@@ -353,8 +337,8 @@ const DirectoryLayout = () => {
 
 		const itemGroups = Object.values(filteredGroupedSorted);
 
-		if (localStorage.layout == 'details') {
-			if (keyCode == 38) {
+		if (localStorage.layout === 'details') {
+			if (keyCode === 38) {
 				// up
 				const newItemIndex = itemIndex - 1;
 				if (newItemIndex >= 0) {
@@ -369,7 +353,7 @@ const DirectoryLayout = () => {
 						itemIndex: itemGroups[newGroupIndex].length - 1,
 					};
 				}
-			} else if (keyCode == 40) {
+			} else if (keyCode === 40) {
 				// down
 				const newItemIndex = itemIndex + 1;
 				if (newItemIndex < itemGroups[groupIndex].length) {
@@ -386,7 +370,7 @@ const DirectoryLayout = () => {
 				}
 			}
 		} else {
-			if (keyCode == 37) {
+			if (keyCode === 37) {
 				// left
 				const newItemIndex = itemIndex - 1;
 				if (newItemIndex >= 0) {
@@ -401,7 +385,7 @@ const DirectoryLayout = () => {
 						itemIndex: itemGroups[newGroupIndex].length - 1,
 					};
 				}
-			} else if (keyCode == 38) {
+			} else if (keyCode === 38) {
 				// up
 				const newItemIndex = itemIndex - itemsPerRow;
 				if (newItemIndex >= 0) {
@@ -416,7 +400,7 @@ const DirectoryLayout = () => {
 						itemIndex: itemGroups[newGroupIndex].length - 1,
 					};
 				}
-			} else if (keyCode == 39) {
+			} else if (keyCode === 39) {
 				// right
 				const newItemIndex = itemIndex + 1;
 				if (newItemIndex < itemGroups[groupIndex].length) {
@@ -431,7 +415,7 @@ const DirectoryLayout = () => {
 						itemIndex: 0,
 					};
 				}
-			} else if (keyCode == 40) {
+			} else if (keyCode === 40) {
 				// down
 				const newItemIndex = itemIndex + itemsPerRow;
 				if (newItemIndex < itemGroups[groupIndex].length) {
@@ -490,7 +474,7 @@ const DirectoryLayout = () => {
 				folderId={getFolderId({ tabsState, activeTabId, rootUserFolderId })}
 				style={{ minHeight: '100%' }}
 			>
-				{layout == 'details' && (
+				{layout === 'details' && (
 					<div className="sticky top-0 bg-shade-2">
 						<DragDropContext onDragEnd={handleOnDragEnd}>
 							<Droppable droppableId="droppable" direction="horizontal">
@@ -528,12 +512,12 @@ const DirectoryLayout = () => {
 																	onContextMenu={handleOnContextMenuHeader}
 																>
 																	{camelCaseToPhrase(key)}
-																	{sortBy == key && sortOrder == 1 && (
+																	{sortBy === key && sortOrder === 1 && (
 																		<span className={buttonStyle}>
 																			expand_less
 																		</span>
 																	)}
-																	{sortBy == key && sortOrder == -1 && (
+																	{sortBy === key && sortOrder === -1 && (
 																		<span className={buttonStyle}>
 																			expand_more
 																		</span>
@@ -579,7 +563,7 @@ const DirectoryLayout = () => {
 											checked={meta.visible}
 											onClick={(e) => setDetailsLayoutMeta(e, key)}
 											description={camelCaseToPhrase(key)}
-											disabled={key == 'name' ? true : false}
+											disabled={key === 'name' ? true : false}
 										/>
 									)
 								)}

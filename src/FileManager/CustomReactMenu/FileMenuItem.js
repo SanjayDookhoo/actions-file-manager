@@ -1,5 +1,4 @@
 import { MenuItem } from '@szhsin/react-menu';
-import { buttonStyle } from '../utils/constants';
 
 const newButtonStyle =
 	'material-symbols-outlined w-8 h-9 pr-1 flex justify-start items-center rounded-lg ';

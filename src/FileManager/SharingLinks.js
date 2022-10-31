@@ -1,13 +1,4 @@
-import { data } from 'autoprefixer';
-import {
-	Fragment,
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useReducer,
-	useRef,
-	useState,
-} from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { axiosClientJSON } from './endpoint';
 import { FileManagerContext } from './FileManager';
 import { buttonStyle } from './utils/constants';
@@ -56,7 +47,7 @@ const SharingLinks = ({ record }) => {
 			const { link } = res.data.returning[0];
 
 			let tempData = [...data];
-			const index = tempData.findIndex((record) => record.id == id);
+			const index = tempData.findIndex((record) => record.id === id);
 			const newRecord = {
 				...tempData[index],
 				link,
@@ -77,7 +68,7 @@ const SharingLinks = ({ record }) => {
 	};
 
 	const refreshLink = (id) => {
-		if (id != confirmRefreshId) {
+		if (id !== confirmRefreshId) {
 			setConfirmRefreshId(id);
 		} else {
 			confirmedRefreshLink(id);
@@ -100,17 +91,17 @@ const SharingLinks = ({ record }) => {
 						<div className="flex my-1">
 							<div className="flex items-center rounded-l-full rounded-r-lg w-32 bg-shade-4">
 								<span className={buttonStyle}>
-									{record.accessType == 'EDIT' ? 'edit' : 'visibility'}
+									{record.accessType === 'EDIT' ? 'edit' : 'visibility'}
 								</span>
 								<div>
-									{record.accessType == 'EDIT' ? 'Edit' : 'View'} Access
+									{record.accessType === 'EDIT' ? 'Edit' : 'View'} Access
 								</div>
 							</div>
 							<div className="flex grow">
 								<Button className="ml-2" onClick={() => copyLink(record.link)}>
 									Copy Link
 								</Button>
-								{confirmRefreshId != record.id ? (
+								{confirmRefreshId !== record.id ? (
 									<Button
 										className="ml-2"
 										onClick={() => refreshLink(record.id)}
@@ -135,7 +126,7 @@ const SharingLinks = ({ record }) => {
 								)}
 							</div>
 						</div>
-						{confirmRefreshId == record.id && (
+						{confirmRefreshId === record.id && (
 							<div className="flex items-center py-6">
 								<span className={buttonStyle}>warning</span>
 								<div className="pl-2">

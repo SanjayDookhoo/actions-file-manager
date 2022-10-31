@@ -5,7 +5,7 @@ import AvailableSpaceDisplay from './AvailableSpace/AvailableSpaceDisplay';
 import AvailableSpaceDisplayModal from './AvailableSpace/AvailableSpaceDisplayModal';
 
 const AvailableSpace = () => {
-	const { modal, setModal, breakpointClass } = useContext(FileManagerContext);
+	const { setModal, breakpointClass } = useContext(FileManagerContext);
 
 	const onClick = () => {
 		setModal({

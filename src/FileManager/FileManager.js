@@ -1,6 +1,5 @@
 import {
 	createContext,
-	useContext,
 	useEffect,
 	useLayoutEffect,
 	useRef,
@@ -17,25 +16,16 @@ import './assets/googleFonts.css';
 import {
 	defaultConditionalColor,
 	initialLocalStorageState,
-	newFolderNameDefault,
 	toastAutoClose,
 } from './utils/constants';
+import { axiosClientFileExtension, axiosClientJSON } from './endpoint';
 import {
-	axiosClientFileExtension,
-	axiosClientJSON,
-	backendEndpointWS,
-} from './endpoint';
-import {
-	colorStyleLayeredOnWhite,
 	errorRender,
 	getFolderId,
 	hexToRgb,
 	rgbAddA,
 	update,
 } from './utils/utils';
-import useWebSocket from 'react-use-websocket';
-import NewFolder from './NewFolder';
-import SharingLinks from './SharingLinks';
 import useSubscription from './useSubscription';
 import Modal from './Modal';
 import { ToastContainer, toast } from 'react-toastify';
@@ -248,7 +238,7 @@ const FileManager = ({
 
 		Promise.all(promises).then(async (allResponses) => {
 			allResponses.forEach((response, i) => {
-				if (response.status == 200) {
+				if (response.status === 200) {
 					tempFileExtensionsMap[fileExtensionsUnique[i]] = response.data;
 					setFileExtensionsMap(tempFileExtensionsMap);
 				}
@@ -266,16 +256,16 @@ const FileManager = ({
 			},
 		})
 			.then((res) => {
-				if (paste == 'cut') setPaste(null);
+				if (paste === 'cut') setPaste(null);
 			})
 			.catch((err) => {
 				setPaste(null);
 				throw err;
 			});
 
-		const operationPending = paste == 'cut' ? 'Moving' : 'Copying';
-		const operationSuccess = paste == 'cut' ? 'Moved' : 'Copied';
-		const operationError = paste == 'cut' ? 'move' : 'copy';
+		const operationPending = paste === 'cut' ? 'Moving' : 'Copying';
+		const operationSuccess = paste === 'cut' ? 'Moved' : 'Copied';
+		const operationError = paste === 'cut' ? 'move' : 'copy';
 
 		toast.promise(res, {
 			pending: `${operationPending} item/s`,
@@ -297,7 +287,7 @@ const FileManager = ({
 
 	const renderName = (record) => {
 		const { name = '', __typename } = record;
-		if (__typename == 'folder') {
+		if (__typename === 'folder') {
 			return name;
 		}
 		const nameSplit = name.split('.');
@@ -316,7 +306,7 @@ const FileManager = ({
 
 	useEffect(() => {
 		let theme;
-		if (themeSettings != 'systemDefault') {
+		if (themeSettings !== 'systemDefault') {
 			theme = themeSettings;
 		} else {
 			theme = prefersColorSchemeDark ? 'dark' : 'light';
@@ -335,7 +325,7 @@ const FileManager = ({
 		const fileManager = fileManagerRef.current;
 		const rgbColor = hexToRgb(color);
 		const black = 'rgb(0,0,0)';
-		if (theme == 'light') {
+		if (theme === 'light') {
 			light.forEach((alpha, i) => {
 				fileManager.style.setProperty(
 					`--bg-shade-${i + 1}`,
@@ -459,7 +449,7 @@ const FileManager = ({
 				style={{
 					height,
 					width,
-					color: theme == 'dark' ? 'white' : 'black',
+					color: theme === 'dark' ? 'white' : 'black',
 				}}
 				ref={fileManagerRef}
 				onContextMenu={(e) => e.preventDefault()}

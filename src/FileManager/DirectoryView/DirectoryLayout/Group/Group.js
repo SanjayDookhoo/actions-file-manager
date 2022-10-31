@@ -1,11 +1,5 @@
-import {
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-	useState,
-} from 'react';
-import { dateVariations, update } from '../../../utils/utils';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { update } from '../../../utils/utils';
 import { FileManagerContext } from '../../../FileManager';
 import Item from './ItemContainer/Item';
 import { buttonStyle } from '../../../utils/constants';
@@ -19,22 +13,8 @@ const Group = ({
 	setFlexContainerWidth,
 	...otherProps
 }) => {
-	const {
-		tabsState,
-		setTabsState,
-		activeTabId,
-		setActiveTabId,
-		localStorage,
-		setLocalStorage,
-		fileExtensionsMap,
-	} = useContext(FileManagerContext);
-	const { path } = tabsState[activeTabId];
-	const {
-		sortOrder = 1,
-		sortBy = 'name',
-		groupOrder = 1,
-		groupBy = 'none',
-	} = localStorage.folderSpecific?.[path] ?? {};
+	const { tabsState, setTabsState, activeTabId, localStorage } =
+		useContext(FileManagerContext);
 	const [collapsed, setCollapsed] = useState(false);
 
 	const flexContainerRef = useRef();
@@ -47,10 +27,10 @@ const Group = ({
 	const handleGroupSelectAll = (e) => {
 		e.stopPropagation();
 		const selectedFiles = items
-			.filter((item) => item.__typename == 'file')
+			.filter((item) => item.__typename === 'file')
 			.map((item) => item.id);
 		const selectedFolders = items
-			.filter((item) => item.__typename == 'folder')
+			.filter((item) => item.__typename === 'folder')
 			.map((item) => item.id);
 
 		setTabsState(
@@ -64,7 +44,7 @@ const Group = ({
 	};
 
 	useLayoutEffect(() => {
-		if (groupIndex == 0) {
+		if (groupIndex === 0) {
 			const flexContainer = flexContainerRef.current;
 			const handleResizeObserver = () => {
 				const width = flexContainer.offsetWidth;
@@ -84,7 +64,7 @@ const Group = ({
 
 	return (
 		<>
-			{groupName != 'noneGrouping' && (
+			{groupName !== 'noneGrouping' && (
 				<div
 					className="flex items-center select-none hover"
 					onClick={handleGroupSelectAll}
@@ -104,7 +84,7 @@ const Group = ({
 				className={
 					'flex ' +
 					(collapsed ? 'hidden ' : ' ') +
-					(localStorage.layout == 'details' ? 'flex-col w-fit' : 'flex-wrap')
+					(localStorage.layout === 'details' ? 'flex-col w-fit' : 'flex-wrap')
 				}
 				ref={flexContainerRef}
 			>

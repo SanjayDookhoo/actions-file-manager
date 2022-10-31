@@ -79,7 +79,7 @@ export const update = _update; // does not allow vs code importing because it is
 export const getFolderId = ({ tabsState, activeTabId, rootUserFolderId }) => {
 	const path = tabsState[activeTabId].path;
 	let folderId = path[path.length - 1];
-	if (folderId == 'Home') {
+	if (folderId === 'Home') {
 		return rootUserFolderId;
 	} else {
 		return folderId;
@@ -143,7 +143,7 @@ export const createBuckets = ({
 
 		// within last week AND in this month
 		return (
-			valDate > min && valDate < max && min.getMonth() == valDate.getMonth()
+			valDate > min && valDate < max && min.getMonth() === valDate.getMonth()
 		);
 	};
 
@@ -158,19 +158,19 @@ export const createBuckets = ({
 	const _yesterday = (valDate) => {
 		const d = new Date();
 		d.setDate(d.getDate() - 1);
-		return valDate.toDateString() == d.toDateString();
+		return valDate.toDateString() === d.toDateString();
 	};
 
 	const _today = (valDate) => {
 		const d = new Date();
-		return valDate.toDateString() == d.toDateString();
+		return valDate.toDateString() === d.toDateString();
 	};
 
 	records.forEach((item) => {
 		const { id, __typename } = item;
 
-		const file = files.find((file) => file.id == id);
-		const folder = folders.find((folder) => folder.id == id);
+		const file = files.find((file) => file.id === id);
+		const folder = folders.find((folder) => folder.id === id);
 
 		if (!file && !folder) {
 			return bucket;
@@ -178,7 +178,7 @@ export const createBuckets = ({
 
 		// name
 		let name;
-		if (__typename == 'file') {
+		if (__typename === 'file') {
 			name = file.name;
 		} else {
 			name = folder.name;
@@ -186,7 +186,7 @@ export const createBuckets = ({
 		_bucketPush('name', name.charAt(0).toUpperCase() + '...', item);
 
 		// type
-		if (__typename == 'file') {
+		if (__typename === 'file') {
 			const { name } = file;
 			const fileType = name.split('.').pop();
 			const fileTypeFullName = fileExtensionsMap[fileType]?.fullName;
@@ -203,7 +203,7 @@ export const createBuckets = ({
 		// a week is treated as beginning on sunday and ending on saturday
 		dateVariations.forEach((currDateVariation) => {
 			let _date;
-			if (__typename == 'file') {
+			if (__typename === 'file') {
 				_date = file.meta[currDateVariation];
 			} else {
 				_date = folder.meta[currDateVariation];
@@ -229,11 +229,11 @@ export const createBuckets = ({
 		});
 
 		// size
-		if (__typename == 'file') {
+		if (__typename === 'file') {
 			const k = 1024;
 			const { size } = file;
 
-			if (size == 0) {
+			if (size === 0) {
 				_bucketPush('size', 'Empty (0KB)', item);
 			} else if (size <= 16 * k) {
 				_bucketPush('size', 'Tiny (0 - 16 KB)', item);
@@ -312,9 +312,9 @@ export const openInNewTab = ({
 
 export const canEdit = ({ tabsState, activeTabId, sharedAccessType }) => {
 	const { path } = tabsState[activeTabId];
-	if (path[0] == 'Recycle bin') return false;
-	if (path[0] == 'Shared with me' && path.length == 1) return false;
-	if (path[0] == 'Shared with me' && sharedAccessType == 'VIEW') return false;
+	if (path[0] === 'Recycle bin') return false;
+	if (path[0] === 'Shared with me' && path.length === 1) return false;
+	if (path[0] === 'Shared with me' && sharedAccessType === 'VIEW') return false;
 	return true;
 };
 
@@ -342,14 +342,14 @@ export const setLocalStorageFolderSpecific = ({
 	const { sortBy, sortOrder, groupBy, groupOrder } = obj;
 	const [key, value] = Object.entries(curr)[0];
 
-	if (key == 'groupBy' && groupBy == value) {
+	if (key === 'groupBy' && groupBy === value) {
 		obj.groupOrder = groupOrder * -1;
-	} else if (key == 'groupBy' && groupBy != value) {
+	} else if (key === 'groupBy' && groupBy !== value) {
 		obj.groupBy = value;
 		obj.groupOrder = defaultSortOrGroupOrder(value);
-	} else if (key == 'sortBy' && sortBy == value) {
+	} else if (key === 'sortBy' && sortBy === value) {
 		obj.sortOrder = sortOrder * -1;
-	} else if (key == 'sortBy' && sortBy != value) {
+	} else if (key === 'sortBy' && sortBy !== value) {
 		obj.sortBy = value;
 		obj.sortOrder = defaultSortOrGroupOrder(value);
 	} else {
@@ -402,7 +402,7 @@ export const shortcutHotkeyGenerate = (shortcut) => {
 	const macShortcut = shortcut
 		.replaceAll('ctrl', 'command')
 		.replaceAll('alt', 'option');
-	if (macShortcut != shortcut) {
+	if (macShortcut !== shortcut) {
 		return shortcut + ', ' + macShortcut;
 	}
 	return shortcut;
@@ -421,7 +421,7 @@ const isValidHexColor = (color) => {
 export const hexToRgb = (hex) => {
 	if (!isValidHexColor(hex)) return null;
 	let newHex = hex.substring(1);
-	if (newHex.length != 6) {
+	if (newHex.length !== 6) {
 		throw 'Only six-digit hex colors are allowed.';
 	}
 

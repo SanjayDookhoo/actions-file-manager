@@ -1,24 +1,14 @@
-import {
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-	useState,
-} from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../utils/constants';
-import { initialTabState, tabMinWidth, tabMaxWidth } from './constants';
+import { initialTabState, tabMinWidth } from './constants';
 import Tab from './Tab/Tab';
 import { v4 as uuidv4 } from 'uuid';
 import VerticalFlyoutMenu from './VerticalFlyoutMenu';
-import { ControlledMenu, MenuItem, useMenuState } from '@szhsin/react-menu';
+import { ControlledMenu, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../CustomReactMenu/FileMenuItem';
 import { FileManagerContext } from '../FileManager';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {
-	isMacOs,
-	shortcutHotkeyGenerate,
-	shortcutHintGenerate,
-} from '../utils/utils';
+import { shortcutHotkeyGenerate, shortcutHintGenerate } from '../utils/utils';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const Tabs = () => {
@@ -49,7 +39,7 @@ const Tabs = () => {
 		shortcutHotkeyGenerate('ctrl+alt+w'),
 		() => closeTab(activeTabId),
 		{
-			enabled: Object.keys(tabsState).length != 1,
+			enabled: Object.keys(tabsState).length !== 1,
 		},
 		[tabsState, closedTabs, activeTabId]
 	);
@@ -57,7 +47,7 @@ const Tabs = () => {
 		shortcutHotkeyGenerate('ctrl+alt+shift+t'),
 		() => reopenClosedTab(),
 		{
-			enabled: Object.keys(closedTabs).length != 0,
+			enabled: Object.keys(closedTabs).length !== 0,
 		},
 		[tabsState, closedTabs, newTabOrder]
 	);
@@ -66,12 +56,12 @@ const Tabs = () => {
 		setClosedTabs({ [tabId]: tabsState[tabId], ...closedTabs });
 		let tempTabsState = { ...tabsState };
 		const tempTabsStateKeys = Object.keys(tempTabsState);
-		const index = tempTabsStateKeys.findIndex((el) => el == tabId);
+		const index = tempTabsStateKeys.findIndex((el) => el === tabId);
 		delete tempTabsState[tabId];
 		setTabsState(tempTabsState);
-		if (activeTabId == tabId) {
+		if (activeTabId === tabId) {
 			// if the current active tab is the one being closed AND is the last tab
-			if (tempTabsStateKeys[tempTabsStateKeys.length - 1] == tabId) {
+			if (tempTabsStateKeys[tempTabsStateKeys.length - 1] === tabId) {
 				setActiveTabId(tempTabsStateKeys[index - 1]);
 			} else {
 				setActiveTabId(tempTabsStateKeys[index + 1]);
@@ -98,14 +88,14 @@ const Tabs = () => {
 	const scrollTabs = (direction) => {
 		const element = scrollableTabsRef.current;
 
-		if (direction == 'backward') {
+		if (direction === 'backward') {
 			const possibleNewScrollLeft = scrollLeft - tabWidth;
 			if (possibleNewScrollLeft < 0) {
 				element.scrollLeft = 0;
 			} else {
 				element.scrollLeft = possibleNewScrollLeft;
 			}
-		} else if (direction == 'forward') {
+		} else if (direction === 'forward') {
 			const possibleNewScrollLeft = scrollLeft + tabWidth;
 			const maxScrollLeft = getMaxScrollLeft(element);
 			if (possibleNewScrollLeft > maxScrollLeft) {
@@ -214,7 +204,7 @@ const Tabs = () => {
 		>
 			{scrollable && (
 				<a
-					className={'hover ' + (scrollLeft == 0 ? 'disabled' : '')}
+					className={'hover ' + (scrollLeft === 0 ? 'disabled' : '')}
 					onClick={() => scrollTabs('backward')}
 					title="Scoll tab list backward"
 				>
@@ -256,7 +246,7 @@ const Tabs = () => {
 				<a
 					className={
 						'hover ' +
-						(scrollLeft == getMaxScrollLeft(scrollableTabsRef.current)
+						(scrollLeft === getMaxScrollLeft(scrollableTabsRef.current)
 							? 'disabled'
 							: '')
 					}
@@ -291,7 +281,7 @@ const Tabs = () => {
 					description="Reopen closed tab"
 					shortcutHint={shortcutHintGenerate(`Ctrl+Alt+Shift+T`)}
 					onClick={reopenClosedTab}
-					disabled={Object.keys(closedTabs).length == 0}
+					disabled={Object.keys(closedTabs).length === 0}
 				/>
 			</ControlledMenu>
 		</div>

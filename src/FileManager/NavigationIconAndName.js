@@ -10,10 +10,10 @@ const NavigationIconAndName = ({ folderId, className = '' }) => {
 	const [src, setSrc] = useState();
 
 	useEffect(() => {
-		if (folderId == 'Home') setSrc(home);
-		else if (folderId == 'Favorites') setSrc(star);
-		else if (folderId == 'Shared with me') setSrc(share);
-		else if (folderId == 'Recycle bin') setSrc(trash);
+		if (folderId === 'Home') setSrc(home);
+		else if (folderId === 'Favorites') setSrc(star);
+		else if (folderId === 'Shared with me') setSrc(share);
+		else if (folderId === 'Recycle bin') setSrc(trash);
 		else setSrc(folder);
 	}, [folderId]);
 
