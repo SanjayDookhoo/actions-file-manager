@@ -57,7 +57,6 @@ export const uploadFiles = (files, folderId) => {
 					render: errorRender({
 						msg: 'Upload failed',
 						data: e,
-						errorList: ['Not enough available space'],
 					}),
 					type: toast.TYPE.ERROR,
 					hideProgressBar: true,
@@ -432,14 +431,14 @@ export const hexToRgb = (hex) => {
 	return `rgb(${r},${g},${b})`;
 };
 
-export const errorRender = ({ msg, data, errorList }) => {
+export const errorRender = ({ msg, data }) => {
 	const { errors } = data?.response?.data ?? {};
 	if (errors) {
-		const expectedServerError = errors.find((error) =>
-			errorList.includes(error.message)
-		);
-		if (expectedServerError) {
-			return `${msg}, ${decapitalizeFirstLetter(expectedServerError.message)}`;
+		const expectedServerErrors = errors.filter((error) => !error.extensions);
+		if (expectedServerErrors.length > 0) {
+			return `${msg}, ${decapitalizeFirstLetter(
+				expectedServerErrors[0].message
+			)}`;
 		}
 	}
 

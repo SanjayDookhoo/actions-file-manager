@@ -33,6 +33,11 @@ const Rename = ({ record }) => {
 		);
 
 		const { name, id, __typename } = record;
+
+		if (name == value) {
+			return;
+		}
+
 		const res = axiosClientJSON({
 			url: '/rename',
 			method: 'POST',

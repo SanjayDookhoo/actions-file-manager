@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { FileManagerContext } from '../../FileManager';
 import FolderName from '../../FolderName';
+import { tabMaxWidth } from '../../Tabs/constants';
 import { openInNewTab, update } from '../../utils/utils';
 
 const FolderPathItem = ({ folderId, i }) => {
@@ -126,7 +127,9 @@ const FolderPathItem = ({ folderId, i }) => {
 			onClick={handleFolderPathOnClick}
 			onMouseDown={onMouseDown}
 		>
-			<FolderName folderId={folderId} />
+			<div style={{ maxWidth: tabMaxWidth }}>
+				<FolderName folderId={folderId} />
+			</div>
 			{i !== tabsState[activeTabId]?.path.length - 1 && (
 				<span className="material-symbols-outlined">chevron_right</span>
 			)}

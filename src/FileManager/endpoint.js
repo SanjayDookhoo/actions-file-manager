@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const backendEndpointWS = 'ws://localhost:5000';
-const backendEndpoint = 'http://192.168.0.20:5000';
+const backendEndpoint = 'http://localhost:5000';
 const fileExtensionEndpoint = 'http://localhost:4000';
 const token = localStorage.getItem('token');
 

@@ -138,7 +138,7 @@ const RecycleBinMenuItems = ({ restoreAllItems, emptyRecycleBin }) => {
 	const [disabled, setDisabled] = useState(true);
 
 	useEffect(() => {
-		if ((folderData, fileData)) {
+		if (folderData && fileData) {
 			const folderCount = folderData.data.folderAggregate.aggregate.count;
 			const fileCount = fileData.data.fileAggregate.aggregate.count;
 			setDisabled(folderCount + fileCount === 0);

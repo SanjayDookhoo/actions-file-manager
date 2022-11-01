@@ -276,10 +276,6 @@ const FileManager = ({
 					errorRender({
 						msg: `Failed to ${operationError} item/s`,
 						data,
-						errorList: [
-							'Not enough available space',
-							'The destination folder is a subfolder of the source folder',
-						],
 					}),
 			},
 		});
