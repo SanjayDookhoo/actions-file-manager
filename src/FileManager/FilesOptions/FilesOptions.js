@@ -1,7 +1,6 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import FileFocusableItem from '../CustomReactMenu/FileFocusableItem';
 import DeleteRestoreConfirmation from '../DeleteRestoreConfirmation';
-import { axiosClientJSON } from '../endpoint';
 import { FileManagerContext } from '../FileManager';
 import SharingLinks from '../SharingLinks';
 import { buttonStyle } from '../utils/constants';
@@ -27,6 +26,7 @@ const FilesOptions = ({ item, buttonsToFilter }) => {
 		sharedAccessType,
 		setModal,
 		rootUserFolderId,
+		axiosClientJSON,
 	} = useContext(FileManagerContext);
 
 	const [buttonListItemFiltered, setButtonListItemFiltered] = useState([]);

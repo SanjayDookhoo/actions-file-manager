@@ -61,6 +61,7 @@ const App = (props) => {
 		color,
 		themeSettings,
 		actions: actions,
+		backendHostname: 'localhost:5000',
 	};
 
 	return (

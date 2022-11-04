@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { axiosClientJSON } from './endpoint';
+import { useState, useEffect, useContext } from 'react';
+import { FileManagerContext } from './FileManager';
 import { buttonStyle } from './utils/constants';
 
 const Gallery = ({ imageGalleryOrdered, record }) => {
+	const { axiosClientJSON } = useContext(FileManagerContext);
 	const [currIndex, setCurrIndex] = useState(-1);
 	const [src, setSrc] = useState('');
 

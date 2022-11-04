@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
-import { axiosClientJSON } from '../../../../../endpoint';
 import { FileManagerContext } from '../../../../../FileManager';
 import { imageTypes, videoTypes } from '../../../../../utils/constants';
 import { getAssets } from '../../../../../utils/utils';
 
 const RenderIcon = ({ record, className, style }) => {
-	const { fileExtensionsMap, localStorage } = useContext(FileManagerContext);
+	const { fileExtensionsMap, localStorage, axiosClientJSON } =
+		useContext(FileManagerContext);
 	const [src, setSrc] = useState({});
 	const defaultFile = getAssets('defaultFile.webp'); //svg
 

@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useState } from 'react';
-import { axiosClientJSON } from './endpoint';
 import { update } from './utils/utils';
 import { toast } from 'react-toastify';
 import Button from './Button';
+import { FileManagerContext } from './FileManager';
 
 const DeleteRestoreConfirmation = ({
 	type,
@@ -13,6 +13,7 @@ const DeleteRestoreConfirmation = ({
 	activeTabId,
 	handleClose,
 }) => {
+	const { axiosClientJSON } = useContext(FileManagerContext);
 	const [message, setMessage] = useState('');
 
 	useEffect(() => {

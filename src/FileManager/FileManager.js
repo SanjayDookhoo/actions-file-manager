@@ -18,7 +18,7 @@ import {
 	initialLocalStorageState,
 	toastAutoClose,
 } from './utils/constants';
-import { axiosClientFileExtension, axiosClientJSON } from './endpoint';
+import { axiosClientFileExtension } from './endpoint';
 import {
 	errorRender,
 	getFolderId,
@@ -26,11 +26,12 @@ import {
 	rgbAddA,
 	update,
 } from './utils/utils';
-import useSubscription from './useSubscription';
 import Modal from './Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import rgbaToRgb from 'rgba-to-rgb';
+import axios from 'axios';
+import GetFilesFolders from './GetFilesFolders';
 
 export const FileManagerContext = createContext();
 
@@ -42,6 +43,7 @@ const FileManager = ({
 	color = defaultConditionalColor,
 	themeSettings = 'light',
 	actions,
+	backendHostname,
 }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
@@ -75,17 +77,6 @@ const FileManager = ({
 	const [files, setFiles] = useState([]);
 	const [folders, setFolders] = useState([]);
 
-	const [_files, filesLoading, filesError] = useSubscription(
-		folderId,
-		'file',
-		'itemList'
-	);
-	const [_folders, foldersLoading, foldersError] = useSubscription(
-		folderId,
-		'folder',
-		'itemList'
-	);
-
 	const [paste, setPaste] = useState(null);
 	const [subscriptionLoading, setSubscriptionLoading] = useState(true);
 	const [subscriptionError, setSubscriptionError] = useState(false);
@@ -100,6 +91,27 @@ const FileManager = ({
 	const [theme, setTheme] = useState('light');
 
 	const [fileManagerWidth, setFileManagerWidth] = useState(0);
+
+	const backendEndpointWS = `ws://${backendHostname}`;
+	const backendEndpoint = `http://${backendHostname}`;
+	const token = window.localStorage.getItem('token');
+
+	// https://stackoverflow.com/questions/51794553/how-do-i-create-configuration-for-axios-for-default-request-headers-in-every-htt
+	const axiosClientFiles = axios.create({
+		baseURL: backendEndpoint,
+		headers: {
+			'Content-Type': 'multipart/form-data; charset=utf-8',
+			authorization: `Bearer ${token}`,
+		},
+	});
+
+	const axiosClientJSON = axios.create({
+		baseURL: backendEndpoint,
+		headers: {
+			'Content-Type': 'application/json',
+			authorization: `Bearer ${token}`,
+		},
+	});
 
 	useLayoutEffect(() => {
 		fileManagerRef.current.focus();
@@ -128,10 +140,6 @@ const FileManager = ({
 			});
 		}, timeout);
 	}, []);
-
-	useEffect(() => {
-		setSubscriptionLoading(filesLoading || foldersLoading);
-	}, [filesLoading, foldersLoading]);
 
 	useEffect(() => {
 		if (rootUserFolderId) {
@@ -189,32 +197,6 @@ const FileManager = ({
 			}
 		}
 	}, [window.location, files, folders]);
-
-	useEffect(() => {
-		if (_files) {
-			const { data, accessType } = _files;
-			setFiles(
-				data.file.map((record) => ({
-					...record,
-					__typename: 'file',
-				}))
-			);
-			setSharedAccessType(accessType);
-		}
-	}, [_files]);
-
-	useEffect(() => {
-		if (_folders) {
-			const { data, accessType } = _folders;
-			setFolders(
-				data.folder.map((record) => ({
-					...record,
-					__typename: 'folder',
-				}))
-			);
-			setSharedAccessType(accessType);
-		}
-	}, [_folders]);
 
 	useEffect(() => {
 		const promises = [];
@@ -435,10 +417,22 @@ const FileManager = ({
 		theme,
 		actions,
 		breakpointClass,
+		axiosClientFiles,
+		axiosClientJSON,
+		backendEndpointWS,
+	};
+
+	const getFilesFoldersProps = {
+		setFiles,
+		setFolders,
+		setSharedAccessType,
+		setSubscriptionLoading,
+		folderId,
 	};
 
 	return (
 		<FileManagerContext.Provider value={value}>
+			<GetFilesFolders {...getFilesFoldersProps} />
 			<div
 				tabIndex={-1}
 				className="actions-file-manager flex flex-col relative bg-shade-1"

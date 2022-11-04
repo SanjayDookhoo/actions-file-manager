@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { axiosClientJSON } from './endpoint';
+import { useContext, useEffect, useState } from 'react';
+import { FileManagerContext } from './FileManager';
 
 const FolderName = ({ folderId }) => {
+	const { axiosClientJSON } = useContext(FileManagerContext);
 	const [name, setName] = useState('');
 
 	useEffect(() => {

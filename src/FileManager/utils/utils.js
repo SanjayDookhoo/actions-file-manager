@@ -1,10 +1,10 @@
-import { assetsEndpoint, axiosClientFiles } from '../endpoint';
+import { assetsEndpoint } from '../endpoint';
 import _update from 'immutability-helper';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { toastAutoClose } from './constants';
 
-export const uploadFiles = (files, folderId) => {
+export const uploadFiles = (files, folderId, axiosClientFiles) => {
 	if (files.length > 0) {
 		let toastId = null;
 

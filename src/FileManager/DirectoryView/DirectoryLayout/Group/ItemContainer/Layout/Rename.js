@@ -5,13 +5,12 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { axiosClientJSON } from '../../../../../endpoint';
 import { FileManagerContext } from '../../../../../FileManager';
 import { update } from '../../../../../utils/utils';
 import { toast } from 'react-toastify';
 
 const Rename = ({ record }) => {
-	const { tabsState, setTabsState, activeTabId, renderName } =
+	const { tabsState, setTabsState, activeTabId, renderName, axiosClientJSON } =
 		useContext(FileManagerContext);
 	const ref = useRef();
 	const [value, setValue] = useState('');

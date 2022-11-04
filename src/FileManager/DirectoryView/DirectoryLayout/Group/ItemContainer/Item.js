@@ -16,7 +16,6 @@ import FileMenuItem from '../../../../CustomReactMenu/FileMenuItem';
 import FileUploadDiv from '../../../../FileUploadDiv/FileUploadDiv';
 import Layout from './Layout/Layout';
 
-import { axiosClientJSON } from '../../../../endpoint';
 import { FileManagerContext } from '../../../../FileManager';
 import { openInNewTab, update } from '../../../../utils/utils';
 import FilesOptions from '../../../../FilesOptions/FilesOptions';
@@ -51,6 +50,7 @@ const Item = ({
 		setModal,
 		actions,
 		fileManagerRef,
+		axiosClientJSON,
 	} = useContext(FileManagerContext);
 
 	const [record, setRecord] = useState(null);

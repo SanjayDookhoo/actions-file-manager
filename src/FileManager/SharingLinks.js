@@ -1,5 +1,4 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { axiosClientJSON } from './endpoint';
 import { FileManagerContext } from './FileManager';
 import { buttonStyle } from './utils/constants';
 import { toast } from 'react-toastify';
@@ -7,7 +6,8 @@ import Button from './Button';
 
 const SharingLinks = ({ record }) => {
 	const { id, __typename } = record;
-	const { setModal, renderName } = useContext(FileManagerContext);
+	const { setModal, renderName, axiosClientJSON } =
+		useContext(FileManagerContext);
 	const [data, setData] = useState([]);
 	const [confirmRefreshId, setConfirmRefreshId] = useState(null);
 

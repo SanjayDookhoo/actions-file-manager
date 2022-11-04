@@ -6,8 +6,13 @@ import { FileManagerContext } from '../../FileManager';
 import NewFolder from '../../NewFolder';
 
 const NewDropdown = () => {
-	const { tabsState, activeTabId, rootUserFolderId, setModal } =
-		useContext(FileManagerContext);
+	const {
+		tabsState,
+		activeTabId,
+		rootUserFolderId,
+		setModal,
+		axiosClientJSON,
+	} = useContext(FileManagerContext);
 	const fileUploadRef = useRef();
 	const folderUploadRef = useRef();
 	const [files, setFiles] = useState([]);
@@ -24,7 +29,7 @@ const NewDropdown = () => {
 
 	useEffect(() => {
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
-		uploadFiles(files, folderId);
+		uploadFiles(files, folderId, axiosClientJSON);
 	}, [files]);
 
 	const handleUpload = (e) => {

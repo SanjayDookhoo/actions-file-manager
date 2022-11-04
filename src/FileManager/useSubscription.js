@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { backendEndpointWS } from './endpoint';
+import { useContext, useEffect, useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { v4 as uuidv4 } from 'uuid';
+import { FileManagerContext } from './FileManager';
 
 const useSubscription = (folderId, __typename, type) => {
+	const { backendEndpointWS } = useContext(FileManagerContext);
 	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS, {
 		shouldReconnect: (closeEvent) => true,
 	});

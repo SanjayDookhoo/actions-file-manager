@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { axiosClientJSON } from '../../endpoint';
+import { useContext, useEffect, useState } from 'react';
+import { FileManagerContext } from '../../FileManager';
 import useSubscription from '../../useSubscription';
 import { buttonStyle } from '../../utils/constants';
 import { formatBytes } from '../../utils/utils';
 
 const AvailableSpaceDisplay = () => {
+	const { axiosClientJSON } = useContext(FileManagerContext);
 	const [used, setUsed] = useState(0);
 	const [total, setTotal] = useState(0);
 

@@ -9,7 +9,6 @@ import {
 import { buttonStyle } from '../../utils/constants';
 import { ControlledMenu, MenuDivider, useMenuState } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
-import { axiosClientJSON } from '../../endpoint';
 import { FileManagerContext } from '../../FileManager';
 import { getFolderId, shortcutHotkeyGenerate, update } from '../../utils/utils';
 import RenderIcon from '../../DirectoryView/DirectoryLayout/Group/ItemContainer/Layout/RenderIcon';
@@ -24,6 +23,7 @@ const Search = () => {
 		rootUserFolderId,
 		renderName,
 		breakpointClass,
+		axiosClientJSON,
 	} = useContext(FileManagerContext);
 
 	const [search, setSearch] = useState('');
