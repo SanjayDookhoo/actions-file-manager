@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
-import defaultFile from '../../../../../assets/defaultFile.webp';
-import folder from '../../../../../assets/folder.svg';
 import { axiosClientJSON } from '../../../../../endpoint';
 import { FileManagerContext } from '../../../../../FileManager';
 import { imageTypes, videoTypes } from '../../../../../utils/constants';
+import { getAssets } from '../../../../../utils/utils';
 
 const RenderIcon = ({ record, className, style }) => {
 	const { fileExtensionsMap, localStorage } = useContext(FileManagerContext);
 	const [src, setSrc] = useState({});
+	const defaultFile = getAssets('defaultFile.webp'); //svg
 
 	const ext = (record.name ?? '').split('.').pop();
 	let iconURL = fileExtensionsMap?.[ext]?.icons.normal;
@@ -30,7 +30,11 @@ const RenderIcon = ({ record, className, style }) => {
 	return (
 		<>
 			{record.__typename === 'folder' ? (
-				<img src={folder} className={className} style={style} />
+				<img
+					src={getAssets('folder.svg')}
+					className={className}
+					style={style}
+				/>
 			) : (
 				<>
 					{['details', 'smallIcons'].includes(localStorage.layout) ||

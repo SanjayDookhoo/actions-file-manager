@@ -1,4 +1,4 @@
-import { axiosClientFiles } from '../endpoint';
+import { assetsEndpoint, axiosClientFiles } from '../endpoint';
 import _update from 'immutability-helper';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
@@ -443,4 +443,8 @@ export const errorRender = ({ msg, data }) => {
 	}
 
 	return msg;
+};
+
+export const getAssets = (asset) => {
+	return assetsEndpoint + '/' + asset;
 };

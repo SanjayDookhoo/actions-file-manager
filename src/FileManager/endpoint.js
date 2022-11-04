@@ -2,7 +2,8 @@ import axios from 'axios';
 
 export const backendEndpointWS = 'ws://localhost:5000';
 const backendEndpoint = 'http://localhost:5000';
-const fileExtensionEndpoint = 'http://localhost:4000';
+const fileExtensionEndpoint = 'https://extension.actions-file-manager.dev';
+export const assetsEndpoint = 'https://assets.actions-file-manager.dev';
 const token = localStorage.getItem('token');
 
 // https://stackoverflow.com/questions/51794553/how-do-i-create-configuration-for-axios-for-default-request-headers-in-every-htt
