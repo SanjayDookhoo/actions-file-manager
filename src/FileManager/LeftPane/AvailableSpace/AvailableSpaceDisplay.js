@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { axiosClientJSON } from '../../endpoint';
 import useSubscription from '../../useSubscription';
 import { buttonStyle } from '../../utils/constants';
 import { formatBytes } from '../../utils/utils';
 
 const AvailableSpaceDisplay = () => {
 	const [used, setUsed] = useState(0);
-	const total = 36127032;
+	const [total, setTotal] = useState(0);
 
 	const [data, dataLoading, error] = useSubscription('Home', 'folder', 'size');
 
@@ -15,6 +16,15 @@ const AvailableSpaceDisplay = () => {
 			setUsed(size + trashSize);
 		}
 	}, [data]);
+
+	useEffect(() => {
+		axiosClientJSON({
+			url: '/getTotalSize',
+			method: 'POST',
+		}).then((res) => {
+			setTotal(res.data?.size);
+		});
+	}, []);
 
 	return (
 		<>
