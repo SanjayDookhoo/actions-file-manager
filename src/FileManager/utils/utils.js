@@ -171,7 +171,10 @@ export const createBuckets = ({
 		const file = files.find((file) => file.id === id);
 		const folder = folders.find((folder) => folder.id === id);
 
-		if (!file && !folder) {
+		if (
+			(__typename == 'file' && !file) ||
+			(__typename == 'folder' && !folder)
+		) {
 			return bucket;
 		}
 
