@@ -61,7 +61,8 @@ const App = (props) => {
 		color,
 		themeSettings,
 		actions: actions,
-		backendHostname: 'localhost:5000',
+		// backendHostname: '192.168.0.20:5000',
+		backendHostname: 'demo.actions-file-manager.dev',
 	};
 
 	return (

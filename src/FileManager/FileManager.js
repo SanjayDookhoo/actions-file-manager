@@ -92,8 +92,9 @@ const FileManager = ({
 
 	const [fileManagerWidth, setFileManagerWidth] = useState(0);
 
-	const backendEndpointWS = `ws://${backendHostname}`;
-	const backendEndpoint = `http://${backendHostname}`;
+	// CORS errors in testing may require changing from secured to unsecured
+	const backendEndpointWS = `wss://${backendHostname}`;
+	const backendEndpoint = `https://${backendHostname}`;
 	const token = window.localStorage.getItem('token');
 
 	// https://stackoverflow.com/questions/51794553/how-do-i-create-configuration-for-axios-for-default-request-headers-in-every-htt
