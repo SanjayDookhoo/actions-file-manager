@@ -7,6 +7,7 @@ const GetFilesFolders = ({
 	setSharedAccessType,
 	setSubscriptionLoading,
 	folderId,
+	setFirstLoad,
 }) => {
 	const [_files, filesLoading, filesError] = useSubscription(
 		folderId,
@@ -47,6 +48,10 @@ const GetFilesFolders = ({
 
 	useEffect(() => {
 		setSubscriptionLoading(filesLoading || foldersLoading);
+
+		if (!(filesLoading || foldersLoading)) {
+			setFirstLoad(false);
+		}
 	}, [filesLoading, foldersLoading]);
 
 	return <></>;

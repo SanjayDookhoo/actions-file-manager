@@ -78,6 +78,7 @@ const FileManager = ({
 	const [folders, setFolders] = useState([]);
 
 	const [paste, setPaste] = useState(null);
+	const [firstLoad, setFirstLoad] = useState(true);
 	const [subscriptionLoading, setSubscriptionLoading] = useState(true);
 	const [subscriptionError, setSubscriptionError] = useState(false);
 	const [rootUserFolderId, setRootUserFolderId] = useState(null);
@@ -421,6 +422,7 @@ const FileManager = ({
 		axiosClientFiles,
 		axiosClientJSON,
 		backendEndpointWS,
+		firstLoad,
 	};
 
 	const getFilesFoldersProps = {
@@ -429,6 +431,7 @@ const FileManager = ({
 		setSharedAccessType,
 		setSubscriptionLoading,
 		folderId,
+		setFirstLoad,
 	};
 
 	return (
