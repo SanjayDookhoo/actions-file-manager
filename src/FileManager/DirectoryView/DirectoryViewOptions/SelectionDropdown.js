@@ -3,7 +3,12 @@ import { buttonStyle } from '../../utils/constants';
 import { Menu, MenuDivider } from '@szhsin/react-menu';
 import FileMenuItem from '../../CustomReactMenu/FileMenuItem';
 import { FileManagerContext } from '../../FileManager';
-import { update } from '../../utils/utils';
+import {
+	shortcutHintGenerate,
+	shortcutHotkeyGenerate,
+	update,
+} from '../../utils/utils';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const SelectionDropdown = () => {
 	const {
@@ -16,6 +21,15 @@ const SelectionDropdown = () => {
 		files,
 		breakpointClass,
 	} = useContext(FileManagerContext);
+
+	useHotkeys(
+		shortcutHotkeyGenerate('ctrl+a'),
+		(e) => {
+			e.preventDefault();
+			selectAll();
+		},
+		[folders, files, tabsState, activeTabId]
+	);
 
 	const selectAll = () => {
 		const selectedFolders = folders.map((folder) => folder.id);
@@ -95,6 +109,7 @@ const SelectionDropdown = () => {
 				logo="folder"
 				description="Select All"
 				onClick={selectAll}
+				shortcutHint={shortcutHintGenerate(`Ctrl+A`)}
 			/>
 			<FileMenuItem
 				controlledStatePadding={true}
