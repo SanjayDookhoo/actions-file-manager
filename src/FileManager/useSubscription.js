@@ -5,22 +5,25 @@ import { FileManagerContext } from './FileManager';
 
 const useSubscription = (folderId, __typename, type) => {
 	const { backendEndpointWS } = useContext(FileManagerContext);
-	const { sendMessage, lastMessage } = useWebSocket(backendEndpointWS, {
-		shouldReconnect: (closeEvent) => true,
-	});
+	const { sendMessage, lastMessage, readyState } = useWebSocket(
+		backendEndpointWS,
+		{
+			shouldReconnect: (closeEvent) => true,
+		}
+	);
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		if (folderId) {
+		if (folderId && readyState === 1) {
 			setLoading(true);
 			const id = uuidv4();
 			const token = window.localStorage.getItem('token');
 			sendMessage(JSON.stringify({ __typename, folderId, id, token, type }));
 			// console.log({ __typename, folderId, id });
 		}
-	}, [__typename, folderId, type]);
+	}, [__typename, folderId, type, readyState]);
 
 	useEffect(() => {
 		if (lastMessage) {
