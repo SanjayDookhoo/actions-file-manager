@@ -439,7 +439,7 @@ const FileManager = ({
 			<GetFilesFolders {...getFilesFoldersProps} />
 			<div
 				tabIndex={-1}
-				className="actions-file-manager flex flex-col relative bg-shade-1"
+				className="actions-file-manager"
 				style={{
 					height,
 					width,
@@ -448,29 +448,31 @@ const FileManager = ({
 				ref={fileManagerRef}
 				onContextMenu={(e) => e.preventDefault()}
 			>
-				<ToastContainer
-					position="top-right"
-					autoClose={toastAutoClose}
-					hideProgressBar
-					newestOnTop={false}
-					closeOnClick
-					rtl={false}
-					pauseOnFocusLoss
-					draggable
-					pauseOnHover
-					theme={theme}
-				/>
-				<Modal modal={modal} setModal={setModal} />
-				<Tabs />
-				{activeTabId && (
-					<>
-						<NavigationBar />
-						<div className="w-full flex flex-grow">
-							<LeftPane />
-							<DirectoryView />
-						</div>
-					</>
-				)}
+				<div className="flex flex-col relative bg-shade-1 w-full h-full">
+					<ToastContainer
+						position="top-right"
+						autoClose={toastAutoClose}
+						hideProgressBar
+						newestOnTop={false}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme={theme}
+					/>
+					<Modal modal={modal} setModal={setModal} />
+					<Tabs />
+					{activeTabId && (
+						<>
+							<NavigationBar />
+							<div className="w-full flex flex-grow">
+								<LeftPane />
+								<DirectoryView />
+							</div>
+						</>
+					)}
+				</div>
 			</div>
 		</FileManagerContext.Provider>
 	);
