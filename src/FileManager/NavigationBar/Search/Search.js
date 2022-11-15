@@ -13,6 +13,7 @@ import { FileManagerContext } from '../../FileManager';
 import { getFolderId, shortcutHotkeyGenerate, update } from '../../utils/utils';
 import RenderIcon from '../../DirectoryView/DirectoryLayout/Group/ItemContainer/Layout/RenderIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
+import useDebounce from '../../useDebounce';
 
 const Search = () => {
 	const {
@@ -39,6 +40,8 @@ const Search = () => {
 
 	const [mobileSearchExpanded, setMobileSearchExpanded] = useState(false);
 
+	const debouncedSearch = useDebounce(search);
+
 	useHotkeys(shortcutHotkeyGenerate('ctrl+f'), (e) => {
 		e.preventDefault();
 		inputRef.current.focus();
@@ -46,13 +49,13 @@ const Search = () => {
 
 	useEffect(() => {
 		const folderId = getFolderId({ tabsState, activeTabId, rootUserFolderId });
-		if (search) {
+		if (debouncedSearch) {
 			setSearching(true);
 			axiosClientJSON({
 				url: '/search',
 				method: 'POST',
 				data: {
-					search,
+					search: debouncedSearch,
 					folderId,
 				},
 			}).then((res) => {
@@ -80,7 +83,7 @@ const Search = () => {
 				setSearchResponse(format);
 			});
 		}
-	}, [search]);
+	}, [debouncedSearch]);
 
 	const handleRenderSearchMenu = () => {
 		const input = inputRef.current.getBoundingClientRect();
