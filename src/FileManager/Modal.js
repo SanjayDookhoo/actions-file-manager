@@ -4,7 +4,7 @@ const Modal = ({ modal, setModal }) => {
 	const {
 		isOpen,
 		component: ModalComponent = DefaultComponent,
-		htmlStr,
+		htmlStr = '',
 		componentProps,
 		onClose,
 	} = modal ?? {};
