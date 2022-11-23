@@ -31,11 +31,11 @@ const Layout = ({ record }) => {
 	};
 
 	const renderSize = (record) => {
-		if (record.__typename === 'folder') {
-			return '';
-		} else {
-			return formatBytes(record.size);
-		}
+		// if (record.__typename === 'folder') {
+		// 	return '';
+		// } else {
+		return formatBytes(record.size);
+		// }
 	};
 
 	const recordIsSelected = (record) => {
