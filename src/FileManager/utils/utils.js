@@ -38,7 +38,7 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 			let filePath = filepath ? filepath : webkitRelativePath; // filepath is what the drag and drop package uses, webkitRelativePath is what the files input for folders uses
 			filePath = filePath.slice(0, -(name.length + 1)); // removes the end of the filePath that is the / + name + fileExtension, ie /fileName.txt
 			const ext = name.split('.').pop();
-			const storedName = uuidv4() + '.' + ext;
+			const storedName = uuidv4() 
 
 			response = await axiosClientJSON.get(`/startUpload`, {
 				params: {
