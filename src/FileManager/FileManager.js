@@ -98,15 +98,6 @@ const FileManager = ({
 	const backendEndpoint = `https://${backendHostname}`;
 	const token = window.localStorage.getItem('token');
 
-	// https://stackoverflow.com/questions/51794553/how-do-i-create-configuration-for-axios-for-default-request-headers-in-every-htt
-	const axiosClientFiles = axios.create({
-		baseURL: backendEndpoint,
-		headers: {
-			'Content-Type': 'multipart/form-data; charset=utf-8',
-			authorization: `Bearer ${token}`,
-		},
-	});
-
 	const axiosClientJSON = axios.create({
 		baseURL: backendEndpoint,
 		headers: {
@@ -419,7 +410,6 @@ const FileManager = ({
 		theme,
 		actions,
 		breakpointClass,
-		axiosClientFiles,
 		axiosClientJSON,
 		backendEndpointWS,
 		firstLoad,
