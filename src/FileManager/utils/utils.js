@@ -3,73 +3,150 @@ import _update from 'immutability-helper';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { toastAutoClose } from './constants';
+import axios from 'axios';
 
-export const uploadFiles = (files, folderId, axiosClientFiles) => {
-	if (files.length > 0) {
-		let toastId = null;
+export const uploadFiles = async (files, folderId, axiosClientJSON) => {
+	if (files.length == 0) return;
 
-		// upload files to backend
-		let formData = new FormData();
-		const filesPath = [];
-		// the files are not stored in a normal array
+	const FILE_CHUNK_SIZE = 10000000; // 10MB
+	let toastId = null;
+
+	try {
+		let response;
+		let totalNumChunks = 0;
+		let currentChunk = 0;
+
+		toastId = toast('Upload in Progress', {
+			progress: 0.1,
+			hideProgressBar: false,
+			progressClassName: 'bg-conditional-color',
+		});
+
+		response = await axiosClientJSON.get(`/requestBatchUpload`, {
+			params: { folderId },
+		});
+		const { batchId } = response.data;
+
 		for (let i = 0; i < files.length; i++) {
-			const { filepath, webkitRelativePath, name } = files[i];
-			formData.append('file', files[i]);
+			const totalFileSize = files[i].size;
+			totalNumChunks += Math.floor(totalFileSize / FILE_CHUNK_SIZE) + 1;
+		}
+
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
+			const { filepath, webkitRelativePath, name, type } = file;
 			let filePath = filepath ? filepath : webkitRelativePath; // filepath is what the drag and drop package uses, webkitRelativePath is what the files input for folders uses
 			filePath = filePath.slice(0, -(name.length + 1)); // removes the end of the filePath that is the / + name + fileExtension, ie /fileName.txt
-			filesPath.push(filePath);
-		}
-		formData.append('filesPath', JSON.stringify(filesPath));
+			const ext = name.split('.').pop();
+			const storedName = uuidv4() + '.' + ext;
 
-		axiosClientFiles({
-			url: '/upload',
-			method: 'POST',
-			data: formData,
-			headers: {
-				folderId, // added this to the headers to allow easy autheticity check since that depends on the folderId, without needing to deal with multipart form data
-			},
-			onUploadProgress: (p) => {
-				const progress = Math.min(p.loaded / p.total, 0.99); // changing toast type to error when the progress was set to 1, causes the toast to immediately close for some reason, dirty fix
-
-				// check if we already displayed a toast
-				if (toastId === null) {
-					toastId = toast('Upload in Progress', {
-						progress,
-						hideProgressBar: false,
-						progressClassName: 'bg-conditional-color',
-					});
-				} else {
-					toast.update(toastId, { progress });
-				}
-			},
-		})
-			.then((res) => {
-				toast.update(toastId, {
-					render: 'Uploaded Successfully',
-					type: toast.TYPE.SUCCESS,
-					hideProgressBar: true,
-					// autoClose: toastAutoClose,
-				});
-			})
-			.catch((e) => {
-				toast.update(toastId, {
-					// render: 'Upload Failed',
-					render: errorRender({
-						msg: 'Upload failed',
-						data: e,
-					}),
-					type: toast.TYPE.ERROR,
-					hideProgressBar: true,
-					// autoClose: toastAutoClose,
-				});
-			})
-			.finally(() => {
-				// auto close wasnt working
-				setTimeout(() => {
-					// .done wasnt working for some reason
-					toast.dismiss(toastId);
-				}, toastAutoClose);
+			response = await axiosClientJSON.get(`/startUpload`, {
+				params: {
+					storedName,
+					type,
+				},
 			});
+			const { uploadId } = response.data;
+
+			const fileSize = file.size;
+			const numChunks = Math.floor(fileSize / FILE_CHUNK_SIZE) + 1;
+
+			let promisesArray = [];
+			let start, end, blob;
+
+			for (let index = 1; index < numChunks + 1; index++) {
+				start = (index - 1) * FILE_CHUNK_SIZE;
+				end = index * FILE_CHUNK_SIZE;
+				blob = file.slice(start, end);
+
+				// (1) Generate presigned URL for each part
+				let getUploadUrlResp = await axiosClientJSON.get(`/getUploadUrl`, {
+					params: {
+						storedName,
+						partNumber: index,
+						uploadId,
+					},
+				});
+
+				let { presignedUrl } = getUploadUrlResp.data;
+				console.log(
+					'   Presigned URL ' +
+						index +
+						': ' +
+						presignedUrl +
+						' filetype ' +
+						file.type
+				);
+
+				// (2) Puts each file part into the storage server
+				let uploadResp = axios.put(presignedUrl, blob, {
+					headers: { 'Content-Type': file.type },
+				});
+				uploadResp.then((res) => {
+					currentChunk++;
+					const progress = Math.min(currentChunk / totalNumChunks, 0.99); // changing toast type to error when the progress was set to 1, causes the toast to immediately close for some reason, dirty fix
+
+					toast.update(toastId, {
+						progress,
+					});
+				});
+				// console.log('   Upload no ' + index + '; Etag: ' + uploadResp.headers.etag)
+				promisesArray.push(uploadResp);
+			}
+
+			let resolvedArray = await Promise.all(promisesArray);
+			console.log(resolvedArray, ' resolvedAr');
+
+			let uploadPartsArray = [];
+			resolvedArray.forEach((resolvedPromise, index) => {
+				uploadPartsArray.push({
+					ETag: resolvedPromise.headers.etag,
+					PartNumber: index + 1,
+				});
+			});
+
+			// (3) Calls the CompleteMultipartUpload endpoint in the backend server
+
+			let completeUploadResp = await axiosClientJSON.post(`/completeUpload`, {
+				storedName,
+				parts: uploadPartsArray,
+				uploadId,
+				filePath,
+				batchId,
+				name,
+				type,
+			});
+
+			console.log(completeUploadResp.data, ' Stuff');
+		}
+
+		response = await axiosClientJSON.post(`/completeBatchUpload`, {
+			batchId,
+			folderId,
+		});
+
+		toast.update(toastId, {
+			render: 'Uploaded Successfully',
+			type: toast.TYPE.SUCCESS,
+			hideProgressBar: true,
+			// autoClose: toastAutoClose,
+		});
+	} catch (e) {
+		toast.update(toastId, {
+			render: errorRender({
+				msg: 'Upload failed',
+				data: e,
+			}),
+			type: toast.TYPE.ERROR,
+			hideProgressBar: true,
+			// autoClose: toastAutoClose,
+		});
+	} finally {
+		// auto close wasnt working
+		setTimeout(() => {
+			// .done wasnt working for some reason
+			toast.dismiss(toastId);
+		}, toastAutoClose);
 	}
 };
 
