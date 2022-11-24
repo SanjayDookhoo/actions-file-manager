@@ -15,9 +15,10 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 		let response;
 		let totalNumChunks = 0;
 		let currentChunk = 0;
+		let filesPromisesArray = [];
 
 		toastId = toast('Upload in Progress', {
-			progress: 0.1,
+			progress: 0.01,
 			hideProgressBar: false,
 			progressClassName: 'bg-conditional-color',
 		});
@@ -38,7 +39,7 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 			let filePath = filepath ? filepath : webkitRelativePath; // filepath is what the drag and drop package uses, webkitRelativePath is what the files input for folders uses
 			filePath = filePath.slice(0, -(name.length + 1)); // removes the end of the filePath that is the / + name + fileExtension, ie /fileName.txt
 			const ext = name.split('.').pop();
-			const storedName = uuidv4() 
+			const storedName = uuidv4();
 
 			response = await axiosClientJSON.get(`/startUpload`, {
 				params: {
@@ -69,14 +70,6 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 				});
 
 				let { presignedUrl } = getUploadUrlResp.data;
-				console.log(
-					'   Presigned URL ' +
-						index +
-						': ' +
-						presignedUrl +
-						' filetype ' +
-						file.type
-				);
 
 				// (2) Puts each file part into the storage server
 				let uploadResp = axios.put(presignedUrl, blob, {
@@ -92,33 +85,33 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 				});
 				// console.log('   Upload no ' + index + '; Etag: ' + uploadResp.headers.etag)
 				promisesArray.push(uploadResp);
+				filesPromisesArray.push(uploadResp);
 			}
 
-			let resolvedArray = await Promise.all(promisesArray);
-			console.log(resolvedArray, ' resolvedAr');
+			Promise.all(promisesArray).then(async (resolvedArray) => {
+				let uploadPartsArray = [];
+				resolvedArray.forEach((resolvedPromise, index) => {
+					uploadPartsArray.push({
+						ETag: resolvedPromise.headers.etag,
+						PartNumber: index + 1,
+					});
+				});
 
-			let uploadPartsArray = [];
-			resolvedArray.forEach((resolvedPromise, index) => {
-				uploadPartsArray.push({
-					ETag: resolvedPromise.headers.etag,
-					PartNumber: index + 1,
+				// (3) Calls the CompleteMultipartUpload endpoint in the backend server
+
+				await axiosClientJSON.post(`/completeUpload`, {
+					storedName,
+					parts: uploadPartsArray,
+					uploadId,
+					filePath,
+					batchId,
+					name,
+					type,
 				});
 			});
-
-			// (3) Calls the CompleteMultipartUpload endpoint in the backend server
-
-			let completeUploadResp = await axiosClientJSON.post(`/completeUpload`, {
-				storedName,
-				parts: uploadPartsArray,
-				uploadId,
-				filePath,
-				batchId,
-				name,
-				type,
-			});
-
-			console.log(completeUploadResp.data, ' Stuff');
 		}
+
+		await Promise.all(filesPromisesArray);
 
 		response = await axiosClientJSON.post(`/completeBatchUpload`, {
 			batchId,
