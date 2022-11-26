@@ -44,6 +44,7 @@ const FileManager = ({
 	themeSettings = 'light',
 	actions,
 	backendHostname,
+	tokenNameInLocalStorage = 'token',
 }) => {
 	const [initialTabId, setInitialTabId] = useState(uuidv4());
 	const [tabsState, setTabsState] = useState({
@@ -96,7 +97,7 @@ const FileManager = ({
 	// CORS errors in testing may require changing from secured to unsecured
 	const backendEndpointWS = `wss://${backendHostname}`;
 	const backendEndpoint = `https://${backendHostname}`;
-	const token = window.localStorage.getItem('token');
+	const token = window.localStorage.getItem(tokenNameInLocalStorage);
 
 	const axiosClientJSON = axios.create({
 		baseURL: backendEndpoint,
@@ -413,6 +414,7 @@ const FileManager = ({
 		axiosClientJSON,
 		backendEndpointWS,
 		firstLoad,
+		tokenNameInLocalStorage,
 	};
 
 	const getFilesFoldersProps = {

@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { FileManagerContext } from './FileManager';
 
 const useSubscription = (folderId, __typename, type) => {
-	const { backendEndpointWS } = useContext(FileManagerContext);
+	const { backendEndpointWS, tokenNameInLocalStorage } =
+		useContext(FileManagerContext);
 	const { sendMessage, lastMessage, readyState } = useWebSocket(
 		backendEndpointWS,
 		{
@@ -19,7 +20,7 @@ const useSubscription = (folderId, __typename, type) => {
 		if (folderId && readyState === 1) {
 			setLoading(true);
 			const id = uuidv4();
-			const token = window.localStorage.getItem('token');
+			const token = window.localStorage.getItem(tokenNameInLocalStorage);
 			sendMessage(JSON.stringify({ __typename, folderId, id, token, type }));
 			// console.log({ __typename, folderId, id });
 		}
