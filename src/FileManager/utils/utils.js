@@ -8,7 +8,8 @@ import axios from 'axios';
 export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 	if (files.length == 0) return;
 
-	const FILE_CHUNK_SIZE = 10000000; // 10MB
+	const defaultChunkSize = 10000000; // 10MB
+	const maxAmtOfChunks = 10000; // s3 only allows 10,000 chunks
 	let toastId = null;
 
 	try {
@@ -30,11 +31,23 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 
 		for (let i = 0; i < files.length; i++) {
 			const totalFileSize = files[i].size;
-			totalNumChunks += Math.floor(totalFileSize / FILE_CHUNK_SIZE) + 1;
+			totalNumChunks += Math.min(
+				Math.floor(totalFileSize / defaultChunkSize) + 1,
+				maxAmtOfChunks
+			);
 		}
 
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
+			const fileSize = file.size;
+			let chunkSize = defaultChunkSize;
+
+			let numChunks = Math.floor(fileSize / chunkSize) + 1;
+			if (numChunks > maxAmtOfChunks) {
+				numChunks = maxAmtOfChunks;
+				chunkSize = Math.floor(fileSize / (maxAmtOfChunks - 1));
+			}
+
 			const { filepath, webkitRelativePath, name, type } = file;
 			let filePath = filepath ? filepath : webkitRelativePath; // filepath is what the drag and drop package uses, webkitRelativePath is what the files input for folders uses
 			filePath = filePath.slice(0, -(name.length + 1)); // removes the end of the filePath that is the / + name + fileExtension, ie /fileName.txt
@@ -49,15 +62,12 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 			});
 			const { uploadId } = response.data;
 
-			const fileSize = file.size;
-			const numChunks = Math.floor(fileSize / FILE_CHUNK_SIZE) + 1;
-
 			let promisesArray = [];
 			let start, end, blob;
 
 			for (let index = 1; index < numChunks + 1; index++) {
-				start = (index - 1) * FILE_CHUNK_SIZE;
-				end = index * FILE_CHUNK_SIZE;
+				start = (index - 1) * chunkSize;
+				end = index * chunkSize;
 				blob = file.slice(start, end);
 
 				// (1) Generate presigned URL for each part
