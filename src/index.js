@@ -38,6 +38,7 @@ reportWebVitals();
 // 	color: PropTypes.string,
 // 	themeSettings: PropTypes.string,
 // 	backendHostname: PropTypes.string,
+//  tokenNameInLocalStorage: PropTypes.string,
 // };
 
 // customElements.define(
