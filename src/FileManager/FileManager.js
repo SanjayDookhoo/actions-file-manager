@@ -90,7 +90,7 @@ const FileManager = ({
 		window.matchMedia &&
 			window.matchMedia('(prefers-color-scheme: dark)').matches
 	);
-	const [theme, setTheme] = useState('light');
+	const [theme, setTheme] = useState(null);
 
 	const [fileManagerWidth, setFileManagerWidth] = useState(0);
 
@@ -436,6 +436,7 @@ const FileManager = ({
 					height,
 					width,
 					color: theme === 'dark' ? 'white' : 'black',
+					display: theme ? '' : 'none',
 				}}
 				ref={fileManagerRef}
 				onContextMenu={(e) => e.preventDefault()}
