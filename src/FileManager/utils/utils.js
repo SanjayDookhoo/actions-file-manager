@@ -16,7 +16,7 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 		let response;
 		let totalNumChunks = 0;
 		let currentChunk = 0;
-		let filesPromisesArray = [];
+		let filesUploadedCompleted = 0;
 
 		toastId = toast('Upload in Progress', {
 			progress: 0.01,
@@ -95,7 +95,6 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 				});
 				// console.log('   Upload no ' + index + '; Etag: ' + uploadResp.headers.etag)
 				promisesArray.push(uploadResp);
-				filesPromisesArray.push(uploadResp);
 			}
 
 			Promise.all(promisesArray).then(async (resolvedArray) => {
@@ -118,22 +117,26 @@ export const uploadFiles = async (files, folderId, axiosClientJSON) => {
 					name,
 					type,
 				});
+
+				filesUploadedCompleted += 1;
+
+				if (filesUploadedCompleted == files.length) await completeBatchUpload();
 			});
 		}
 
-		await Promise.all(filesPromisesArray);
+		const completeBatchUpload = async () => {
+			response = await axiosClientJSON.post(`/completeBatchUpload`, {
+				batchId,
+				folderId,
+			});
 
-		response = await axiosClientJSON.post(`/completeBatchUpload`, {
-			batchId,
-			folderId,
-		});
-
-		toast.update(toastId, {
-			render: 'Uploaded Successfully',
-			type: toast.TYPE.SUCCESS,
-			hideProgressBar: true,
-			// autoClose: toastAutoClose,
-		});
+			toast.update(toastId, {
+				render: 'Uploaded Successfully',
+				type: toast.TYPE.SUCCESS,
+				hideProgressBar: true,
+				// autoClose: toastAutoClose,
+			});
+		};
 	} catch (e) {
 		toast.update(toastId, {
 			render: errorRender({
