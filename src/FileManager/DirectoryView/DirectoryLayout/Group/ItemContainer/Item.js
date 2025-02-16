@@ -29,6 +29,10 @@ import Video from '../../../../Video';
 import Audio from '../../../../Audio';
 import Gallery from '../../../../Gallery';
 import { toast } from 'react-toastify';
+import {
+	StreamFetcher,
+	streamSaverSave,
+} from '../../../../utils/StreamSaverUtils';
 
 const Item = ({
 	item,
@@ -123,8 +127,23 @@ const Item = ({
 					id,
 				},
 			}).then((res) => {
-				const { URL } = res.data;
-				window.location.assign(URL);
+				const { URL: presignedUrl } = res.data;
+				const { size } = record;
+
+				const fileStream = window.streamSaver.createWriteStream(record.name, {
+					size,
+				});
+				const streamFetcher = new StreamFetcher({ beforeUnloadCb: () => {} });
+
+				streamFetcher.enqueueFetch(presignedUrl, size).then((res) => {
+					const readableStream = res;
+					streamSaverSave({
+						fileStream,
+						readableStream,
+						onFinishedCb: () => {},
+					});
+				});
+				streamFetcher.fetchAll();
 			});
 		}
 	};
